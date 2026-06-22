@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace ORMFundamentals
 {
@@ -7,6 +8,9 @@ namespace ORMFundamentals
         static void Main(string[] args)
         {
             // Write C# Application that displays FullName + Age + Salary of all Employees from the Employees from the Research & Development department.
+
+            string? salaryThreshold = Console.ReadLine();
+
             string connectionString =
                 @"Server=PREDATOR\SQLEXPRESS;Database=SoftUni;Trusted_Connection=True;Encrypt=False;";
             string sqlQuery = @"SELECT CONCAT(FirstName, ' ', LastName)
@@ -14,13 +18,18 @@ namespace ORMFundamentals
                                 JobTitle,
                                 Salary
                                 FROM Employees
-                                WHERE Salary > 30000";
+                                WHERE Salary > @salaryThreshold";
 
             using
             SqlConnection sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
 
             SqlCommand sqlCommand = new SqlCommand(sqlQuery, sqlConnection);
+            SqlParameter salaryParam = new SqlParameter("@salaryThreshold", SqlDbType.Decimal);
+            salaryParam.Value = decimal.Parse(salaryThreshold);
+
+            sqlCommand.Parameters.Add(salaryParam);
+
             using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
 
             while (sqlDataReader.Read())
