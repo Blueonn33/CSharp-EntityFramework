@@ -13,6 +13,12 @@ namespace ORMFundamentals
 
             string connectionString =
                 @"Server=PREDATOR\SQLEXPRESS;Database=SoftUni;Trusted_Connection=True;Encrypt=False;";
+
+            PrintEmployeeInfoAboveSalaryThreshold(salaryThreshold, connectionString);
+        }
+
+        private static void PrintEmployeeInfoAboveSalaryThreshold(string salaryThreshold, string connectionString)
+        {
             string sqlQuery = @"SELECT CONCAT(FirstName, ' ', LastName)
                                 AS FullName,
                                 JobTitle,
@@ -21,7 +27,7 @@ namespace ORMFundamentals
                                 WHERE Salary > @salaryThreshold";
 
             using
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
+                SqlConnection sqlConnection = new SqlConnection(connectionString);
             sqlConnection.Open();
 
             SqlCommand sqlCommand = new SqlCommand(sqlQuery, sqlConnection);
