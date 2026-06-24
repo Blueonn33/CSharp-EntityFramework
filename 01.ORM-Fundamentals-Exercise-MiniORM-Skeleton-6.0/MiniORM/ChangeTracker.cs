@@ -100,5 +100,36 @@ namespace MiniORM
             => primaryKeyProperties
                 .Select(pk => pk.GetValue(entity)!)
                 .ToArray();
+
+        private static bool IsModified(T proxyEntity, T entity)
+        {
+            PropertyInfo[] propertiesToCompare = typeof(T)
+                .GetProperties()
+                .Where(pi => DbContext.AllowedSqlTypes.Contains(pi.PropertyType))
+                .ToArray();
+
+            bool isModified = false;
+
+            foreach (PropertyInfo dbProp in propertiesToCompare)
+            {
+                object? proxyValue = dbProp.GetValue(proxyEntity);
+                object? entityValue = dbProp.GetValue(entity);
+
+                if (proxyValue == null && entityValue == null)
+                {
+                    continue;
+                }
+
+                if (proxyValue != null || entityValue != null)
+                {
+                    if (!(proxyValue?.Equals(entityValue) ?? false))
+                    {
+                        isModified = true;
+                    }
+                }
+            }
+
+            return isModified;
+        }
     }
 }
