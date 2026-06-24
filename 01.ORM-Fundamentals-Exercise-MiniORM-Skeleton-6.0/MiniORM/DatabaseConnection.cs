@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+
 /// <summary>
 /// Used for accessing a database, inserting/updating/deleting entities
 /// and mapping database columns to entity classes.
@@ -10,71 +12,37 @@ internal class DatabaseConnection
 {
     private readonly SqlConnection connection;
 
-    private SqlTransaction transaction;
+    private SqlTransaction? transaction;
 
     public DatabaseConnection(string connectionString)
     {
         this.connection = new SqlConnection(connectionString);
     }
 
-    private SqlCommand CreateCommand(string queryText, params SqlParameter[] parameters)
-    {
-        var command = new SqlCommand(queryText, this.connection, this.transaction);
-
-        foreach (var param in parameters)
-        {
-            command.Parameters.Add(param);
-        }
-
-        return command;
-    }
-
     public int ExecuteNonQuery(string queryText, params SqlParameter[] parameters)
     {
-        using (var query = CreateCommand(queryText, parameters))
+        using (SqlCommand query = CreateCommand(queryText, parameters))
         {
-            var result = query.ExecuteNonQuery();
+            int result = query.ExecuteNonQuery();
 
             return result;
         }
     }
 
-    public IEnumerable<string> FetchColumnNames(string tableName)
-    {
-        var rows = new List<string>();
-
-        var queryText = $@"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tableName}'";
-
-        using (var query = CreateCommand(queryText))
-        {
-            using (var reader = query.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    var column = reader.GetString(0);
-
-                    rows.Add(column);
-                }
-            }
-        }
-
-        return rows;
-    }
-
     public IEnumerable<T> ExecuteQuery<T>(string queryText)
     {
-        var rows = new List<T>();
+        ICollection<T> rows = new List<T>();
 
-        using (var query = CreateCommand(queryText))
+        using (SqlCommand query = CreateCommand(queryText))
         {
-            using (var reader = query.ExecuteReader())
+            using (SqlDataReader reader = query.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    var columnValues = new object[reader.FieldCount];
+                    object[] columnValues = new object[reader.FieldCount];
                     reader.GetValues(columnValues);
 
-                    var obj = reader.GetFieldValue<T>(0);
+                    T obj = reader.GetFieldValue<T>(0);
                     rows.Add(obj);
                 }
             }
@@ -83,23 +51,46 @@ internal class DatabaseConnection
         return rows;
     }
 
-    public IEnumerable<T> FetchResultSet<T>(string tableName, params string[] columnNames)
+    public IEnumerable<string> FetchColumnNames(string tableName)
     {
-        var rows = new List<T>();
+        ICollection<string> columnNames = new List<string>();
 
-        var escapedColumns = string.Join(", ", columnNames.Select(EscapeColumn));
-        var queryText = $@"SELECT {escapedColumns} FROM {tableName}";
+        var queryText = $@"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{tableName}'";
 
-        using (var query = CreateCommand(queryText))
+        using (SqlCommand query = CreateCommand(queryText))
         {
-            using (var reader = query.ExecuteReader())
+            using (SqlDataReader reader = query.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    var columnValues = new object[reader.FieldCount];
+                    string column = reader.GetString(0);
+
+                    columnNames.Add(column);
+                }
+            }
+        }
+
+        return columnNames;
+    }
+
+    public IEnumerable<T> FetchResultSet<T>(string tableName, params string[] columnNames)
+    {
+        ICollection<T> rows = new List<T>();
+
+        string escapedColumns = string
+            .Join(", ", columnNames.Select(EscapeColumn));
+        string queryText = $@"SELECT {escapedColumns} FROM {tableName}";
+
+        using (SqlCommand query = CreateCommand(queryText))
+        {
+            using (SqlDataReader reader = query.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    object[] columnValues = new object[reader.FieldCount];
                     reader.GetValues(columnValues);
 
-                    var obj = MapColumnsToObject<T>(columnNames, columnValues);
+                    T obj = MapColumnsToObject<T>(columnNames, columnValues);
                     rows.Add(obj);
                 }
             }
@@ -111,37 +102,41 @@ internal class DatabaseConnection
     public void InsertEntities<T>(IEnumerable<T> entities, string tableName, string[] columns)
         where T : class
     {
-        var identityColumns = GetIdentityColumns(tableName);
+        IEnumerable<string> identityColumns = GetIdentityColumns(tableName);
 
-        var columnsToInsert = columns.Except(identityColumns).ToArray();
+        IEnumerable<string> columnsToInsert = columns
+            .Except(identityColumns)
+            .ToArray();
 
-        var escapedColumns = columnsToInsert.Select(EscapeColumn).ToArray();
+        IEnumerable<string> escapedColumns = columnsToInsert
+            .Select(EscapeColumn)
+            .ToArray();
 
-        var rowValues = entities
+        IEnumerable<object[]> rowValues = entities
             .Select(entity => columnsToInsert
                 .Select(c => entity.GetType().GetProperty(c).GetValue(entity))
                 .ToArray())
             .ToArray();
 
-        var rowParameterNames = Enumerable.Range(1, rowValues.Length)
+        IEnumerable<string[]> rowParameterNames = Enumerable.Range(1, rowValues.Count())
             .Select(i => columnsToInsert.Select(c => c + i).ToArray())
             .ToArray();
 
-        var sqlColumns = string.Join(", ", escapedColumns);
+        string sqlColumns = string.Join(", ", escapedColumns);
 
-        var sqlRows = string.Join(", ",
+        string sqlRows = string.Join(", ",
             rowParameterNames.Select(p =>
                 string.Format("({0})",
                     string.Join(", ", p.Select(a => $"@{a}")))));
 
-        var query = string.Format(
+        string query = string.Format(
             "INSERT INTO {0} ({1}) VALUES {2}",
             tableName,
             sqlColumns,
             sqlRows
         );
 
-        var parameters = rowParameterNames
+        SqlParameter[] parameters = rowParameterNames
             .Zip(rowValues, (@params, values) =>
                 @params.Zip(values, (param, value) =>
                     new SqlParameter(param, value ?? DBNull.Value)))
@@ -159,43 +154,43 @@ internal class DatabaseConnection
     public void UpdateEntities<T>(IEnumerable<T> modifiedEntities, string tableName, string[] columns)
         where T : class
     {
-        var identityColumns = GetIdentityColumns(tableName);
+        IEnumerable<string> identityColumns = GetIdentityColumns(tableName);
 
-        var columnsToUpdate = columns.Except(identityColumns).ToArray();
+        IEnumerable<string> columnsToUpdate = columns.Except(identityColumns).ToArray();
 
-        var primaryKeyProperties = typeof(T).GetProperties()
+        PropertyInfo[] primaryKeyProperties = typeof(T).GetProperties()
             .Where(pi => pi.HasAttribute<KeyAttribute>())
             .ToArray();
 
         foreach (var entity in modifiedEntities)
         {
-            var primaryKeyValues = primaryKeyProperties
+            object?[] primaryKeyValues = primaryKeyProperties
                 .Select(c => c.GetValue(entity))
                 .ToArray();
 
-            var primaryKeyParameters = primaryKeyProperties
+            SqlParameter[] primaryKeyParameters = primaryKeyProperties
                 .Zip(primaryKeyValues, (param, value) => new SqlParameter(param.Name, value))
                 .ToArray();
 
-            var rowValues = columnsToUpdate
+            object?[] rowValues = columnsToUpdate
                 .Select(c => entity.GetType().GetProperty(c).GetValue(entity) ?? DBNull.Value)
                 .ToArray();
 
-            var columnsParameters = columnsToUpdate.Zip(rowValues, (param, value) => new SqlParameter(param, value))
+            SqlParameter[] columnsParameters = columnsToUpdate.Zip(rowValues, (param, value) => new SqlParameter(param, value))
                 .ToArray();
 
-            var columnsSql = string.Join(", ",
+            string columnsSql = string.Join(", ",
                 columnsToUpdate.Select(c => $"{c} = @{c}"));
 
-            var primaryKeysSql = string.Join(" AND ",
+            string primaryKeysSql = string.Join(" AND ",
                 primaryKeyProperties.Select(pk => $"{pk.Name} = @{pk.Name}"));
 
-            var query = string.Format("UPDATE {0} SET {1} WHERE {2}",
+            string query = string.Format("UPDATE {0} SET {1} WHERE {2}",
                 tableName,
                 columnsSql,
                 primaryKeysSql);
 
-            var updatedRows = this.ExecuteNonQuery(query, columnsParameters.Concat(primaryKeyParameters).ToArray());
+            int updatedRows = this.ExecuteNonQuery(query, columnsParameters.Concat(primaryKeyParameters).ToArray());
 
             if (updatedRows != 1)
             {
@@ -207,28 +202,28 @@ internal class DatabaseConnection
     public void DeleteEntities<T>(IEnumerable<T> entitiesToDelete, string tableName, string[] columns)
         where T : class
     {
-        var primaryKeyProperties = typeof(T).GetProperties()
+        PropertyInfo[] primaryKeyProperties = typeof(T).GetProperties()
             .Where(pi => pi.HasAttribute<KeyAttribute>())
             .ToArray();
 
-        foreach (var entity in entitiesToDelete)
+        foreach (T entity in entitiesToDelete)
         {
-            var primaryKeyValues = primaryKeyProperties
+            object[] primaryKeyValues = primaryKeyProperties
                 .Select(c => c.GetValue(entity))
                 .ToArray();
 
-            var primaryKeyParameters = primaryKeyProperties
+            SqlParameter[] primaryKeyParameters = primaryKeyProperties
                 .Zip(primaryKeyValues, (param, value) => new SqlParameter(param.Name, value))
                 .ToArray();
 
-            var primaryKeysSql = string.Join(" AND ",
+            string primaryKeysSql = string.Join(" AND ",
                 primaryKeyProperties.Select(pk => $"{pk.Name} = @{pk.Name}"));
 
-            var query = string.Format("DELETE FROM {0} WHERE {1}",
+            string query = string.Format("DELETE FROM {0} WHERE {1}",
                 tableName,
                 primaryKeysSql);
 
-            var updatedRows = this.ExecuteNonQuery(query, primaryKeyParameters);
+            int updatedRows = this.ExecuteNonQuery(query, primaryKeyParameters);
 
             if (updatedRows != 1)
             {
@@ -237,14 +232,27 @@ internal class DatabaseConnection
         }
     }
 
+    private SqlCommand CreateCommand(string queryText, params SqlParameter[] parameters)
+    {
+        SqlCommand command = new SqlCommand(queryText, this.connection, this.transaction);
+
+        foreach (SqlParameter param in parameters)
+        {
+            command.Parameters.Add(param);
+        }
+
+        return command;
+    }
+
     private IEnumerable<string> GetIdentityColumns(string tableName)
     {
         const string identityColumnsSql =
             "SELECT COLUMN_NAME FROM (SELECT COLUMN_NAME, COLUMNPROPERTY(OBJECT_ID(TABLE_NAME), COLUMN_NAME, 'IsIdentity') AS IsIdentity FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{0}') AS IdentitySpecs WHERE IsIdentity = 1";
 
-        var parametrizedSql = string.Format(identityColumnsSql, tableName);
+        // TODO: Introduce SqlParameters to prevent SQL injection
+        string parametrizedSql = string.Format(identityColumnsSql, tableName);
 
-        var identityColumns = ExecuteQuery<string>(parametrizedSql);
+        IEnumerable<string> identityColumns = ExecuteQuery<string>(parametrizedSql);
 
         return identityColumns;
     }
@@ -260,27 +268,24 @@ internal class DatabaseConnection
     public void Close() => this.connection.Close();
 
     private static string EscapeColumn(string c)
-    {
-        var escapedColumn = $"[{c}]";
-        return escapedColumn;
-    }
+        => $"[{c}]";
 
     private static T MapColumnsToObject<T>(string[] columnNames, object[] columns)
     {
-        var obj = Activator.CreateInstance<T>();
+        T obj = Activator.CreateInstance<T>();
 
-        for (var i = 0; i < columns.Length; i++)
+        for (int i = 0; i < columns.Length; i++)
         {
-            var columnName = columnNames[i];
-            var columnValue = columns[i];
+            string columnName = columnNames[i];
+            object? columnValue = columns[i];
 
             if (columnValue is DBNull)
             {
                 columnValue = null;
             }
 
-            var property = typeof(T).GetProperty(columnName);
-            property.SetValue(obj, columnValue);
+            PropertyInfo? property = typeof(T).GetProperty(columnName);
+            property?.SetValue(obj, columnValue);
         }
 
         return obj;
