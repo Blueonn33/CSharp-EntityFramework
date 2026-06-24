@@ -23,7 +23,7 @@ namespace MiniORM
         public static bool HasAttribute<T>(this MemberInfo mi)
             where T : Attribute
         {
-            var hasAttribute = mi.GetCustomAttribute<T>() != null;
+            bool hasAttribute = mi.GetCustomAttribute<T>() != null;
             return hasAttribute;
         }
     }
