@@ -41,18 +41,18 @@ namespace MiniORM
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            while (this.Count > 0)
+            {
+                TEntity entityToRemove = this.Entities.First();
+                this.Remove(entityToRemove);
+            }
         }
 
-        public bool Contains(TEntity item)
-        {
-            throw new NotImplementedException();
-        }
+        public bool Contains(TEntity entity)
+            => this.Entities.Contains(entity);
 
         public void CopyTo(TEntity[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
+            => this.Entities.CopyTo(array, arrayIndex);
 
         public bool Remove(TEntity entity)
         {
@@ -72,13 +72,9 @@ namespace MiniORM
         }
 
         public IEnumerator<TEntity> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+            => this.Entities.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+            => this.GetEnumerator();
     }
 }
