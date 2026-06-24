@@ -39,6 +39,23 @@ namespace MiniORM
             this.ChangeTracker.Add(entity);
         }
 
+        public bool RemoveRange(IEnumerable<TEntity> entities)
+        {
+            bool result = true;
+
+            if (entities == null)
+            {
+                throw new ArgumentNullException(nameof(entities), "Entity collection to remove cannot be null.");
+            }
+
+            foreach (TEntity entity in entities)
+            {
+                result &= this.Remove(entity);
+            }
+
+            return result;
+        }
+
         public void Clear()
         {
             while (this.Count > 0)
