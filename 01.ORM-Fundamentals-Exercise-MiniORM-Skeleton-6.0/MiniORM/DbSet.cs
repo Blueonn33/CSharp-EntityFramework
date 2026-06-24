@@ -3,6 +3,10 @@
     public class DbSet<T>
         where T : class, new()
     {
-        // TODO: Create your DbSet class here.
+        // TODO: Create your DbSet class here. 
+        public IEnumerable<T> Entities
+        {
+            get; set;
+        }
     }
 }

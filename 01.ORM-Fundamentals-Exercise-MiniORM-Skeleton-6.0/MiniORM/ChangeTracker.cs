@@ -49,10 +49,26 @@ namespace MiniORM
 
             foreach (T proxyEntity in AllEntities)
             {
-                object[] primaryKeyValues = GetPrimaryKeyValues(primaryKeys, proxyEntity);
+                object[] primaryKeyValues = GetPrimaryKeyValues(primaryKeys, proxyEntity)
+                    .ToArray();
 
+                T? entity = dbSet.Entities
+                    .SingleOrDefault(e => GetPrimaryKeyValues(primaryKeys, e).SequenceEqual(primaryKeyValues));
 
+                if (entity == null)
+                {
+                    throw new InvalidOperationException("Database entity is not found for a proxy entity in the change tracker! Ensure that DbContext is not used parallelly in multi-thread environment");
+                }
+
+                bool isEntityModified = IsModified(proxyEntity, entity);
+
+                if (isEntityModified)
+                {
+                    modifiedEntities.Add(entity);
+                }
             }
+
+            return modifiedEntities;
         }
 
         private static ICollection<T> CloneEntities(IEnumerable<T> entities)
