@@ -48,10 +48,22 @@ namespace MiniORM
 
         private void InitializeDbSets()
         {
-            foreach (var in this.dbSetProperties)
+            foreach (KeyValuePair<Type, PropertyInfo> dbSetKvp in this.dbSetProperties)
             {
+                Type dbSetType = dbSetKvp.Key;
+                PropertyInfo dbSetProperty = dbSetKvp.Value;
 
+                MethodInfo populateDbSetMethod = typeof(DbContext)
+                    .GetMethod(nameof(PopulateDbSet), BindingFlags.Instance | BindingFlags.NonPublic)?
+                    .MakeGenericMethod(dbSetType) ?? throw new InvalidOperationException("A general error occured while initializing DbSet data!");
+
+                populateDbSetMethod.Invoke(this, new[] { dbSetProperty });
             }
+        }
+
+        private void PopulateDbSet<TEntity>(PropertyInfo dbSetProperty)
+        {
+
         }
 
         public void Dispose()
