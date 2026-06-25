@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 
 namespace MiniORM
 {
@@ -80,6 +81,18 @@ namespace MiniORM
                 .FetchResultSet<TEntity>(tableName, entityColumns);
 
             return fetchedEntityRows;
+        }
+
+        private string GetTableName(Type entityType)
+        {
+            string? tableName = entityType.GetCustomAttribute<TableAttribute>()?.Name;
+
+            if (string.IsNullOrWhiteSpace(tableName))
+            {
+                tableName = this.dbSetProperties[entityType].Name;
+            }
+
+            return tableName;
         }
 
         public void Dispose()
