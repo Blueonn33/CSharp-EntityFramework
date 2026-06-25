@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace MiniORM
@@ -124,7 +125,7 @@ namespace MiniORM
                     throw new InvalidOperationException($"DbSet<{dbSetType.Name}> cannot be null");
                 }
 
-                MethodInfo? mapRelationsMethod = typeof(DbContext)
+                MethodInfo mapRelationsMethod = typeof(DbContext)
                     .GetMethod(nameof(MapRelations), BindingFlags.Instance | BindingFlags.NonPublic)
                     .MakeGenericMethod(dbSetType) ?? throw new InvalidOperationException("A general error occured while initializing DbSet data!");
 
@@ -134,6 +135,73 @@ namespace MiniORM
 
         private void MapRelations<TEntity>(DbSet<TEntity> dbSetInstance)
             where TEntity : class, new()
+        {
+            Type entityType = typeof(TEntity);
+
+            MapNavigationProperties(dbSetInstance);
+
+            PropertyInfo[] navigationCollections = entityType
+                .GetProperties()
+                .Where(pi => pi.PropertyType.IsGenericType &&
+                             pi.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>))
+                .ToArray();
+
+            foreach (PropertyInfo navCollectionProp in navigationCollections)
+            {
+                Type collectionEntityType = navCollectionProp
+                    .PropertyType
+                    .GetGenericArguments()
+                    .Single();
+
+                MethodInfo mapCollectionMethod = typeof(DbContext)
+                    .GetMethod(nameof(MapCollection), BindingFlags.Instance | BindingFlags.NonPublic)?
+                    .MakeGenericMethod(entityType, collectionEntityType) ?? throw new InvalidOperationException("A general error occured while initializing DbSet data!");
+
+                mapCollectionMethod.Invoke(this, new object?[] { dbSetInstance, navCollectionProp });
+            }
+        }
+
+        private void MapNavigationProperties<TEntity>(DbSet<TEntity> dbSetInstance)
+            where TEntity : class, new()
+        {
+            Type entityType = typeof(TEntity);
+            PropertyInfo[] foreignKeyProps = entityType
+                .GetProperties()
+                .Where(pi => pi.HasAttribute<ForeignKeyAttribute>())
+                .ToArray();
+
+            foreach (PropertyInfo foreignKeyPropInfo in foreignKeyProps)
+            {
+                string navPropertyName = foreignKeyPropInfo
+                    .GetCustomAttribute<ForeignKeyAttribute>()!.Name;
+                PropertyInfo navPropertyInfo = entityType
+                                                   .GetProperty(navPropertyName) ??
+                                               throw new InvalidOperationException(
+                                                   $"Nav prop: {navPropertyName} not found on entity type {entityType.Name}");
+                if (navPropertyInfo == null)
+                {
+                    continue;
+                }
+
+                object navEntityDbSet = this.dbSetProperties[navPropertyInfo.PropertyType]
+                                            .GetValue(this) ??
+                                        throw new InvalidOperationException(
+                                            $"DbSet<{navPropertyInfo}> is not initialized");
+
+                PropertyInfo navEntityPrimaryKeyProp = navPropertyInfo.PropertyType
+                    .GetProperties()
+                    .Single(pi => pi.HasAttribute<KeyAttribute>());
+
+                foreach (TEntity entity in dbSetInstance)
+                {
+                    object? foreignKeyValue = foreignKeyPropInfo.GetValue(entity);
+                }
+            }
+        }
+
+        private void MapCollection<TEntity, TCollection>(DbSet<TEntity> dbSetInstance, PropertyInfo navCollectionPropInfo)
+            where TEntity : class, new()
+            where TCollection : class, new()
         {
 
         }
