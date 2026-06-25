@@ -113,6 +113,31 @@ namespace MiniORM
             return entityColumnNames;
         }
 
+        private void MapAllRelations()
+        {
+            foreach ((Type dbSetType, PropertyInfo dbSetProperty) in this.dbSetProperties)
+            {
+                object? dbSetInstance = dbSetProperty.GetValue(this);
+
+                if (dbSetInstance == null)
+                {
+                    throw new InvalidOperationException($"DbSet<{dbSetType.Name}> cannot be null");
+                }
+
+                MethodInfo? mapRelationsMethod = typeof(DbContext)
+                    .GetMethod(nameof(MapRelations), BindingFlags.Instance | BindingFlags.NonPublic)
+                    .MakeGenericMethod(dbSetType) ?? throw new InvalidOperationException("A general error occured while initializing DbSet data!");
+
+                mapRelationsMethod.Invoke(this, new object?[] { dbSetInstance });
+            }
+        }
+
+        private void MapRelations<TEntity>(DbSet<TEntity> dbSetInstance)
+            where TEntity : class, new()
+        {
+
+        }
+
         public void Dispose()
         {
             connection.Dispose();
