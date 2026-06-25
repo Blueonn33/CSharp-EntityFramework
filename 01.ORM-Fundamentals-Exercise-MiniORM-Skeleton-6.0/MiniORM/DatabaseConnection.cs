@@ -290,4 +290,9 @@ internal class DatabaseConnection
 
         return obj;
     }
+
+    internal void Dispose()
+    {
+        throw new NotImplementedException();
+    }
 }
