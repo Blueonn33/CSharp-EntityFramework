@@ -62,9 +62,15 @@ namespace MiniORM
         }
 
         private void PopulateDbSet<TEntity>(PropertyInfo dbSetProperty)
+            where TEntity : class, new()
         {
+            IEnumerable<TEntity> entities = LoadTableEntities<TEntity>();
+            DbSet<TEntity> dbSetInstance = new DbSet<TEntity>(entities);
 
+            ReflectionHelper.ReplaceBackingField(this, dbSetProperty.Name, dbSetInstance);
         }
+
+
 
         public void Dispose()
         {
