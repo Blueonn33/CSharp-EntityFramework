@@ -70,7 +70,17 @@ namespace MiniORM
             ReflectionHelper.ReplaceBackingField(this, dbSetProperty.Name, dbSetInstance);
         }
 
+        private IEnumerable<TEntity> LoadTableEntities<TEntity>()
+            where TEntity : class, new()
+        {
+            string tableName = GetTableName(typeof(TEntity));
+            string[] entityColumns = LoadTableColumns(typeof(TEntity));
 
+            IEnumerable<TEntity> fetchedEntityRows = this.connection
+                .FetchResultSet<TEntity>(tableName, entityColumns);
+
+            return fetchedEntityRows;
+        }
 
         public void Dispose()
         {
