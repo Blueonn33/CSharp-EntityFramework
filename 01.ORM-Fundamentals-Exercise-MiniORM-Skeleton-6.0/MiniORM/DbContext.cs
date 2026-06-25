@@ -75,7 +75,8 @@ namespace MiniORM
             where TEntity : class, new()
         {
             string tableName = GetTableName(typeof(TEntity));
-            string[] entityColumns = LoadTableColumns(typeof(TEntity));
+            string[] entityColumns = GetEntityTableColumns(typeof(TEntity))
+                .ToArray();
 
             IEnumerable<TEntity> fetchedEntityRows = this.connection
                 .FetchResultSet<TEntity>(tableName, entityColumns);
@@ -93,6 +94,23 @@ namespace MiniORM
             }
 
             return tableName;
+        }
+
+        private IEnumerable<string> GetEntityTableColumns(Type entityType)
+        {
+            string tableName = GetTableName(entityType);
+            IEnumerable<string> dbColumnNames = this.connection
+                .FetchColumnNames(tableName);
+
+            IEnumerable<string> entityColumnNames = entityType
+                .GetProperties()
+                .Where(pi =>
+                    dbColumnNames.Contains(pi.Name) && pi.HasAttribute<NotMappedAttribute>() &&
+                    AllowedSqlTypes.Contains(pi.PropertyType))
+                .Select(pi => pi.Name)
+                .ToArray();
+
+            return entityColumnNames;
         }
 
         public void Dispose()
