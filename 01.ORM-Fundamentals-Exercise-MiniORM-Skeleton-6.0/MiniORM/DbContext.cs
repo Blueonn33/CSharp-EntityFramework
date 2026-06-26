@@ -335,6 +335,18 @@ namespace MiniORM
             }
         }
 
+        private bool IsObjectValid(object entity)
+        {
+            ValidationContext validationContext = new ValidationContext(entity);
+
+            IList<ValidationResult> validationResults = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(entity, validationContext, validationResults,
+                validateAllProperties: true);
+
+            return isValid;
+        }
+
         public void Dispose()
         {
             connection.Dispose();
