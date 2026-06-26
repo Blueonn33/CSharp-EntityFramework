@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Data.SqlClient;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
@@ -252,6 +254,65 @@ namespace MiniORM
 
                 ReflectionHelper.ReplaceBackingField(entity, navCollectionPropInfo.Name, navCollectionEntities);
             }
+        }
+
+        public void SaveChanges()
+        {
+            IEnumerable<object?> dbSetInstances = this.dbSetProperties
+                .Select(kvp => kvp.Value.GetValue(this))
+                .ToArray();
+
+            foreach (IEnumerable<object> dbSetInstance in dbSetInstances)
+            {
+                bool hasInvalidEntitiesValidation = dbSetInstance.Any(entity => !IsObjectValid(entity));
+
+                if (hasInvalidEntitiesValidation)
+                {
+                    throw new InvalidOperationException("One or more entities are invalid");
+                }
+            }
+
+            using ConnectionManager connectionMgr = new ConnectionManager(this.connection);
+
+            using SqlTransaction transaction = this.connection.StartTransaction();
+
+            foreach (IEnumerable dbSetInstance in dbSetInstances)
+            {
+                if (dbSetInstance == null)
+                {
+                    continue;
+                }
+
+                MethodInfo persistMethod = typeof(DbContext)
+                                               .GetMethod(nameof(Persist),
+                                                   BindingFlags.Instance | BindingFlags.NonPublic)?
+                                               .MakeGenericMethod(
+                                                   dbSetInstance.GetType().GetGenericArguments().Single()) ??
+                                           throw new InvalidOperationException("A general error occured");
+
+                try
+                {
+                    try
+                    {
+                        persistMethod.Invoke(this, new object?[] { dbSetInstance });
+                    }
+                    catch (TargetInvocationException tie) when (tie.InnerException != null)
+                    {
+                        throw tie.InnerException;
+                    }
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        private void Persist<TEntity>(DbSet<TEntity> dbSetInstance)
+            where TEntity : class, new()
+        {
+
         }
 
         public void Dispose()
