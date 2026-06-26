@@ -195,6 +195,16 @@ namespace MiniORM
                 foreach (TEntity entity in dbSetInstance)
                 {
                     object? foreignKeyValue = foreignKeyPropInfo.GetValue(entity);
+
+                    if (foreignKeyValue == null)
+                    {
+                        continue;
+                    }
+
+                    object navigationPropertyEntityInstanceValue = ((IEnumerable<object>)navEntityDbSet)
+                        .Single(navEntity => navEntityPrimaryKeyProp.GetValue(navEntity)?.Equals(foreignKeyValue) ?? false);
+
+                    navPropertyInfo.SetValue(entity, navigationPropertyEntityInstanceValue);
                 }
             }
         }
@@ -203,7 +213,45 @@ namespace MiniORM
             where TEntity : class, new()
             where TCollection : class, new()
         {
+            Type entityType = typeof(TEntity);
+            Type navigationCollectionType = typeof(TCollection);
 
+            PropertyInfo[] navigationEntityForeignKeyProps = navigationCollectionType
+                .GetProperties()
+                .Where(pi => pi.HasAttribute<KeyAttribute>())
+                .ToArray();
+
+            PropertyInfo navigationEntityForeignKeyProp = navigationEntityForeignKeyProps.First();
+
+            PropertyInfo entityPrimaryKeyProp = entityType
+                .GetProperties()
+                .Single(pi => pi.HasAttribute<KeyAttribute>());
+
+            bool isManyToMany = navigationEntityForeignKeyProps.Length > 1;
+
+            if (isManyToMany)
+            {
+                navigationEntityForeignKeyProp = navigationCollectionType
+                    .GetProperties()
+                    .Single(pi => navigationCollectionType
+                        .GetProperty(pi.GetCustomAttribute<ForeignKeyAttribute>()!.Name)?.PropertyType == entityType);
+            }
+
+            DbSet<TCollection> navEntityDbSet =
+                (DbSet<TCollection>)(this.dbSetProperties[navigationCollectionType].GetValue(this) ??
+                                     throw new InvalidOperationException($"A general error"));
+
+            foreach (TEntity entity in dbSetInstance)
+            {
+                object entityPrimaryKeyValue = entityPrimaryKeyProp.GetValue(entity) ?? throw new InvalidOperationException();
+
+                IEnumerable<object> navCollectionEntities = navEntityDbSet
+                    .Where(navEntity =>
+                        navigationEntityForeignKeyProp.GetValue(navEntity)?.Equals(entityPrimaryKeyValue) ?? false)
+                    .ToArray();
+
+                ReflectionHelper.ReplaceBackingField(entity, navCollectionPropInfo.Name, navCollectionEntities);
+            }
         }
 
         public void Dispose()
