@@ -312,7 +312,27 @@ namespace MiniORM
         private void Persist<TEntity>(DbSet<TEntity> dbSetInstance)
             where TEntity : class, new()
         {
+            string tableName = GetTableName(typeof(TEntity));
+            string[] dbColumnNames = this.connection
+                .FetchColumnNames(tableName)
+                .ToArray();
 
+            if (dbSetInstance.ChangeTracker.Added.Any())
+            {
+                this.connection.InsertEntities(dbSetInstance.ChangeTracker.Added, tableName, dbColumnNames);
+            }
+
+            IEnumerable<TEntity> modifiedEntities = dbSetInstance.ChangeTracker.GetModifiedEntities(dbSetInstance);
+
+            if (modifiedEntities.Any())
+            {
+                this.connection.UpdateEntities(modifiedEntities, tableName, dbColumnNames);
+            }
+
+            if (dbSetInstance.ChangeTracker.Removed.Any())
+            {
+                this.connection.DeleteEntities(dbSetInstance.ChangeTracker.Removed, tableName, dbColumnNames);
+            }
         }
 
         public void Dispose()
