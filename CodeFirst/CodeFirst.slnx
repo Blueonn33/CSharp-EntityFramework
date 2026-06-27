@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="../CodeFirst.Data/CodeFirst.Data.csproj" />
+  <Project Path="CodeFirst.csproj" />
+</Solution>
