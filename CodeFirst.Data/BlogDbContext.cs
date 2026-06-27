@@ -33,7 +33,7 @@ namespace CodeFirst.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=;Database=BlogDb;TrustServerCertificate=true");
+                optionsBuilder.UseSqlServer("Server=.;Database=BlogDb;TrustServerCertificate=true");
             }
         }
     }
