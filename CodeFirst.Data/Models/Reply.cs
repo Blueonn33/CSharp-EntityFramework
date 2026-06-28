@@ -14,6 +14,15 @@ namespace CodeFirst.Data.Models
         }
 
         [Required]
+        [MaxLength(200)]
+        [Unicode(true)]
+        [Comment("The title of the reply.")]
+        public required string Title
+        {
+            get; set;
+        }
+
+        [Required]
         [MaxLength(1000)]
         [Unicode(true)]
         [Comment("The content of the reply.")]
