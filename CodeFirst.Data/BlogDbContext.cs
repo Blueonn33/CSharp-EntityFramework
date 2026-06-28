@@ -26,6 +26,19 @@ namespace CodeFirst.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Author>(entity =>
+            {
+                entity.ToTable("Authors");
+                entity.HasKey(e => e.Id);
+                entity.Property(a => a.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasComment("Primary key for the Author entity.");
+                entity.Property(a => a.Name)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasComment("The name of the author");
+            });
+
             base.OnModelCreating(modelBuilder);
         }
 
