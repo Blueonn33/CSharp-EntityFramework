@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodeFirst.Data.Models
 {
+    [Table("Authors")]
     [Comment("Represents an author of blog posts.")]
     public class Author
     {

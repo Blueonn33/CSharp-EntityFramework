@@ -35,6 +35,7 @@ namespace CodeFirst.Data
                     .HasComment("Primary key for the Author entity.");
                 entity.Property(a => a.Name)
                     .IsRequired()
+                    .IsUnicode(true)
                     .HasMaxLength(100)
                     .HasComment("The name of the author");
             });
