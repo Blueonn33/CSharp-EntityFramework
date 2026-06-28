@@ -26,6 +26,7 @@ namespace CodeFirst.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Fluent API
             modelBuilder.Entity<Author>(entity =>
             {
                 entity.ToTable("Authors");

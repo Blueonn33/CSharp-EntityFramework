@@ -1,2 +1,5 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using CodeFirst.Data;
+
+var context = new BlogDbContext();
+
+context.Database.EnsureCreated();
