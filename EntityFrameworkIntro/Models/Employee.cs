@@ -59,7 +59,7 @@ namespace SoftUni.Models
         //    get; set;
         //} = new HashSet<Project>();
 
-        public virtual ICollection<EmployeeProject> EmployeeProjects
+        public virtual ICollection<EmployeeProject> EmployeesProjects
         {
             get;
             set;

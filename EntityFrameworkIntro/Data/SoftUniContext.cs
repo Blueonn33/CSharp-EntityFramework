@@ -20,6 +20,10 @@ namespace SoftUni.Data
         public virtual DbSet<Employee> Employees { get; set; } = null!;
         public virtual DbSet<Project> Projects { get; set; } = null!;
         public virtual DbSet<Town> Towns { get; set; } = null!;
+        public virtual DbSet<EmployeeProject> EmployeesProjects
+        {
+            get; set;
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -146,12 +150,12 @@ namespace SoftUni.Data
 
                 entity
                     .HasOne(e => e.Employee) // Nav Property
-                    .WithMany(e => e.EmployeeProjects) // Nav Collection
+                    .WithMany(e => e.EmployeesProjects) // Nav Collection
                     .HasForeignKey(e => e.EmployeeId); // FK Property
 
                 entity
                     .HasOne(p => p.Project)
-                    .WithMany(p => p.ProjectEmployees)
+                    .WithMany(p => p.EmployeesProjects)
                     .HasForeignKey(p => p.ProjectId);
             });
         }

@@ -24,7 +24,7 @@ namespace SoftUni.Models
 
         //public virtual ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
 
-        public virtual ICollection<EmployeeProject> ProjectEmployees
+        public virtual ICollection<EmployeeProject> EmployeesProjects
         {
             get;
             set;
