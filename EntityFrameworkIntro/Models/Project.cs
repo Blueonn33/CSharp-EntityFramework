@@ -1,6 +1,6 @@
-﻿namespace EntityFrameworkIntro.Models
+﻿namespace SoftUni.Models
 {
-    public partial class Project
+    public class Project
     {
         public int ProjectId
         {

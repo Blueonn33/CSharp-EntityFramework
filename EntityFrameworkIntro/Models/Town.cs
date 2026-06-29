@@ -1,4 +1,4 @@
-﻿namespace EntityFrameworkIntro.Models
+﻿namespace SoftUni.Models
 {
     public partial class Town
     {

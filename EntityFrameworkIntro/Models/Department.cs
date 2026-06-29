@@ -1,6 +1,6 @@
-﻿namespace EntityFrameworkIntro.Models
+﻿namespace SoftUni.Models
 {
-    public partial class Department
+    public class Department
     {
         public int DepartmentId
         {

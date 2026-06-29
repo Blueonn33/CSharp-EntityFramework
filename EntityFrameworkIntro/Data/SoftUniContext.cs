@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SoftUni.Models;
 
-namespace EntityFrameworkIntro.Models
+namespace SoftUni.Data
 {
     public partial class SoftUniContext : DbContext
     {
