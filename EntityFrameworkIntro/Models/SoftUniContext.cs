@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace EntityFrameworkIntro.Data.Models
+namespace EntityFrameworkIntro.Models
 {
     public partial class SoftUniContext : DbContext
     {

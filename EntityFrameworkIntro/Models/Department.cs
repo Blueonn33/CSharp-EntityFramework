@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EntityFrameworkIntro.Data.Models
+namespace EntityFrameworkIntro.Models
 {
     public partial class Department
     {
