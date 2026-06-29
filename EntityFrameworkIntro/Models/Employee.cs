@@ -1,4 +1,6 @@
-﻿namespace SoftUni.Models
+﻿using EntityFrameworkIntro.Models;
+
+namespace SoftUni.Models
 {
     public class Employee
     {
@@ -52,9 +54,15 @@
             get; set;
         } = new HashSet<Employee>();
 
-        public virtual ICollection<Project> Projects
+        //public virtual ICollection<Project> Projects
+        //{
+        //    get; set;
+        //} = new HashSet<Project>();
+
+        public virtual ICollection<EmployeeProject> EmployeeProjects
         {
-            get; set;
-        } = new HashSet<Project>();
+            get;
+            set;
+        } = new HashSet<EmployeeProject>();
     }
 }
