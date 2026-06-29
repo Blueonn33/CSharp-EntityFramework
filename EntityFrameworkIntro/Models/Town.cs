@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EntityFrameworkIntro.Models
+﻿namespace EntityFrameworkIntro.Models
 {
     public partial class Town
     {
-        public Town()
+        public int TownId
         {
-            Addresses = new HashSet<Address>();
+            get; set;
         }
 
-        public int TownId { get; set; }
         public string Name { get; set; } = null!;
 
-        public virtual ICollection<Address> Addresses { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; } = new HashSet<Address>();
     }
 }
