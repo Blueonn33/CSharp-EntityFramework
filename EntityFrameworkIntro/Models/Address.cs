@@ -1,20 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EntityFrameworkIntro.Models
+﻿namespace EntityFrameworkIntro.Models
 {
-    public partial class Address
+    public class Address
     {
-        public Address()
+        public int AddressId
         {
-            Employees = new HashSet<Employee>();
+            get; set;
+        }
+        public string AddressText { get; set; } = null!;
+        public int? TownId
+        {
+            get; set;
         }
 
-        public int AddressId { get; set; }
-        public string AddressText { get; set; } = null!;
-        public int? TownId { get; set; }
+        public virtual Town? Town
+        {
+            get; set;
+        }
 
-        public virtual Town? Town { get; set; }
-        public virtual ICollection<Employee> Employees { get; set; }
+        /* Inline initialization is preferred for virtual navigation collections */
+        public virtual ICollection<Employee> Employees
+        {
+            get;
+            set;
+        } = new HashSet<Employee>();
     }
 }
