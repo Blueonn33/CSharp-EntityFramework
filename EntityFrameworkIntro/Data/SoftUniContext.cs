@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EntityFrameworkIntro.Models;
+using Microsoft.EntityFrameworkCore;
 using SoftUni.Models;
 
 namespace SoftUni.Data
@@ -110,23 +111,6 @@ namespace SoftUni.Data
                     .WithMany(p => p.InverseManager)
                     .HasForeignKey(d => d.ManagerId)
                     .HasConstraintName("FK_Employees_Employees");
-
-                entity.HasMany(d => d.Projects)
-                    .WithMany(p => p.Employees)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "EmployeesProject",
-                        l => l.HasOne<Project>().WithMany().HasForeignKey("ProjectId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeesProjects_Projects"),
-                        r => r.HasOne<Employee>().WithMany().HasForeignKey("EmployeeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_EmployeesProjects_Employees"),
-                        j =>
-                        {
-                            j.HasKey("EmployeeId", "ProjectId");
-
-                            j.ToTable("EmployeesProjects");
-
-                            j.IndexerProperty<int>("EmployeeId").HasColumnName("EmployeeID");
-
-                            j.IndexerProperty<int>("ProjectId").HasColumnName("ProjectID");
-                        });
             });
 
             modelBuilder.Entity<Project>(entity =>
@@ -151,6 +135,24 @@ namespace SoftUni.Data
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<EmployeeProject>(entity =>
+            {
+                entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
+                entity.Property(e => e.ProjectId).HasColumnName("ProjectID");
+
+                entity.HasKey(e => new { e.EmployeeId, e.ProjectId });
+
+                entity
+                    .HasOne(e => e.Employee) // Nav Property
+                    .WithMany(e => e.EmployeeProjects) // Nav Collection
+                    .HasForeignKey(e => e.EmployeeId); // FK Property
+
+                entity
+                    .HasOne(p => p.Project)
+                    .WithMany(p => p.ProjectEmployees)
+                    .HasForeignKey(p => p.ProjectId);
             });
         }
     }
