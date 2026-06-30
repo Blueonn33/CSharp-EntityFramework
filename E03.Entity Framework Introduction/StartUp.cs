@@ -68,7 +68,7 @@ public class StartUp
 
     public static string AddNewAddressToEmployee(SoftUniContext dbContext)
     {
-        StringBuilder sb = new();
+        //StringBuilder sb = new();
 
         // 1.
         //Address newAddress = new Address()
@@ -90,5 +90,14 @@ public class StartUp
         };
 
         dbContext.SaveChanges();
+
+        IEnumerable<string> employeesAddresses = dbContext.Employees
+            .Where(e => e.AddressId != null)
+            .OrderByDescending(e => e.AddressId)
+            .Select(e => e.Address!.AddressText)
+            .Take(10)
+            .ToArray();
+
+        return string.Join(Environment.NewLine, employeesAddresses);
     }
 }
