@@ -100,4 +100,28 @@ public class StartUp
 
         return string.Join(Environment.NewLine, employeesAddresses);
     }
+
+    public static string DeleteProjectById(SoftUniContext dbContext)
+    {
+        Project? projectIdToDelete = dbContext.Projects
+            .Find(2);
+
+        if (projectIdToDelete != null)
+        {
+            IQueryable<EmployeeProject> employeeProjectsToDelete = dbContext.EmployeesProjects
+                .Where(ep => ep.ProjectId == 2);
+
+            dbContext.EmployeesProjects.RemoveRange(employeeProjectsToDelete);
+
+            dbContext.Projects.Remove(projectIdToDelete);
+            dbContext.SaveChanges();
+        }
+
+        IEnumerable<string> top10ProjectNames = dbContext.Projects
+            .Select(p => p.Name)
+            .Take(10)
+            .ToArray();
+
+        return string.Join(Environment.NewLine, top10ProjectNames);
+    }
 }
