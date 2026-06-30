@@ -64,4 +64,9 @@ public class StartUp
 
         return sb.ToString().TrimEnd();
     }
+
+    public static string AddNewAddressToEmployee(SoftUniContext dbContext)
+    {
+
+    }
 }
