@@ -101,6 +101,48 @@ public class StartUp
         return string.Join(Environment.NewLine, employeesAddresses);
     }
 
+    public static string GetEmployeesInPeriod(SoftUniContext dbContext)
+    {
+        StringBuilder sb = new();
+
+        var top10EmployeesWithProjects = dbContext.Employees
+            .Select(e => new
+            {
+                e.FirstName,
+                e.LastName,
+                ManagerFirstName = e.Manager != null ? e.Manager.FirstName : null,
+                ManagerLastNam = e.Manager != null ? e.Manager.LastName : null,
+                Projects = e.EmployeesProjects
+                    .Select(ep => ep.Project)
+                    .Where(p => p.StartDate.Year >= 2001 && p.StartDate.Year <= 2003)
+                    .Select(p => new
+                    {
+                        p.Name,
+                        p.StartDate,
+                        p.EndDate
+                    })
+                    .ToArray()
+            })
+            .Take(10)
+            .ToArray();
+
+        foreach (var e in top10EmployeesWithProjects)
+        {
+            sb.AppendLine($"{e.FirstName} {e.LastName} - Manager: {e.ManagerFirstName} {e.ManagerLastNam}");
+
+            foreach (var p in e.Projects)
+            {
+                string startDateFormatted = p.StartDate.ToString("M/d/yyyy h:mm:ss tt");
+                string endDateFormatted =
+                    p.EndDate.HasValue ? p.EndDate.Value.ToString("M/d/yyyy h:mm:ss tt") : "not finished";
+                sb.AppendLine($"--{p.Name} - {startDateFormatted} - " +
+                              $"{endDateFormatted}");
+            }
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
     public static string DeleteProjectById(SoftUniContext dbContext)
     {
         Project? projectIdToDelete = dbContext.Projects
