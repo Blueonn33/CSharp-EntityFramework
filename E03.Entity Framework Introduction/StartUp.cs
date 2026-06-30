@@ -1,4 +1,5 @@
 ﻿using SoftUni.Data;
+using SoftUni.Models;
 using System.Text;
 
 namespace SoftUni;
@@ -67,6 +68,27 @@ public class StartUp
 
     public static string AddNewAddressToEmployee(SoftUniContext dbContext)
     {
+        StringBuilder sb = new();
 
+        // 1.
+        //Address newAddress = new Address()
+        //{
+        //    AddressText = "Vitoshka 15",
+        //    TownId = 4
+        //};
+
+        //dbContext.Addresses.Add(newAddress);
+
+        Employee nakovEmployee = dbContext.Employees
+            .First(e => e.LastName == "Nakov");
+
+        // 2.
+        nakovEmployee.Address = new Address()
+        {
+            AddressText = "Vitoshka 15",
+            TownId = 4
+        };
+
+        dbContext.SaveChanges();
     }
 }
