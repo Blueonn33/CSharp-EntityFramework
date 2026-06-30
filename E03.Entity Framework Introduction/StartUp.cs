@@ -1,4 +1,5 @@
 ﻿using SoftUni.Data;
+using System.Text;
 
 namespace SoftUni;
 
@@ -15,6 +16,8 @@ public class StartUp
 
     public static string GetEmployeesFullInformation(SoftUniContext dbContext)
     {
+        StringBuilder sb = new();
+
         var employees = dbContext.Employees
             .OrderBy(e => e.EmployeeId)
             .Select(e => new
@@ -27,6 +30,11 @@ public class StartUp
             })
             .ToArray();
 
-        return "Employees fetched";
+        foreach (var e in employees)
+        {
+            sb.AppendLine($"{e.FirstName} {e.LastName} {e.MiddleName} {e.JobTitle} {e.Salary:f2}");
+        }
+
+        return sb.ToString().TrimEnd();
     }
 }
