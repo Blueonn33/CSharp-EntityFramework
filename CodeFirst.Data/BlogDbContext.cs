@@ -27,19 +27,25 @@ namespace CodeFirst.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Fluent API
-            modelBuilder.Entity<Author>(entity =>
-            {
-                entity.ToTable("Authors");
-                entity.HasKey(e => e.Id);
-                entity.Property(a => a.Id)
-                    .ValueGeneratedOnAdd()
-                    .HasComment("Primary key for the Author entity.");
-                entity.Property(a => a.Name)
-                    .IsRequired()
-                    .IsUnicode(true)
-                    .HasMaxLength(100)
-                    .HasComment("The name of the author");
-            });
+            //modelBuilder.Entity<Author>(entity =>
+            //{
+            //    entity.ToTable("Authors");
+            //    entity.HasKey(e => e.Id);
+            //    entity.Property(a => a.Id)
+            //        .ValueGeneratedOnAdd()
+            //        .HasComment("Primary key for the Author entity.");
+            //    entity.Property(a => a.Name)
+            //        .IsRequired()
+            //        .IsUnicode(true)
+            //        .HasMaxLength(100)
+            //        .HasComment("The name of the author");
+            //});
+
+            modelBuilder.Entity<Reply>()
+                .HasOne(r => r.Post)
+                .WithMany(p => p.Replies)
+                .HasForeignKey(r => r.PostId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -38,6 +38,16 @@ namespace CodeFirst.Data.Models
             get; set;
         }
 
+        public DateTime CreatedOn
+        {
+            get; set;
+        }
+
+        public DateTime UpdatedOn
+        {
+            get; set;
+        }
+
         [ForeignKey(nameof(AuthorId))]
         public Author Author
         {
