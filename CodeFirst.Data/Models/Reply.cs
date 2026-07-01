@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodeFirst.Data.Models
 {
@@ -34,6 +35,8 @@ namespace CodeFirst.Data.Models
         {
             get; set;
         }
+
+        [ForeignKey(nameof(PostId))]
         public Post Post { get; set; } = null!;
     }
 }

@@ -6,6 +6,8 @@ namespace CodeFirst.Data.Models
 {
     [Comment("Represents a blog post in the system.")]
     [Index(nameof(Title))]
+    //[PrimaryKey(nameof(Id), nameof(Title))] -- Composite PK
+    //[PrimaryKey(nameof(Id))] -- PK
     public class Post
     {
         [Key]
