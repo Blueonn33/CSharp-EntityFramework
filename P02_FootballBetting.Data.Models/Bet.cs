@@ -20,5 +20,15 @@ namespace P02_FootballBetting.Data.Models
         {
             get; set;
         }
+
+        [Column(TypeName = "DATETIME2")]
+        public DateTime DateTime
+        {
+            get; set;
+        }
+
+        public int UserId { get; set; }
+
+        public int GameId { get; set; }
     }
 }
