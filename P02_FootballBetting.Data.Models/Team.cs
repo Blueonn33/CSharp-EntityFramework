@@ -52,11 +52,15 @@ namespace P02_FootballBetting.Data.Models
         {
             get; set;
         }
+
         public virtual Color SecondaryKitColor { get; set; } = null!;
 
+        [ForeignKey(nameof(Town))]
         public int TownId
         {
             get; set;
         }
+
+        public virtual Town Town { get; set; } = null!;
     }
 }
