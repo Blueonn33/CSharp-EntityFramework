@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace P02_FootballBetting.Data.Models
 {
@@ -19,7 +20,21 @@ namespace P02_FootballBetting.Data.Models
         public string Name { get; set; } = null!;
 
         [Required]
-
+        [MaxLength(128)]
         public string Password { get; set; } = null!;
+
+        [Required]
+        [MaxLength(254)]
+        public string Email
+        {
+            get;
+            set;
+        } = null!;
+
+        [Column(TypeName = "DECIMAL(12, 2)")]
+        public decimal Balance
+        {
+            get; set;
+        }
     }
 }
