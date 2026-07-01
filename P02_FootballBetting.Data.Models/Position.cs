@@ -17,5 +17,11 @@ namespace P02_FootballBetting.Data.Models
             get;
             set;
         } = null!;
+
+        public virtual ICollection<Player> Players
+        {
+            get; set;
+        }
+            = new HashSet<Player>();
     }
 }

@@ -22,10 +22,13 @@ namespace P02_FootballBetting.Data.Models
 
         public bool IsInjured { get; set; } = false;
 
+        [ForeignKey(nameof(Position))]
         public int PositionId
         {
             get; set;
         }
+
+        public virtual Position Position { get; set; } = null!;
 
         [ForeignKey(nameof(Team))]
         public int? TeamId
