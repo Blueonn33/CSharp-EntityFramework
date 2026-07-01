@@ -36,5 +36,11 @@ namespace P02_FootballBetting.Data.Models
         {
             get; set;
         }
+
+        public virtual ICollection<Bet> Bets
+        {
+            get; set;
+        }
+            = new HashSet<Bet>();
     }
 }
