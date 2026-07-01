@@ -62,5 +62,17 @@ namespace P02_FootballBetting.Data.Models
         }
 
         public virtual Town Town { get; set; } = null!;
+
+        [InverseProperty(nameof(Game.HomeTeam))]
+        public virtual ICollection<Game> HomeGames
+        {
+            get; set;
+        } = new HashSet<Game>();
+
+        [InverseProperty(nameof(Game.AwayTeam))]
+        public virtual ICollection<Game> AwayGames
+        {
+            get; set;
+        } = new HashSet<Game>();
     }
 }

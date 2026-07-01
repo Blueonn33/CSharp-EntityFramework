@@ -11,15 +11,29 @@ namespace P02_FootballBetting.Data.Models
             get; set;
         }
 
+        [ForeignKey(nameof(HomeTeam))]
         public int HomeTeamId
         {
             get; set;
         }
 
+        public virtual Team HomeTeam
+        {
+            get;
+            set;
+        } = null!;
+
+        [ForeignKey(nameof(AwayTeam))]
         public int AwayTeamId
         {
             get; set;
         }
+
+        public virtual Team AwayTeam
+        {
+            get;
+            set;
+        } = null!;
 
         public byte HomeTeamGoals
         {
@@ -55,6 +69,9 @@ namespace P02_FootballBetting.Data.Models
         }
 
         [MaxLength(7)]
-        public string? Result { get; set; }
+        public string? Result
+        {
+            get; set;
+        }
     }
 }
