@@ -14,6 +14,14 @@ namespace P02_FootballBetting.Data.Models
         [MaxLength(85)]
         public string Name { get; set; } = null!;
 
-        public int CountryId { get; set; }
+        public int CountryId
+        {
+            get; set;
+        }
+
+        public virtual ICollection<Team> Teams
+        {
+            get; set;
+        } = new HashSet<Team>();
     }
 }
