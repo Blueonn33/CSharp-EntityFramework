@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="../P02_FootballBetting.Data.Models/P02_FootballBetting.Data.Models.csproj" />
+  <Project Path="../P02_FootballBetting.Data/P02_FootballBetting.Data.csproj" />
   <Project Path="P02_FootballBetting.csproj" />
 </Solution>
