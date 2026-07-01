@@ -40,12 +40,8 @@ namespace CodeFirst.Data
             //        .HasMaxLength(100)
             //        .HasComment("The name of the author");
             //});
-
-            modelBuilder.Entity<Reply>()
-                .HasOne(r => r.Post)
-                .WithMany(p => p.Replies)
-                .HasForeignKey(r => r.PostId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.ApplyConfiguration(new Configurations.PostConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.ReplyConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
