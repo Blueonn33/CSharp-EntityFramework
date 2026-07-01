@@ -6,14 +6,12 @@ namespace CodeFirst.Data.Configurations
 {
     internal class PostConfiguration : IEntityTypeConfiguration<Post>
     {
-        public void Configure(EntityTypeBuilder<Post> modelBuilder)
+        public void Configure(EntityTypeBuilder<Post> builder)
         {
-            modelBuilder.Entity<Post>()
-                .Property(p => p.CreatedOn)
+            builder.Property(p => p.CreatedOn)
                 .HasDefaultValueSql("GETDATE()");
 
-            modelBuilder.Entity<Post>()
-                .Property(p => p.UpdatedOn)
+            builder.Property(p => p.UpdatedOn)
                 .IsRequired()
                 .ValueGeneratedOnAddOrUpdate();
         }
