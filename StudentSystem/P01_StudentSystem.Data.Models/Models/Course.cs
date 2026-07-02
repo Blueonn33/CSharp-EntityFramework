@@ -42,5 +42,23 @@ namespace P01_StudentSystem.Data.Models.Models
         {
             get; set;
         }
+
+        public virtual ICollection<StudentCourse> StudentsCourses
+        {
+            get; set;
+        }
+            = new HashSet<StudentCourse>();
+
+        public virtual ICollection<Resource> Resources
+        {
+            get; set;
+        }
+            = new HashSet<Resource>();
+
+        public virtual ICollection<Homework> Homeworks
+        {
+            get; set;
+        }
+            = new HashSet<Homework>();
     }
 }
