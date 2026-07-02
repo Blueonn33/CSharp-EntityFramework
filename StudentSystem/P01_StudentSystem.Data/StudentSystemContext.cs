@@ -74,6 +74,9 @@ namespace P01_StudentSystem.Data
                     .WithOne(s => s.Student)
                     .HasForeignKey(s => s.HomeworkId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity
+                    .Property(s => s.Name).IsUnicode(true);
             });
 
             modelBuilder.Entity<Course>(entity =>
@@ -89,6 +92,18 @@ namespace P01_StudentSystem.Data
                     .WithOne(h => h.Course)
                     .HasForeignKey(h => h.HomeworkId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+                entity
+                    .Property(c => c.Name).IsUnicode(true);
+
+                entity
+                    .Property(c => c.Description).IsUnicode(true);
+            });
+
+            modelBuilder.Entity<Resource>(entity =>
+            {
+                entity
+                    .Property(r => r.Name).IsUnicode(true);
             });
         }
     }
