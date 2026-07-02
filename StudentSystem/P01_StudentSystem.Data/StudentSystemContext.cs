@@ -43,9 +43,53 @@ namespace P01_StudentSystem.Data
             set;
         } = null!;
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder
+                    .UseSqlServer("Server=PREDATOR\\SQLEXPRESS;Database=StudentSystem;Trusted_Connection=True;");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<StudentCourse>(entity =>
+            {
+                entity.HasKey(e => new
+                {
+                    e.StudentId,
+                    e.CourseId
+                });
+            });
+
+            modelBuilder.Entity<Student>(entity =>
+            {
+                entity
+                    .HasMany(s => s.Homeworks)
+                    .WithOne(s => s.Student)
+                    .HasForeignKey(s => s.HomeworkId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Course>(entity =>
+            {
+                entity
+                    .HasMany(c => c.Resources)
+                    .WithOne(r => r.Course)
+                    .HasForeignKey(r => r.ResourceId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity
+                    .HasMany(c => c.Homeworks)
+                    .WithOne(h => h.Course)
+                    .HasForeignKey(h => h.HomeworkId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }
