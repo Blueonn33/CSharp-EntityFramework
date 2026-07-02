@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="P01_StudentSystem.Data.Models/P01_StudentSystem.Data.Models.csproj" />
+  <Project Path="P01_StudentSystem.Data/P01_StudentSystem.Data.csproj" />
+  <Project Path="P01_StudentSystem/P01_StudentSystem.csproj" />
+</Solution>
