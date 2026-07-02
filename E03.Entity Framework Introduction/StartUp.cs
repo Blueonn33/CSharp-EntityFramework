@@ -298,7 +298,6 @@ public class StartUp
     }
 
     // -- 12
-
     public static string IncreaseSalaries(SoftUniContext dbContext)
     {
         StringBuilder sb = new();
@@ -319,6 +318,32 @@ public class StartUp
         foreach (var e in employees)
         {
             sb.AppendLine($"{e.FirstName} {e.LastName} (${e.Salary:f2})");
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
+    // -- 13
+    public static string GetEmployeesByFirstNameStartingWithSa(SoftUniContext dbContext)
+    {
+        StringBuilder sb = new();
+
+        var employees = dbContext.Employees
+            .Where(e => e.FirstName.ToLower().StartsWith("sa"))
+            .OrderBy(e => e.FirstName)
+            .ThenBy(e => e.LastName)
+            .Select(e => new
+            {
+                e.FirstName,
+                e.LastName,
+                e.JobTitle,
+                e.Salary
+            })
+            .ToList();
+
+        foreach (var e in employees)
+        {
+            sb.AppendLine($"{e.FirstName} {e.LastName} - {e.JobTitle} - (${e.Salary:f2})");
         }
 
         return sb.ToString().TrimEnd();
@@ -347,5 +372,35 @@ public class StartUp
             .ToArray();
 
         return string.Join(Environment.NewLine, top10ProjectNames);
+    }
+
+    // -- 15
+    public static string RemoveTown(SoftUniContext dbContext)
+    {
+        const string townToDelete = "Seattle";
+
+        var addressesToDelete = dbContext.Addresses
+            .Where(a => a.Town.Name == townToDelete)
+            .ToList();
+
+        int numberOfAddresses = addressesToDelete.Count;
+
+        foreach (var a in addressesToDelete)
+        {
+            foreach (var e in a.Employees)
+            {
+                e.AddressId = null;
+            }
+        }
+
+        var townToDeleteId = dbContext.Towns
+            .Where(t => t.Name == townToDelete)
+            .First();
+
+        dbContext.Addresses.RemoveRange(addressesToDelete);
+        dbContext.Towns.Remove(townToDeleteId);
+        dbContext.SaveChanges();
+
+        return $"{numberOfAddresses} addresses in {townToDelete} were deleted";
     }
 }
