@@ -170,8 +170,34 @@ public class StartUp
         return sb.ToString().TrimEnd();
     }
 
-
     // -- 8
+
+    public static string GetAddressesByTown(SoftUniContext dbContext)
+    {
+        StringBuilder sb = new();
+
+        var addresses = dbContext.Addresses
+            .Select(a => new
+            {
+                a.AddressText,
+                EmployeeCount = a.Employees.Count,
+                TownName = a.Town.Name,
+            })
+            .Take(10)
+            .OrderByDescending(e => e.EmployeeCount)
+            .ThenBy(t => t.TownName)
+            .ThenBy(a => a.AddressText)
+            .ToList();
+
+        foreach (var a in addresses)
+        {
+            sb.AppendLine($"{a.AddressText}, {a.TownName} - {a.EmployeeCount} employees");
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
+    // -- 14
     public static string DeleteProjectById(SoftUniContext dbContext)
     {
         Project? projectIdToDelete = dbContext.Projects
