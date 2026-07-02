@@ -18,7 +18,10 @@ public class Startup
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            throw;
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine(ex.InnerException.Message);
+            }
         }
     }
 }
