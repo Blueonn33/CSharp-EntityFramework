@@ -197,6 +197,36 @@ public class StartUp
         return sb.ToString().TrimEnd();
     }
 
+    // -- 9
+
+    public static string GetEmployee147(SoftUniContext dbContext)
+    {
+        var sb = new StringBuilder();
+
+        var employee = dbContext.Employees
+            .Where(e => e.EmployeeId == 147)
+            .Select(e => new
+            {
+                e.FirstName,
+                e.LastName,
+                e.JobTitle,
+                Projects = e.EmployeesProjects
+                    .Select(ep => ep.Project.Name)
+                    .OrderBy(p => p)
+                    .ToList()
+            })
+            .FirstOrDefault();
+
+        sb.AppendLine($"{employee.FirstName} {employee.LastName} - {employee.JobTitle}");
+
+        foreach (var p in employee.Projects)
+        {
+            sb.AppendLine(p);
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
     // -- 14
     public static string DeleteProjectById(SoftUniContext dbContext)
     {
