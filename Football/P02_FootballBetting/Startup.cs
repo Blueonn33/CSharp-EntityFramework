@@ -14,6 +14,8 @@ public class Startup
 
             // Try to create the database from the latest Code First model
             dbContext.Database.EnsureCreated();
+
+            Console.WriteLine("Database created from Code-First model");
         }
         catch (Exception ex)
         {
