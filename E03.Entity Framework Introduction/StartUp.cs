@@ -227,6 +227,46 @@ public class StartUp
         return sb.ToString().TrimEnd();
     }
 
+    // -- 10
+    public static string GetDepartmentsWithMoreThan5Employees(SoftUniContext dbContext)
+    {
+        StringBuilder sb = new();
+
+        var departments = dbContext.Departments
+            .Where(d => d.Employees.Count > 5)
+            .OrderBy(d => d.Employees.Count)
+            .ThenBy(d => d.Name)
+            .Select(d => new
+            {
+                DepartmentName = d.Name,
+                ManagerFirstName = d.Manager.FirstName,
+                ManagerLastName = d.Manager.LastName,
+                Employees = d.Employees
+                    .Select(e => new
+                    {
+                        EmployeeFirstName = e.FirstName,
+                        EmployeeLastName = e.LastName,
+                        EmployeeJob = e.JobTitle
+                    })
+                    .OrderBy(e => e.EmployeeFirstName)
+                    .ThenBy(e => e.EmployeeLastName)
+                    .ToList()
+            })
+            .ToList();
+
+        foreach (var d in departments)
+        {
+            sb.AppendLine($"{d.DepartmentName} - {d.ManagerFirstName} {d.ManagerLastName}");
+
+            foreach (var e in d.Employees)
+            {
+                sb.AppendLine($"{e.EmployeeFirstName} {e.EmployeeLastName} - {e.EmployeeJob}");
+            }
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
     // -- 14
     public static string DeleteProjectById(SoftUniContext dbContext)
     {
