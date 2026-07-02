@@ -4,33 +4,45 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace P01_StudentSystem.Data.Models.Models
 {
-    public class Resource
+    public class Homework
     {
         [Key]
-        public int ResourceId
+        public int HomeworkId
         {
             get; set;
         }
 
         [Required]
-        [MaxLength(50)]
-        public string Name
+        public string Content
         {
             get;
             set;
         } = null!;
+
+        public virtual ContentType ContentType
+        {
+            get;
+            set;
+        }
 
         [Required]
-        public string Url
-        {
-            get;
-            set;
-        } = null!;
-
-        public virtual ResourceType ResourceType
+        [Column(TypeName = "DATETIME2")]
+        public DateTime SubmissionTime
         {
             get; set;
         }
+
+        [ForeignKey(nameof(Student))]
+        public int StudentId
+        {
+            get; set;
+        }
+
+        public virtual Student Student
+        {
+            get; set;
+        }
+            = null!;
 
         [ForeignKey(nameof(Course))]
         public int CourseId
