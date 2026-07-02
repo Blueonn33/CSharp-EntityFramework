@@ -297,6 +297,33 @@ public class StartUp
         return sb.ToString().TrimEnd();
     }
 
+    // -- 12
+
+    public static string IncreaseSalaries(SoftUniContext dbContext)
+    {
+        StringBuilder sb = new();
+
+        IQueryable<Employee> employees = dbContext.Employees
+            .Where(e => e.Department.Name == "Engineering" || e.Department.Name == "Tool Design" ||
+                        e.Department.Name == "Marketing" || e.Department.Name == "Information Services")
+            .OrderBy(e => e.FirstName)
+            .ThenBy(e => e.LastName);
+
+        foreach (var e in employees)
+        {
+            e.Salary *= 1.12m;
+        }
+
+        dbContext.SaveChanges();
+
+        foreach (var e in employees)
+        {
+            sb.AppendLine($"{e.FirstName} {e.LastName} (${e.Salary:f2})");
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
     // -- 14
     public static string DeleteProjectById(SoftUniContext dbContext)
     {
