@@ -1,5 +1,6 @@
 ﻿using SoftUni.Data;
 using SoftUni.Models;
+using System.Globalization;
 using System.Text;
 
 namespace SoftUni;
@@ -10,7 +11,7 @@ public class StartUp
     {
         SoftUniContext dbContext = new();
 
-        string result = GetEmployeesFullInformation(dbContext);
+        string result = GetLatestProjects(dbContext);
 
         Console.WriteLine(result);
     }
@@ -262,6 +263,35 @@ public class StartUp
             {
                 sb.AppendLine($"{e.EmployeeFirstName} {e.EmployeeLastName} - {e.EmployeeJob}");
             }
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
+    // -- 11
+    public static string GetLatestProjects(SoftUniContext dbContext)
+    {
+        StringBuilder sb = new();
+
+        var latestTenProjects = dbContext.Projects
+            .OrderByDescending(p => p.StartDate)
+            .Take(10)
+            .Select(p => new
+            {
+                p.Name,
+                p.Description,
+                p.StartDate
+            })
+            .ToList()
+            .OrderBy(p => p.Name);
+
+        foreach (var p in latestTenProjects)
+        {
+            sb.AppendLine(p.Name);
+            sb.AppendLine(p.Description);
+            sb.AppendLine(
+                p.StartDate.ToString("M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)
+            );
         }
 
         return sb.ToString().TrimEnd();
