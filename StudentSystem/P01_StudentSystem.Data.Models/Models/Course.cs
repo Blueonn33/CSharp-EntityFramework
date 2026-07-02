@@ -12,6 +12,7 @@ namespace P01_StudentSystem.Data.Models.Models
         }
 
         [Required]
+        [MaxLength(80)]
         public string Name
         {
             get; set;
