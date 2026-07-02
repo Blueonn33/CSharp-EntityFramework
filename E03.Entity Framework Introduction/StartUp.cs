@@ -15,6 +15,7 @@ public class StartUp
         Console.WriteLine(result);
     }
 
+    // -- 3
     public static string GetEmployeesFullInformation(SoftUniContext dbContext)
     {
         StringBuilder sb = new();
@@ -39,6 +40,30 @@ public class StartUp
         return sb.ToString().TrimEnd();
     }
 
+    // -- 4
+    public static string GetEmployeesWithSalaryOver50000(SoftUniContext dbContext)
+    {
+        StringBuilder sb = new();
+        var employees = dbContext.Employees
+            .Select(e => new
+            {
+                e.FirstName,
+                e.Salary
+            })
+            .Where(e => e.Salary > 50000)
+            .OrderBy(e => e.FirstName)
+            .ToList();
+        ;
+
+        foreach (var e in employees)
+        {
+            sb.AppendLine($"{e.FirstName} - {e.Salary:f2}");
+        }
+
+        return sb.ToString().TrimEnd();
+    }
+
+    // -- 5
     public static string GetEmployeesFromResearchAndDevelopment(SoftUniContext dbContext)
     {
         const string rndDepartmentName = "Research and Development";
@@ -66,6 +91,7 @@ public class StartUp
         return sb.ToString().TrimEnd();
     }
 
+    // -- 6
     public static string AddNewAddressToEmployee(SoftUniContext dbContext)
     {
         //StringBuilder sb = new();
@@ -101,6 +127,7 @@ public class StartUp
         return string.Join(Environment.NewLine, employeesAddresses);
     }
 
+    // -- 7
     public static string GetEmployeesInPeriod(SoftUniContext dbContext)
     {
         StringBuilder sb = new();
@@ -143,6 +170,8 @@ public class StartUp
         return sb.ToString().TrimEnd();
     }
 
+
+    // -- 8
     public static string DeleteProjectById(SoftUniContext dbContext)
     {
         Project? projectIdToDelete = dbContext.Projects
