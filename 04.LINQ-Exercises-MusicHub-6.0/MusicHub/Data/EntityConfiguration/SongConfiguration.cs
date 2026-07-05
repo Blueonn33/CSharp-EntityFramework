@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MusicHub.Data.Models;
+using static MusicHub.Common.EntityValidation;
 
 namespace MusicHub.Data.EntityConfiguration
 {
@@ -12,9 +13,7 @@ namespace MusicHub.Data.EntityConfiguration
 
             entity.Property(s => s.Name)
                 .IsRequired()
-                .HasMaxLength(20);
-
-
+                .HasMaxLength(SongNameMaxLength);
         }
     }
 }
