@@ -39,6 +39,8 @@ namespace MusicHub.Data.Models
             get; set;
         }
 
+        public virtual Writer Writer { get; set; } = null!;
+
         public decimal Price
         {
             get; set;

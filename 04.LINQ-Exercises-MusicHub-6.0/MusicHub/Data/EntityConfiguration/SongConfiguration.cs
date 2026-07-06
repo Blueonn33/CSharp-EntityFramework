@@ -17,6 +17,11 @@ namespace MusicHub.Data.EntityConfiguration
 
             entity.Property(s => s.Price)
                 .HasColumnType(SongPriceColumnType);
+
+            entity.HasOne(s => s.Writer)
+                .WithMany(w => w.Songs)
+                .HasForeignKey(s => s.WriterId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

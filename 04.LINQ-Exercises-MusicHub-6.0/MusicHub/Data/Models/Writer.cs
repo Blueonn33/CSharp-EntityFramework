@@ -13,5 +13,7 @@
         {
             get; set;
         }
+
+        public virtual ICollection<Song> Songs { get; set; } = new HashSet<Song>();
     }
 }
