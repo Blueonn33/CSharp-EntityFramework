@@ -7,9 +7,13 @@ namespace MusicHub.Data.EntityConfiguration
     public class SongPerformerConfiguration : IEntityTypeConfiguration<SongPerformer>
 
     {
-        public void Configure(EntityTypeBuilder<SongPerformer> builder)
+        public void Configure(EntityTypeBuilder<SongPerformer> entity)
         {
-            throw new NotImplementedException();
+            entity.HasKey(sp => new
+            {
+                sp.SongId,
+                sp.PerformerId
+            });
         }
     }
 }
