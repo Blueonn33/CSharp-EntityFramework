@@ -34,10 +34,20 @@ namespace MusicHub.Data.Models
             get; set;
         }
 
-        public int WriterId { get; set; }
+        public int WriterId
+        {
+            get; set;
+        }
 
-        public decimal Price { get; set; }
+        public decimal Price
+        {
+            get; set;
+        }
 
-
+        public virtual ICollection<SongPerformer> SongPerformers
+        {
+            get;
+            set;
+        } = new HashSet<SongPerformer>();
     }
 }
