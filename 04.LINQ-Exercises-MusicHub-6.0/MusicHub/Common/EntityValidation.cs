@@ -18,5 +18,9 @@
         public const int ProducerNameMaxLength = 30;
         public const int ProducerPseudonymMaxLength = 30;
         public const int ProducerPhoneNumberMaxLength = 15;
+
+        // Writer
+        public const int WriterNameMaxLength = 20;
+        public const int WriterPseudonymMaxLength = 20;
     }
 }
