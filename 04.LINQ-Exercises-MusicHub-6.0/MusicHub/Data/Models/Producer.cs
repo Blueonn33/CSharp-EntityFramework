@@ -18,5 +18,11 @@
         {
             get; set;
         }
+
+        public virtual ICollection<Album> Albums
+        {
+            get;
+            set;
+        } = new HashSet<Album>();
     }
 }

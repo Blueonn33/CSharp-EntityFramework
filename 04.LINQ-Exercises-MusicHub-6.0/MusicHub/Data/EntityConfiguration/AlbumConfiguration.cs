@@ -16,6 +16,11 @@ namespace MusicHub.Data.EntityConfiguration
                 .HasMaxLength(AlbumNameMaxLength);
 
             entity.Ignore(a => a.Price);
+
+            entity.HasOne(a => a.Producer)
+                .WithMany(p => p.Albums)
+                .HasForeignKey(a => a.ProducerId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -22,6 +22,11 @@ namespace MusicHub.Data.EntityConfiguration
                 .WithMany(w => w.Songs)
                 .HasForeignKey(s => s.WriterId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(s => s.Album)
+                .WithMany(a => a.Songs)
+                .HasForeignKey(s => s.AlbumId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

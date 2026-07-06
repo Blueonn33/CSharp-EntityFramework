@@ -34,6 +34,11 @@ namespace MusicHub.Data.Models
             get; set;
         }
 
+        public virtual Album? Album
+        {
+            get; set;
+        }
+
         public int WriterId
         {
             get; set;
