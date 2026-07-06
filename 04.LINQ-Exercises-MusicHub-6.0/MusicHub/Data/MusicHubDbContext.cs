@@ -1,4 +1,5 @@
 ﻿using MusicHub.Data.EntityConfiguration;
+using MusicHub.Data.Models;
 
 namespace MusicHub.Data
 {
@@ -15,6 +16,40 @@ namespace MusicHub.Data
         {
         }
 
+        public DbSet<Album> Albums
+        {
+            get;
+            set;
+        } = null!;
+
+        public DbSet<Performer> Performers
+        {
+            get;
+            set;
+        } = null!;
+
+        public DbSet<Producer> Producers
+        {
+            get; set;
+        } = null!;
+
+        public DbSet<Song> Songs
+        {
+            get; set;
+        } = null!;
+
+        public DbSet<SongPerformer> SongsPerformers
+        {
+            get;
+            set;
+        } = null!;
+
+        public DbSet<Writer> Writers
+        {
+            get;
+            set;
+        } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -24,13 +59,23 @@ namespace MusicHub.Data
             }
         }
 
+        // I. При малко на брой entity configurations
+        //protected override void OnModelCreating(ModelBuilder builder)
+        //{
+        //    builder.ApplyConfiguration(new AlbumConfiguration());
+        //    builder.ApplyConfiguration(new SongConfiguration());
+        //    builder.ApplyConfiguration(new WriterConfiguration());
+        //    builder.ApplyConfiguration(new PerformerConfiguration());
+        //    builder.ApplyConfiguration(new SongPerformerConfiguration());
+        //}
+
+        // II. При по-голям брой entity configurations
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfiguration(new AlbumConfiguration());
-            builder.ApplyConfiguration(new SongConfiguration());
-            builder.ApplyConfiguration(new WriterConfiguration());
-            builder.ApplyConfiguration(new PerformerConfiguration());
-            builder.ApplyConfiguration(new SongPerformerConfiguration());
+            base.OnModelCreating(builder);
+
+
+            builder.ApplyConfigurationsFromAssembly(typeof(AlbumConfiguration).Assembly);   // избираме случайна конфигурация, за да вземем проекта, в който се намират всички
         }
     }
 }
