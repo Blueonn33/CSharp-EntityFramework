@@ -15,21 +15,24 @@
         }
 
         public decimal Price
-        {
-            get; set;
-        }
+            => this.Songs.Sum(s => s.Price);
 
         public int? ProducerId
         {
             get; set;
         }
 
-        public virtual Producer? Producer { get; set; }
+        public virtual Producer? Producer
+        {
+            get; set;
+        }
 
         public virtual ICollection<Song> Songs
         {
             get;
             set;
         } = new HashSet<Song>();
+
+
     }
 }
