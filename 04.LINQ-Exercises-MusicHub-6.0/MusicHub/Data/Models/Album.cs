@@ -9,7 +9,7 @@
 
         public string Name { get; set; } = null!;
 
-        public DateOnly ReleaseDate
+        public DateTime ReleaseDate
         {
             get; set;
         }

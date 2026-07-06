@@ -16,35 +16,35 @@ namespace MusicHub.Data
         {
         }
 
-        public DbSet<Album> Albums
+        public virtual DbSet<Album> Albums
         {
             get;
             set;
         } = null!;
 
-        public DbSet<Performer> Performers
+        public virtual DbSet<Performer> Performers
         {
             get;
             set;
         } = null!;
 
-        public DbSet<Producer> Producers
+        public virtual DbSet<Producer> Producers
         {
             get; set;
         } = null!;
 
-        public DbSet<Song> Songs
+        public virtual DbSet<Song> Songs
         {
             get; set;
         } = null!;
 
-        public DbSet<SongPerformer> SongsPerformers
+        public virtual DbSet<SongPerformer> SongsPerformers
         {
             get;
             set;
         } = null!;
 
-        public DbSet<Writer> Writers
+        public virtual DbSet<Writer> Writers
         {
             get;
             set;

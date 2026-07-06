@@ -15,6 +15,9 @@ namespace MusicHub.Data.EntityConfiguration
                 .IsRequired()
                 .HasMaxLength(SongNameMaxLength);
 
+            entity.Property(s => s.CreatedOn)
+                .HasColumnType(SongCreatedOnColumnType);
+
             entity.Property(s => s.Price)
                 .HasColumnType(SongPriceColumnType);
 

@@ -19,7 +19,7 @@ namespace MusicHub.Data.Models
             get; set;
         }
 
-        public DateOnly CreatedOn
+        public DateTime CreatedOn
         {
             get; set;
         }
