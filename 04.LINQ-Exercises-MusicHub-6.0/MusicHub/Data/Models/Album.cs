@@ -32,7 +32,5 @@
             get;
             set;
         } = new HashSet<Song>();
-
-
     }
 }

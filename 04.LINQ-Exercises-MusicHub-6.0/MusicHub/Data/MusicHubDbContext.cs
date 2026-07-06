@@ -1,4 +1,6 @@
-﻿namespace MusicHub.Data
+﻿using MusicHub.Data.EntityConfiguration;
+
+namespace MusicHub.Data
 {
     using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +26,11 @@
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-
+            builder.ApplyConfiguration(new AlbumConfiguration());
+            builder.ApplyConfiguration(new SongConfiguration());
+            builder.ApplyConfiguration(new WriterConfiguration());
+            builder.ApplyConfiguration(new PerformerConfiguration());
+            builder.ApplyConfiguration(new SongPerformerConfiguration());
         }
     }
 }
