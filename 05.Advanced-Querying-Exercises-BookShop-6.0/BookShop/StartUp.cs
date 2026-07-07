@@ -57,5 +57,17 @@ namespace BookShop
 
             return string.Join(Environment.NewLine, bookTitlesFromCategories);
         }
+
+        public static string GetAuthorNamesEndingIn(BookShopContext dbContext, string input)
+        {
+            IEnumerable<string> authorFullNames = dbContext.Authors
+                .Where(a => a.FirstName.EndsWith(input))
+                .OrderBy(a => a.FirstName)
+                .ThenBy(a => a.LastName)
+                .Select(a => a.FirstName + " " + a.LastName)
+                .ToArray();
+
+            return string.Join(Environment.NewLine, authorFullNames);
+        }
     }
 }
