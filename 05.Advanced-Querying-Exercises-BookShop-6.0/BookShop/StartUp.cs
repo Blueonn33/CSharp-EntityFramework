@@ -1,5 +1,4 @@
 ﻿using BookShop.Models.Enums;
-using System.Text;
 
 namespace BookShop
 {
@@ -22,8 +21,6 @@ namespace BookShop
 
         public static string GetBooksByAgeRestriction(BookShopContext dbContext, string command)
         {
-            StringBuilder sb = new();
-
             AgeRestriction? ageRestriction = null;
 
             if (command != null && Enum.GetValues<AgeRestriction>().Any(ev => ev.ToString().ToLowerInvariant() == command.ToLowerInvariant()))
@@ -33,14 +30,16 @@ namespace BookShop
 
             if (!ageRestriction.HasValue)
             {
-                return sb.ToString().TrimEnd();
+                return string.Empty;
             }
 
-            var ageRestrictedBooks = dbContext.Books
-                .Where(b => b.AgeRestriction == ageRestriction)
+            IEnumerable<string> ageRestrictedBooks = dbContext.Books
+                .Where(b => b.AgeRestriction == ageRestriction.Value)
+                .Select(b => b.Title)
+                .OrderBy(b => b)
                 .ToArray();
 
-            return string.Join(Environment.NewLine, ageRestrictedBooks.Select(b => b.Title));
+            return string.Join(Environment.NewLine, ageRestrictedBooks);
         }
     }
 }
