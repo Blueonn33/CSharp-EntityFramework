@@ -41,7 +41,21 @@ namespace BookShop
 
             return string.Join(Environment.NewLine, ageRestrictedBooks);
         }
+
+        public static string GetBooksByCategory(BookShopContext dbContext, string input)
+        {
+            string[] categories = input
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(c => c.ToLowerInvariant())
+                .ToArray();
+
+            IEnumerable<string> bookTitlesFromCategories = dbContext.Books
+                .Where(b => b.BookCategories.Any(bc => categories.Contains(bc.Category.Name.ToLower())))
+                .Select(b => b.Title)
+                .OrderBy(bt => bt)
+                .ToArray();
+
+            return string.Join(Environment.NewLine, bookTitlesFromCategories);
+        }
     }
 }
-
-
