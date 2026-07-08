@@ -15,7 +15,7 @@ namespace BookShop
             //DbInitializer.ResetDatabase(dbContext);
 
             //string command = Console.ReadLine()!;
-            string result = GetGoldenBooks(dbContext);
+            string result = GetBooksByPrice(dbContext);
 
             Console.WriteLine(result);
         }
@@ -61,6 +61,30 @@ namespace BookShop
             foreach (var book in goldenEditionBooks)
             {
                 sb.AppendLine(book);
+            }
+
+            return sb.ToString().TrimEnd();
+        }
+
+        // -- 04
+        public static string GetBooksByPrice(BookShopContext dbContext)
+        {
+            StringBuilder sb = new();
+
+            var books = dbContext.Books
+                 .AsNoTracking()
+                 .Where(b => b.Price > 40)
+                 .Select(b => new
+                 {
+                     b.Title,
+                     b.Price
+                 })
+                 .OrderByDescending(b => b.Price)
+                 .ToArray();
+
+            foreach (var book in books)
+            {
+                sb.AppendLine($"{book.Title} - ${book.Price:F2}");
             }
 
             return sb.ToString().TrimEnd();
