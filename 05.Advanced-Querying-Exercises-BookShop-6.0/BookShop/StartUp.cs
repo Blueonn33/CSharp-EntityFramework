@@ -1,23 +1,25 @@
 ﻿using BookShop.Models.Enums;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace BookShop
 {
     using Data;
-    using Initializer;
 
     public class StartUp
     {
         public static void Main()
         {
             using var dbContext = new BookShopContext();
-            DbInitializer.ResetDatabase(dbContext);
+            //DbInitializer.ResetDatabase(dbContext);
 
-            string command = Console.ReadLine()!;
-            string result = GetBooksByAgeRestriction(dbContext, command);
+            //string command = Console.ReadLine()!;
+            string result = CountCopiesByAuthor(dbContext);
 
             Console.WriteLine(result);
         }
 
+        // -- 02
         public static string GetBooksByAgeRestriction(BookShopContext dbContext, string command)
         {
             AgeRestriction? ageRestriction = null;
@@ -41,6 +43,7 @@ namespace BookShop
             return string.Join(Environment.NewLine, ageRestrictedBooks);
         }
 
+        // -- 06
         public static string GetBooksByCategory(BookShopContext dbContext, string input)
         {
             string[] categories = input
@@ -57,6 +60,7 @@ namespace BookShop
             return string.Join(Environment.NewLine, bookTitlesFromCategories);
         }
 
+        // -- 08
         public static string GetAuthorNamesEndingIn(BookShopContext dbContext, string input)
         {
             IEnumerable<string> authorFullNames = dbContext.Authors
@@ -67,6 +71,29 @@ namespace BookShop
                 .ToArray();
 
             return string.Join(Environment.NewLine, authorFullNames);
+        }
+
+        // -- 12
+        public static string CountCopiesByAuthor(BookShopContext dbContext)
+        {
+            StringBuilder sb = new();
+            var authorBookCopies = dbContext.Authors
+                .Select(a => new
+                {
+                    a.FirstName,
+                    a.LastName,
+                    TotalBookCopies = a.Books.Sum(b => b.Copies)
+                })
+                .OrderByDescending(a => a.TotalBookCopies)
+                .ToArray();
+
+            foreach (var author in authorBookCopies)
+            {
+                sb
+                    .AppendLine($"{author.FirstName} {author.LastName} - {author.TotalBookCopies}");
+            }
+
+            return sb.ToString().TrimEnd();
         }
     }
 }
