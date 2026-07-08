@@ -17,7 +17,8 @@ namespace BookShop
             //DbInitializer.ResetDatabase(dbContext);
 
             //string command = Console.ReadLine()!;
-            string result = GetBooksByAuthor(dbContext, "po");
+            //string result = GetBooksByAuthor(dbContext, "po");
+            int result = CountBooks(dbContext, 40);
 
             Console.WriteLine(result);
         }
@@ -213,6 +214,25 @@ namespace BookShop
             }
 
             return sb.ToString().TrimEnd();
+        }
+
+        // -- 11
+        public static int CountBooks(BookShopContext dbContext, int lengthCheck)
+        {
+            StringBuilder sb = new();
+
+            var books = dbContext.Books
+                .ToArray();
+
+            int count = 0;
+
+            foreach (var book in books)
+            {
+                if (book.Title.Length > lengthCheck)
+                    count++;
+            }
+
+            return count;
         }
 
         // -- 12
