@@ -95,5 +95,30 @@ namespace BookShop
 
             return sb.ToString().TrimEnd();
         }
+
+        // -- 13
+        public static string GetTotalProfitByCategory(BookShopContext dbContext)
+        {
+            StringBuilder sb = new();
+
+            var categoriesTotalProfit = dbContext.Categories
+                .Select(c => new
+                {
+                    c.Name,
+                    TotalProfit = c.CategoryBooks
+                        .Select(cb => cb.Book)
+                        .Sum(b => b.Price * b.Copies)
+                })
+                .OrderByDescending(c => c.TotalProfit)
+                .ThenBy(c => c.Name)
+                .ToArray();
+
+            foreach (var category in categoriesTotalProfit)
+            {
+                sb.AppendLine($"{category.Name} ${category.TotalProfit:F2}");
+            }
+
+            return sb.ToString().TrimEnd();
+        }
     }
 }
