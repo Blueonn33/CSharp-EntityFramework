@@ -13,7 +13,6 @@ namespace BookShop
             DbInitializer.ResetDatabase(dbContext);
 
             string command = Console.ReadLine()!;
-
             string result = GetBooksByAgeRestriction(dbContext, command);
 
             Console.WriteLine(result);
