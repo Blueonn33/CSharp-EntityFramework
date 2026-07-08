@@ -1,6 +1,7 @@
 ﻿using BookShop.Models;
 using BookShop.Models.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Text;
 
 namespace BookShop
@@ -15,7 +16,7 @@ namespace BookShop
             //DbInitializer.ResetDatabase(dbContext);
 
             //string command = Console.ReadLine()!;
-            string result = GetBooksByPrice(dbContext);
+            string result = GetBooksNotReleasedIn(dbContext, 2000);
 
             Console.WriteLine(result);
         }
@@ -85,6 +86,26 @@ namespace BookShop
             foreach (var book in books)
             {
                 sb.AppendLine($"{book.Title} - ${book.Price:F2}");
+            }
+
+            return sb.ToString().TrimEnd();
+        }
+
+        // -- 05
+        public static string GetBooksNotReleasedIn(BookShopContext dbContext, int year)
+        {
+            StringBuilder sb = new();
+
+            var books = dbContext.Books
+                .AsNoTracking()
+                .Where(b => b.ReleaseDate.HasValue && b.ReleaseDate.Value.Year != year)
+                .OrderBy(b => b.BookId)
+                .Select(b => b.Title)
+                .ToArray();
+
+            foreach (var book in books)
+            {
+                sb.AppendLine(book);
             }
 
             return sb.ToString().TrimEnd();
