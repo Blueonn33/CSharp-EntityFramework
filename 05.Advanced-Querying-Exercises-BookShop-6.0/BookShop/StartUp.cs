@@ -15,7 +15,7 @@ namespace BookShop
             //DbInitializer.ResetDatabase(dbContext);
 
             //string command = Console.ReadLine()!;
-            string result = CountCopiesByAuthor(dbContext);
+            string result = GetGoldenBooks(dbContext);
 
             Console.WriteLine(result);
         }
@@ -44,6 +44,24 @@ namespace BookShop
                 .ToArray();
 
             return string.Join(Environment.NewLine, ageRestrictedBooks);
+        }
+
+        // -- 03
+        public static string GetGoldenBooks(BookShopContext dbContext)
+        {
+            StringBuilder sb = new();
+
+            var goldenEditionBooks = dbContext.Books
+                .Where(b => b.Copies < 5000)
+                .OrderBy(b => b.BookId)
+                .ToArray();
+
+            foreach (var book in goldenEditionBooks)
+            {
+                sb.AppendLine(book.Title);
+            }
+
+            return sb.ToString().TrimEnd();
         }
 
         // -- 06
