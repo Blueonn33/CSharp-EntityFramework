@@ -7,6 +7,7 @@ using System.Text;
 namespace BookShop
 {
     using Data;
+    using System.Globalization;
 
     public class StartUp
     {
@@ -16,7 +17,7 @@ namespace BookShop
             //DbInitializer.ResetDatabase(dbContext);
 
             //string command = Console.ReadLine()!;
-            string result = GetBooksNotReleasedIn(dbContext, 2000);
+            string result = GetBooksReleasedBefore(dbContext, "12-04-1992");
 
             Console.WriteLine(result);
         }
@@ -127,6 +128,33 @@ namespace BookShop
                 .ToArray();
 
             return string.Join(Environment.NewLine, bookTitlesFromCategories);
+        }
+
+        // -- 07
+        public static string GetBooksReleasedBefore(BookShopContext dbContext, string date)
+        {
+            StringBuilder sb = new();
+
+            var dateTime = DateTime.ParseExact(date, "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+            var books = dbContext.Books
+                .AsNoTracking()
+                .Where(b => b.ReleaseDate.HasValue && b.ReleaseDate.Value.Date < dateTime)
+                .OrderByDescending(b => b.ReleaseDate.Value.Date)
+                .Select(b => new
+                {
+                    b.Title,
+                    b.EditionType,
+                    b.Price
+                })
+                .ToArray();
+
+            foreach (var book in books)
+            {
+                sb.AppendLine($"{book.Title} - {book.EditionType} - ${book.Price:F2}");
+            }
+
+            return sb.ToString().TrimEnd();
         }
 
         // -- 08
