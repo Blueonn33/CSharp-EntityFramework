@@ -17,8 +17,8 @@ namespace BookShop
             //DbInitializer.ResetDatabase(dbContext);
 
             //string command = Console.ReadLine()!;
-            //string result = GetBooksByAuthor(dbContext, "po");
-            int result = CountBooks(dbContext, 40);
+            string result = GetMostRecentBooks(dbContext);
+            //int result = CountBooks(dbContext, 40);
 
             Console.WriteLine(result);
         }
@@ -280,6 +280,42 @@ namespace BookShop
             foreach (var category in categoriesTotalProfit)
             {
                 sb.AppendLine($"{category.Name} ${category.TotalProfit:F2}");
+            }
+
+            return sb.ToString().TrimEnd();
+        }
+
+        // -- 14
+        public static string GetMostRecentBooks(BookShopContext dbContext)
+        {
+            StringBuilder sb = new();
+
+            var categories = dbContext.Categories
+                .AsNoTracking()
+                .Select(c => new
+                {
+                    c.Name,
+                    Books = c.CategoryBooks
+                        .Select(cb => new
+                        {
+                            Title = cb.Book.Title,
+                            Date = cb.Book.ReleaseDate!.Value.Year
+                        })
+                        .OrderByDescending(cb => cb.Date)
+                        .Take(3)
+                        .ToArray()
+                })
+                .OrderBy(c => c.Name)
+                .ToArray();
+
+            foreach (var category in categories)
+            {
+                sb.AppendLine($"--{category.Name}");
+
+                foreach (var book in category.Books)
+                {
+                    sb.AppendLine($"{book.Title} ({book.Date})");
+                }
             }
 
             return sb.ToString().TrimEnd();
