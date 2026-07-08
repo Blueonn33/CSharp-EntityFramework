@@ -344,5 +344,21 @@ namespace BookShop
             //        Price = b.Price + 5
             //    });
         }
+
+        // -- 16
+        public static int RemoveBooks(BookShopContext dbContext)
+        {
+            int count = 0;
+
+            var books = dbContext.Books
+                .Where(b => b.Copies < 4200)
+                .ToArray();
+
+            count = books.Count();
+            dbContext.Books.RemoveRange(books);
+            dbContext.SaveChanges();
+
+            return count;
+        }
     }
 }
