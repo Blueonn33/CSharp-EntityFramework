@@ -292,20 +292,21 @@ namespace BookShop
 
             var categories = dbContext.Categories
                 .AsNoTracking()
+                .OrderBy(c => c.Name)
                 .Select(c => new
                 {
                     c.Name,
                     Books = c.CategoryBooks
-                        .Select(cb => new
-                        {
-                            Title = cb.Book.Title,
-                            Date = cb.Book.ReleaseDate!.Value.Year
-                        })
-                        .OrderByDescending(cb => cb.Date)
+                        .Select(cb => cb.Book)
+                        .OrderByDescending(b => b.ReleaseDate)
                         .Take(3)
+                        .Select(b => new
+                        {
+                            Title = b.Title,
+                            Year = b.ReleaseDate.Value.Year
+                        })
                         .ToArray()
                 })
-                .OrderBy(c => c.Name)
                 .ToArray();
 
             foreach (var category in categories)
@@ -314,7 +315,7 @@ namespace BookShop
 
                 foreach (var book in category.Books)
                 {
-                    sb.AppendLine($"{book.Title} ({book.Date})");
+                    sb.AppendLine($"{book.Title} ({book.Year})");
                 }
             }
 
