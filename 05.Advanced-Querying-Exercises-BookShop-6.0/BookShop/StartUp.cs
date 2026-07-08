@@ -51,14 +51,16 @@ namespace BookShop
         {
             StringBuilder sb = new();
 
-            var goldenEditionBooks = dbContext.Books
-                .Where(b => b.Copies < 5000)
+            IEnumerable<string> goldenEditionBooks = dbContext.Books
+                .AsNoTracking()
+                .Where(b => b.Copies < 5000 && b.EditionType == EditionType.Gold)
                 .OrderBy(b => b.BookId)
+                .Select(b => b.Title)
                 .ToArray();
 
             foreach (var book in goldenEditionBooks)
             {
-                sb.AppendLine(book.Title);
+                sb.AppendLine(book);
             }
 
             return sb.ToString().TrimEnd();
