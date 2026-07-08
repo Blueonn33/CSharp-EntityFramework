@@ -1,4 +1,5 @@
-﻿using BookShop.Models.Enums;
+﻿using BookShop.Models;
+using BookShop.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 
@@ -35,6 +36,7 @@ namespace BookShop
             }
 
             IEnumerable<string> ageRestrictedBooks = dbContext.Books
+                .AsNoTracking()
                 .Where(b => b.AgeRestriction == ageRestriction.Value)
                 .Select(b => b.Title)
                 .OrderBy(b => b)
@@ -52,6 +54,7 @@ namespace BookShop
                 .ToArray();
 
             IEnumerable<string> bookTitlesFromCategories = dbContext.Books
+                .AsNoTracking()
                 .Where(b => b.BookCategories.Any(bc => categories.Contains(bc.Category.Name.ToLower())))
                 .Select(b => b.Title)
                 .OrderBy(bt => bt)
@@ -64,6 +67,7 @@ namespace BookShop
         public static string GetAuthorNamesEndingIn(BookShopContext dbContext, string input)
         {
             IEnumerable<string> authorFullNames = dbContext.Authors
+                .AsNoTracking()
                 .Where(a => a.FirstName.EndsWith(input))
                 .OrderBy(a => a.FirstName)
                 .ThenBy(a => a.LastName)
@@ -78,6 +82,7 @@ namespace BookShop
         {
             StringBuilder sb = new();
             var authorBookCopies = dbContext.Authors
+                .AsNoTracking()
                 .Select(a => new
                 {
                     a.FirstName,
@@ -102,6 +107,7 @@ namespace BookShop
             StringBuilder sb = new();
 
             var categoriesTotalProfit = dbContext.Categories
+                .AsNoTracking()
                 .Select(c => new
                 {
                     c.Name,
@@ -119,6 +125,21 @@ namespace BookShop
             }
 
             return sb.ToString().TrimEnd();
+        }
+
+        // -- 15
+        public static void IncreasePrices(BookShopContext dbContext)
+        {
+            // I. Standard Approach
+            IQueryable<Book> booksToUpdate = dbContext.Books
+                .Where(b => b.ReleaseDate.HasValue && b.ReleaseDate.Value.Year < 2010);
+
+            foreach (var book in booksToUpdate)
+            {
+                book.Price += 5;
+            }
+
+            dbContext.SaveChanges();
         }
     }
 }
