@@ -25,7 +25,8 @@ namespace BookShop
         {
             AgeRestriction? ageRestriction = null;
 
-            if (command != null && Enum.GetValues<AgeRestriction>().Any(ev => ev.ToString().ToLowerInvariant() == command.ToLowerInvariant()))
+            if (command != null && Enum.GetValues<AgeRestriction>()
+                    .Any(ev => ev.ToString().ToLowerInvariant() == command.ToLowerInvariant()))
             {
                 ageRestriction = Enum.Parse<AgeRestriction>(command, true);
             }
@@ -130,7 +131,7 @@ namespace BookShop
         // -- 15
         public static void IncreasePrices(BookShopContext dbContext)
         {
-            // I. Standard Approach
+            // I. Standard Approach - very inefficient
             IQueryable<Book> booksToUpdate = dbContext.Books
                 .Where(b => b.ReleaseDate.HasValue && b.ReleaseDate.Value.Year < 2010);
 
@@ -140,6 +141,14 @@ namespace BookShop
             }
 
             dbContext.SaveChanges();
+
+            // II. Bulk Approach
+            //dbContext.Books
+            //    .Where(b => b.ReleaseDate.HasValue && b.ReleaseDate.Value.Year < 2010)
+            //    .Update(b => new Book()
+            //    {
+            //        Price = b.Price + 5
+            //    });
         }
     }
 }
