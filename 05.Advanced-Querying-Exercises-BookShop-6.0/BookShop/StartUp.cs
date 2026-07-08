@@ -17,7 +17,7 @@ namespace BookShop
             //DbInitializer.ResetDatabase(dbContext);
 
             //string command = Console.ReadLine()!;
-            string result = GetBooksReleasedBefore(dbContext, "12-04-1992");
+            string result = GetBookTitlesContaining(dbContext, "woR");
 
             Console.WriteLine(result);
         }
@@ -169,6 +169,26 @@ namespace BookShop
                 .ToArray();
 
             return string.Join(Environment.NewLine, authorFullNames);
+        }
+
+        // -- 09
+        public static string GetBookTitlesContaining(BookShopContext dbContext, string input)
+        {
+            StringBuilder sb = new();
+
+            var books = dbContext.Books
+                .AsNoTracking()
+                .Where(b => b.Title.ToLower().Contains(input.ToLower()))
+                .OrderBy(b => b.Title)
+                .Select(b => b.Title)
+                .ToArray();
+
+            foreach (var book in books)
+            {
+                sb.AppendLine(book);
+            }
+
+            return sb.ToString().TrimEnd();
         }
 
         // -- 12
