@@ -92,7 +92,7 @@ public partial class AcademicRecordsDbContext : DbContext
             entity.HasMany(c => c.Students)
                 .WithMany(s => s.Courses)
                 .UsingEntity(
-                    "StudentCourse",
+                    "StudentsCourses",
                     r => r.HasOne(typeof(Student)).WithMany()
                         .HasForeignKey("StudentId").HasPrincipalKey(nameof(Student.Id)),
                     l => l.HasOne(typeof(Course)).WithMany().HasForeignKey("CourseId")

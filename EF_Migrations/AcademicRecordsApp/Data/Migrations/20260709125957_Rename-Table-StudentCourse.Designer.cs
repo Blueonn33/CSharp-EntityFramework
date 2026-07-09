@@ -3,6 +3,7 @@ using AcademicRecordsApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AcademicRecordsApp.Migrations
 {
     [DbContext(typeof(AcademicRecordsDbContext))]
-    partial class AcademicRecordsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260709125957_Rename-Table-StudentCourse")]
+    partial class RenameTableStudentCourse
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,7 +108,7 @@ namespace AcademicRecordsApp.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("StudentCourse", b =>
+            modelBuilder.Entity("StudentsCourses", b =>
                 {
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -117,7 +120,7 @@ namespace AcademicRecordsApp.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("StudentCourse");
+                    b.ToTable("StudentsCourses");
                 });
 
             modelBuilder.Entity("AcademicRecordsApp.Data.Models.Grade", b =>
@@ -139,7 +142,7 @@ namespace AcademicRecordsApp.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("StudentCourse", b =>
+            modelBuilder.Entity("StudentsCourses", b =>
                 {
                     b.HasOne("AcademicRecordsApp.Data.Models.Course", null)
                         .WithMany()

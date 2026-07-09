@@ -5,7 +5,7 @@
 namespace AcademicRecordsApp.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCourseEntityToStudents : Migration
+    public partial class RenameTableStudentCourse : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,7 +75,7 @@ namespace AcademicRecordsApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StudentCourse",
+                name: "StudentsCourses",
                 columns: table => new
                 {
                     StudentId = table.Column<int>(type: "int", nullable: false),
@@ -83,15 +83,15 @@ namespace AcademicRecordsApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StudentCourse", x => new { x.StudentId, x.CourseId });
+                    table.PrimaryKey("PK_StudentsCourses", x => new { x.StudentId, x.CourseId });
                     table.ForeignKey(
-                        name: "FK_StudentCourse_Courses_CourseId",
+                        name: "FK_StudentsCourses_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StudentCourse_Students_StudentId",
+                        name: "FK_StudentsCourses_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
                         principalColumn: "Id",
@@ -109,8 +109,8 @@ namespace AcademicRecordsApp.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StudentCourse_CourseId",
-                table: "StudentCourse",
+                name: "IX_StudentsCourses_CourseId",
+                table: "StudentsCourses",
                 column: "CourseId");
         }
 
@@ -121,7 +121,7 @@ namespace AcademicRecordsApp.Migrations
                 name: "Grades");
 
             migrationBuilder.DropTable(
-                name: "StudentCourse");
+                name: "StudentsCourses");
 
             migrationBuilder.DropTable(
                 name: "Exams");
