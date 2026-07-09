@@ -32,6 +32,12 @@ public partial class AcademicRecordsDbContext : DbContext
         set;
     } = null!;
 
+    public virtual DbSet<Course> Courses
+    {
+        get;
+        set;
+    } = null!;
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -72,6 +78,28 @@ public partial class AcademicRecordsDbContext : DbContext
             entity.HasKey(e => e.Id).HasName("PK__Students__3214EC078ECD8D7D");
 
             entity.Property(e => e.FullName).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<Course>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(true)
+                .IsRequired();
+
+            entity.HasMany(c => c.Students)
+                .WithMany(s => s.Courses)
+                .UsingEntity(
+                    "StudentCourse",
+                    r => r.HasOne(typeof(Student)).WithMany()
+                        .HasForeignKey("StudentId").HasPrincipalKey(nameof(Student.Id)),
+                    l => l.HasOne(typeof(Course)).WithMany().HasForeignKey("CourseId")
+                        .HasPrincipalKey(nameof(Course.Id)),
+                    j => j.HasKey("StudentId", "CourseId")
+
+                );
         });
 
         OnModelCreatingPartial(modelBuilder);
