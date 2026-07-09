@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using AcademicRecordsApp.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AcademicRecordsApp.Data.Models;
+namespace AcademicRecordsApp.Data;
 
 public partial class AcademicRecordsDbContext : DbContext
 {
