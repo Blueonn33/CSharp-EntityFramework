@@ -37,7 +37,7 @@ namespace AcademicRecordsApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("AcademicRecordsApp.Data.Models.Exam", b =>
@@ -56,7 +56,7 @@ namespace AcademicRecordsApp.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Exams__3214EC07ADE67E82");
 
-                    b.ToTable("Exams");
+                    b.ToTable("Exams", (string)null);
                 });
 
             modelBuilder.Entity("AcademicRecordsApp.Data.Models.Grade", b =>
@@ -83,7 +83,7 @@ namespace AcademicRecordsApp.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Grades");
+                    b.ToTable("Grades", (string)null);
                 });
 
             modelBuilder.Entity("AcademicRecordsApp.Data.Models.Student", b =>
@@ -102,7 +102,7 @@ namespace AcademicRecordsApp.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Students__3214EC078ECD8D7D");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("StudentsCourses", b =>
@@ -117,7 +117,7 @@ namespace AcademicRecordsApp.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("StudentsCourses");
+                    b.ToTable("StudentsCourses", (string)null);
                 });
 
             modelBuilder.Entity("AcademicRecordsApp.Data.Models.Grade", b =>
