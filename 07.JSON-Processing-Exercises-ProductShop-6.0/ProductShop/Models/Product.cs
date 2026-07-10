@@ -4,23 +4,36 @@
 
     public class Product
     {
-        public Product()
+        public int Id
         {
-            CategoriesProducts = new List<CategoryProduct>();
+            get; set;
         }
-
-        public int Id { get; set; }
 
         public string Name { get; set; } = null!;
 
-        public decimal Price { get; set; }
+        public decimal Price
+        {
+            get; set;
+        }
 
-        public int SellerId { get; set; }
-        public User Seller { get; set; } = null!;
+        public int SellerId
+        {
+            get; set;
+        }
+        public virtual User Seller { get; set; } = null!;
 
-        public int? BuyerId { get; set; }
-        public User Buyer { get; set; } = null!;
+        public int? BuyerId
+        {
+            get; set;
+        }
+        public virtual User? Buyer
+        {
+            get; set;
+        }
 
-        public ICollection<CategoryProduct> CategoriesProducts { get; set; }
+        public virtual ICollection<CategoryProduct> CategoriesProducts
+        {
+            get; set;
+        } = new List<CategoryProduct>();
     }
 }
