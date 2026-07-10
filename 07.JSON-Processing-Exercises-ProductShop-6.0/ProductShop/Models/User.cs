@@ -5,24 +5,33 @@
 
     public class User
     {
-        public User()
+        public int Id
         {
-            ProductsSold = new List<Product>();
-            ProductsBought = new List<Product>();
+            get; set;
         }
 
-        public int Id { get; set; }
-
-        public string? FirstName { get; set; }
+        public string? FirstName
+        {
+            get; set;
+        }
 
         public string LastName { get; set; } = null!;
 
-        public int? Age { get; set; }
+        public int? Age
+        {
+            get; set;
+        }
 
-        [InverseProperty("Seller")]
-        public ICollection<Product> ProductsSold { get; set; }
+        [InverseProperty(nameof(Product.Seller))]
+        public virtual ICollection<Product> ProductsSold
+        {
+            get; set;
+        } = new List<Product>();
 
-        [InverseProperty("Buyer")]
-        public ICollection<Product> ProductsBought { get; set; }
+        [InverseProperty(nameof(Product.Buyer))]
+        public virtual ICollection<Product> ProductsBought
+        {
+            get; set;
+        } = new List<Product>();
     }
 }
