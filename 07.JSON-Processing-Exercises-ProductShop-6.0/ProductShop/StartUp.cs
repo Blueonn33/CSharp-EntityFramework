@@ -96,10 +96,10 @@ namespace ProductShop
                 bool isSellerIdValid = validUserIds.Contains(productDto.SellerId);
                 bool isBuyerIdValid = (!productDto.BuyerId.HasValue) || validUserIds.Contains(productDto.BuyerId.Value);
 
-                if (!isSellerIdValid || !isBuyerIdValid)
-                {
-                    continue;
-                }
+                //if (!isSellerIdValid || !isBuyerIdValid)
+                //{
+                //    continue;
+                //}
 
                 Product newProduct = new Product()
                 {
