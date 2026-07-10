@@ -8,6 +8,15 @@ namespace ProductShop
         {
             using ProductShopContext dbContext = new();
 
+            if (!dbContext.Categories.Any()
+                && !dbContext.Products.Any()
+                && !dbContext.Users.Any())
+            {
+                // Reset database if no data is seeded
+                dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
+            }
+
             string jsonFileName = "users.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
             string jsonFileContent = File.ReadAllText(jsonFilePath);
