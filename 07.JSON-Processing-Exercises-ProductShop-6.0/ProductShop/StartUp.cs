@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ProductShop.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProductShop
 {
@@ -39,10 +40,31 @@ namespace ProductShop
                 importUserDtos = Array.Empty<ImportUserDto>();
             }
 
+            ICollection<User> usersToPersist = new List<User>();
+
             foreach (var userDto in importUserDtos)
             {
+                if (!IsValid(userDto))
+                {
+                    // Skip invalid DTO records
+                    continue;
+                }
 
+                // Manual mapping -> Can be omitted by using AutoMapper/Mapperly
+                User newUser = new User()
+                {
+                    FirstName = userDto.FirstName,
+                    LastName = userDto.LastName,
+                    Age = userDto.Age
+                };
+
+                usersToPersist.Add(newUser);
             }
+
+            dbContext.Users.AddRange(usersToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {usersToPersist.Count}";
         }
 
         private static string GetJsonFilePath(string jsonFileName)
