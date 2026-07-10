@@ -1,14 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProductShop.DTOs.Import
 {
     public class ImportUserDto
     {
+        [JsonProperty("firstName")]
         public string? FirstName
         {
             get; set;
         }
 
+        [JsonProperty("lastName")]
         [Required]
         public string LastName
         {
@@ -16,6 +19,7 @@ namespace ProductShop.DTOs.Import
             set;
         } = null!;
 
+        [JsonProperty("age")]
         public int? Age
         {
             get; set;
