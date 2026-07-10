@@ -1,4 +1,5 @@
-﻿using ProductShop.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using ProductShop.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace ProductShop
@@ -70,7 +71,31 @@ namespace ProductShop
         // -- 02
         public static string ImportProducts(ProductShopContext dbContext, string inputJson)
         {
+            IEnumerable<ImportProductDto>? productDtos = JsonConvert
+                .DeserializeObject<ImportProductDto[]>(inputJson);
 
+            if (productDtos == null)
+            {
+                productDtos = Array.Empty<ImportProductDto>();
+            }
+
+            IEnumerable<int> validUserIds = dbContext.Users
+                .AsNoTracking()
+                .Select(u => u.Id)
+                .ToArray();
+
+            foreach (var productDto in productDtos)
+            {
+                if (!IsValid(productDto))
+                {
+                    continue;
+                }
+
+                Product newProduct = new Product();
+                {
+
+                }
+            }
         }
 
 

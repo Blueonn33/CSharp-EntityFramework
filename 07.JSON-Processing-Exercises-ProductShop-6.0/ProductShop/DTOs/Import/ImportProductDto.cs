@@ -6,6 +6,8 @@ namespace ProductShop.DTOs.Import
     public class ImportProductDto
     {
         // Required won't throw an exception, it will return false from IsValid() method in case of error
+        // JsonRequired may throw an exception during .DeserializeObject<T>() method
+
         [Required]
         [JsonProperty("Name")]
         public string Name
