@@ -6,6 +6,14 @@ namespace ProductShop
     {
         public static void Main()
         {
+            using ProductShopContext dbContext = new();
+
+            string jsonFileName = "users.json";
+            string jsonFilePath = GetJsonFilePath(jsonFileName);
+            string jsonFileContent = File.ReadAllText(jsonFilePath);
+
+            string result = ImportUsers(dbContext, jsonFileContent);
+            Console.WriteLine(result);
         }
 
         // -- 02
@@ -14,7 +22,12 @@ namespace ProductShop
             return "";
         }
 
+        private static string GetJsonFilePath(string jsonFileName)
+        {
+            string jsonFolderRelPath = "../../../Datasets/";
+            string jsonFilePath = Path.Combine(jsonFolderRelPath, jsonFileName);
+
+            return Path.GetFullPath(jsonFilePath);
+        }
     }
 }
-
-// -- 46:00
