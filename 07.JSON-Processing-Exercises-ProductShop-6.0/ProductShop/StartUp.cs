@@ -1,21 +1,25 @@
-﻿using ProductShop.Data;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ProductShop
 {
+    using Data;
+    using DTOs.Import;
+    using Newtonsoft.Json;
+
     public class StartUp
     {
         public static void Main()
         {
             using ProductShopContext dbContext = new();
 
-            if (!dbContext.Categories.Any()
-                && !dbContext.Products.Any()
-                && !dbContext.Users.Any())
-            {
-                // Reset database if no data is seeded
-                dbContext.Database.EnsureDeleted();
-                dbContext.Database.EnsureCreated();
-            }
+            //if (!dbContext.Categories.Any()
+            //    && !dbContext.Products.Any()
+            //    && !dbContext.Users.Any())
+            //{
+            //    // Reset database if no data is seeded
+            //    dbContext.Database.EnsureDeleted();
+            //    dbContext.Database.EnsureCreated();
+            //}
 
             string jsonFileName = "users.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
@@ -28,7 +32,17 @@ namespace ProductShop
         // -- 02
         public static string ImportUsers(ProductShopContext dbContext, string inputJson)
         {
-            return "";
+            IEnumerable<ImportUserDto>? importUserDtos = JsonConvert.DeserializeObject<ImportUserDto[]>(inputJson);
+
+            if (importUserDtos == null)
+            {
+                importUserDtos = Array.Empty<ImportUserDto>();
+            }
+
+            foreach (var userDto in importUserDtos)
+            {
+
+            }
         }
 
         private static string GetJsonFilePath(string jsonFileName)
@@ -37,6 +51,16 @@ namespace ProductShop
             string jsonFilePath = Path.Combine(jsonFolderRelPath, jsonFileName);
 
             return Path.GetFullPath(jsonFilePath);
+        }
+
+        private static bool IsValid(object obj)
+        {
+            ValidationContext validationContext = new ValidationContext(obj);
+            ICollection<ValidationResult> validationResults = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(obj, validationContext, validationResults);
+
+            return isValid;
         }
     }
 }
