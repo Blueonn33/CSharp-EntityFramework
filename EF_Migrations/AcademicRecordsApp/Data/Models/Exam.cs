@@ -16,13 +16,13 @@ public class Exam
     public string Name { get; set; } = null!;
 
     [ForeignKey(nameof(Course))]
-    public int CourseId
+    public int? CourseId
     {
         get;
         set;
     }
 
-    public virtual Course Course
+    public virtual Course? Course
     {
         get; set;
     } = null!;

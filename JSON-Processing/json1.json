@@ -1,0 +1,9 @@
+{
+  "Name": "Martin Marinov",
+  "Address": {
+    "Street": "tsar Samuil 20",
+    "City": "Gorna Orqhovitsa",
+    "Country": "Bulgaria",
+    "Zip":  5100
+  }
+}

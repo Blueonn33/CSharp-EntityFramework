@@ -64,12 +64,12 @@ public partial class AcademicRecordsDbContext : DbContext
 
             entity.HasOne(d => d.Exam).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.ExamId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Grades_Exams");
 
             entity.HasOne(d => d.Student).WithMany(p => p.Grades)
                 .HasForeignKey(d => d.StudentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_Grades_Students");
         });
 
