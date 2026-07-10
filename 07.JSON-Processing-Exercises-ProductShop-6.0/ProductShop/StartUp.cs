@@ -22,15 +22,15 @@ namespace ProductShop
             //    dbContext.Database.EnsureCreated();
             //}
 
-            string jsonFileName = "users.json";
+            string jsonFileName = "products.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
             string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string result = ImportUsers(dbContext, jsonFileContent);
+            string result = ImportProducts(dbContext, jsonFileContent);
             Console.WriteLine(result);
         }
 
-        // -- 02
+        // -- 01
         public static string ImportUsers(ProductShopContext dbContext, string inputJson)
         {
             IEnumerable<ImportUserDto>? importUserDtos = JsonConvert.DeserializeObject<ImportUserDto[]>(inputJson);
@@ -66,6 +66,13 @@ namespace ProductShop
 
             return $"Successfully imported {usersToPersist.Count}";
         }
+
+        // -- 02
+        public static string ImportProducts(ProductShopContext dbContext, string inputJson)
+        {
+
+        }
+
 
         private static string GetJsonFilePath(string jsonFileName)
         {
