@@ -84,6 +84,8 @@ namespace ProductShop
                 .Select(u => u.Id)
                 .ToArray();
 
+            ICollection<Product> productsToPersist = new List<Product>();
+
             foreach (var productDto in productDtos)
             {
                 if (!IsValid(productDto))
@@ -91,13 +93,30 @@ namespace ProductShop
                     continue;
                 }
 
-                Product newProduct = new Product();
+                bool isSellerIdValid = validUserIds.Contains(productDto.SellerId);
+                bool isBuyerIdValid = (!productDto.BuyerId.HasValue) || validUserIds.Contains(productDto.BuyerId.Value);
+
+                if (!isSellerIdValid || !isBuyerIdValid)
                 {
-
+                    continue;
                 }
-            }
-        }
 
+                Product newProduct = new Product()
+                {
+                    Name = productDto.Name,
+                    Price = productDto.Price,
+                    SellerId = productDto.SellerId,
+                    BuyerId = productDto.BuyerId,
+                };
+
+                productsToPersist.Add(newProduct);
+            }
+
+            dbContext.Products.AddRange(productsToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {productsToPersist.Count}";
+        }
 
         private static string GetJsonFilePath(string jsonFileName)
         {
