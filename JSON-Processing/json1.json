@@ -1,9 +1,13 @@
 {
   "Name": "Martin Marinov",
+  "Age":  30,
   "Address": {
     "Street": "tsar Samuil 20",
     "City": "Gorna Orqhovitsa",
     "Country": "Bulgaria",
-    "Zip":  5100
-  }
+    "Zip": 5100
+  },
+  "CreatedAt": "2026-07-10T11:34:00Z",
+  "IsActive": true,
+  "Skills": ["Figma", "C#"]
 }
