@@ -34,7 +34,7 @@ namespace ProductShop
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
             //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string jsonResult = GetUsersWithProducts(dbContext);
+            string jsonResult = GetProductsInRange(dbContext);
 
             File.WriteAllText(jsonFilePath, jsonResult, Encoding.UTF8);
             Console.WriteLine(jsonResult);
@@ -190,6 +190,27 @@ namespace ProductShop
             dbContext.SaveChanges();
 
             return $"Successfully imported {categoryProductsToPersist.Count}";
+        }
+
+        // -- 05
+        public static string GetProductsInRange(ProductShopContext dbContext)
+        {
+            ExportProductsInRangeDto[] productsInRange = dbContext.Products
+                .AsNoTracking()
+                .Where(p => p.Price >= 500 && p.Price <= 1000)
+                .Select(p => new ExportProductsInRangeDto()
+                {
+                    Name = p.Name,
+                    Price = p.Price,
+                    Seller = p.Seller.FirstName + " " + p.Seller.LastName
+                })
+                .OrderBy(p => p.Price)
+                .ToArray();
+
+            string jsonResult = JsonConvert
+                .SerializeObject(productsInRange, Formatting.Indented);
+
+            return jsonResult;
         }
 
         // -- 07
