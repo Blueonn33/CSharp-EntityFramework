@@ -8,6 +8,13 @@ namespace CarDealer
         public static void Main()
         {
             using CarDealerContext dbContext = new();
+
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
+            string jsonFileName = "cars.json";
+            string jsonFilePath = GetJsonFilePath(jsonFileName);
+            string jsonFileContent = File.ReadAllText(jsonFilePath);
         }
 
         private static string GetJsonFilePath(string jsonFileName)

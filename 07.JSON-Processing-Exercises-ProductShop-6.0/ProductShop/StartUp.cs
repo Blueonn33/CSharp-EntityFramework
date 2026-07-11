@@ -253,8 +253,6 @@ namespace ProductShop
             return jsonResult;
         }
 
-
-
         // -- 07
         public static string GetCategoriesByProductsCount(ProductShopContext dbContext)
         {
