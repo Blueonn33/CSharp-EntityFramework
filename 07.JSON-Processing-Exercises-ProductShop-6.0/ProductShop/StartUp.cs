@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 using ProductShop.DTOs.Export;
 using ProductShop.Models;
 using System.ComponentModel.DataAnnotations;
@@ -249,8 +250,16 @@ namespace ProductShop
                 Users = usersSoldProducts
             };
 
+            DefaultContractResolver camelCaseContractResolver = new()
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
             string jsonResult = JsonConvert
-                .SerializeObject(usersWithSoldProducts, Formatting.Indented);
+                .SerializeObject(usersWithSoldProducts, Formatting.Indented, new JsonSerializerSettings()
+                {
+                    ContractResolver = camelCaseContractResolver
+                });
 
             return jsonResult;
         }
