@@ -10,6 +10,14 @@ namespace CarDealer
             using CarDealerContext dbContext = new();
         }
 
+        private static string GetJsonResultFilePath(string jsonFileName)
+        {
+            string jsonResultFolderRelPath = "../../../Results/";
+            string jsonResultFilePath = Path.Combine(jsonResultFolderRelPath, jsonFileName);
+
+            return Path.GetFullPath(jsonResultFilePath);
+        }
+
         private static bool IsValid(object obj)
         {
             ValidationContext validationContext = new ValidationContext(obj);
