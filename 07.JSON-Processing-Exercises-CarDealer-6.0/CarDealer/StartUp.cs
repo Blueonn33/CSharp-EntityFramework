@@ -15,11 +15,11 @@ namespace CarDealer
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
-            string jsonFileName = "parts.json";
+            string jsonFileName = "cars.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
             string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string result = ImportParts(dbContext, jsonFileContent);
+            string result = ImportCars(dbContext, jsonFileContent);
             Console.WriteLine(result);
         }
 
@@ -87,6 +87,50 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {partsToPersist.Count}.";
+        }
+
+        // -- 11
+        public static string ImportCars(CarDealerContext dbContext, string inputJson)
+        {
+            IEnumerable<ImportCarDto>? importCarDtos = JsonConvert.DeserializeObject<ImportCarDto[]>(inputJson);
+
+            if (importCarDtos == null)
+            {
+                importCarDtos = Array.Empty<ImportCarDto>();
+            }
+
+            ICollection<Car> carsToPersist = new List<Car>();
+
+            foreach (var carDto in importCarDtos)
+            {
+                if (carDto == null)
+                    continue;
+
+                Car newCar = new Car()
+                {
+                    Make = carDto.Make,
+                    Model = carDto.Model,
+                    TraveledDistance = carDto.TraveledDistance,
+                };
+
+                foreach (var partId in carDto.PartsId.Distinct())
+                {
+                    if (dbContext.Parts.Any(p => p.Id == partId))
+                    {
+                        newCar.PartsCars.Add(new PartCar
+                        {
+                            PartId = partId
+                        });
+                    }
+                }
+
+                carsToPersist.Add(newCar);
+            }
+
+            dbContext.Cars.AddRange(carsToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {carsToPersist.Count}.";
         }
 
         private static string GetJsonFilePath(string jsonFileName)
