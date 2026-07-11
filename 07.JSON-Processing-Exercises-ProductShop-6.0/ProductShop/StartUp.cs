@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProductShop.DTOs.Export;
 using ProductShop.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -193,7 +194,26 @@ namespace ProductShop
         // -- 07
         public static string GetCategoriesByProductsCount(ProductShopContext dnContext)
         {
+            ExportCategoryByProductsDto[] categoriesByProducts = dnContext.Categories
+                .AsNoTracking()
+                .Select(c => new ExportCategoryByProductsDto()
+                {
+                    CategoryName = c.Name,
+                    ProductsCount = c.CategoriesProducts.Count,
+                    AveragePrice = c.CategoriesProducts
+                        .Average(cp => cp.Product.Price)
+                        .ToString("F2"),
+                    TotalRevenue = c.CategoriesProducts
+                        .Sum(cp => cp.Product.Price)
+                        .ToString("F2")
+                })
+                .OrderByDescending(c => c.ProductsCount)
+                .ToArray();
 
+            string jsonResult = JsonConvert
+                .SerializeObject(categoriesByProducts, Formatting.Indented);
+
+            return jsonResult;
         }
 
         private static string GetJsonFilePath(string jsonFileName)

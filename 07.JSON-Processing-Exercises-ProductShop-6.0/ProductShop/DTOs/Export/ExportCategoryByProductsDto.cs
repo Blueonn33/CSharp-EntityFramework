@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
 
 namespace ProductShop.DTOs.Export
 {
     public class ExportCategoryByProductsDto
     {
         [JsonProperty("category")]
-        [Required]
         public string CategoryName
         {
             get; set;
