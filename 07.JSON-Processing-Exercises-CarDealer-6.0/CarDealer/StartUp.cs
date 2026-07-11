@@ -136,7 +136,34 @@ namespace CarDealer
         // -- 12
         public static string ImportCustomers(CarDealerContext dbContext, string inputJson)
         {
+            IEnumerable<ImportCustomerDto>? importCustomerDtos = JsonConvert.DeserializeObject<ImportCustomerDto[]>(inputJson);
 
+            if (importCustomerDtos == null)
+            {
+                importCustomerDtos = Array.Empty<ImportCustomerDto>();
+            }
+
+            ICollection<Customer> customersToPersist = new List<Customer>();
+
+            foreach (var customerDto in importCustomerDtos)
+            {
+                if (!IsValid(customerDto))
+                    continue;
+
+                Customer newCustomer = new Customer
+                {
+                    Name = customerDto.Name,
+                    BirthDate = customerDto.BirthDate,
+                    IsYoungDriver = customerDto.IsYoungDriver,
+                };
+
+                customersToPersist.Add(newCustomer);
+            }
+
+            dbContext.Customers.AddRange(customersToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {customersToPersist.Count}.";
         }
 
         private static string GetJsonFilePath(string jsonFileName)
