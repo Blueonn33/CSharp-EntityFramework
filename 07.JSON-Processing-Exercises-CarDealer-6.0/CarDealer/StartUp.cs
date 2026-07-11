@@ -15,11 +15,11 @@ namespace CarDealer
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
-            string jsonFileName = "cars.json";
+            string jsonFileName = "customers.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
             string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string result = ImportCars(dbContext, jsonFileContent);
+            string result = ImportCustomers(dbContext, jsonFileContent);
             Console.WriteLine(result);
         }
 
@@ -131,6 +131,12 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {carsToPersist.Count}.";
+        }
+
+        // -- 12
+        public static string ImportCustomers(CarDealerContext dbContext, string inputJson)
+        {
+
         }
 
         private static string GetJsonFilePath(string jsonFileName)
