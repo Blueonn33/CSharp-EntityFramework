@@ -30,11 +30,11 @@ namespace ProductShop
             //string jsonFilePath = GetJsonFilePath(jsonFileName);
             //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string jsonFileName = "products-in-range.json";
+            string jsonFileName = "users-sold-products.json";
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
             //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string jsonResult = GetProductsInRange(dbContext);
+            string jsonResult = GetSoldProducts(dbContext);
 
             File.WriteAllText(jsonFilePath, jsonResult, Encoding.UTF8);
             Console.WriteLine(jsonResult);
@@ -216,7 +216,38 @@ namespace ProductShop
         // -- 06
         public static string GetSoldProducts(ProductShopContext dbContext)
         {
-            return "";
+            var usersWithSoldProducts = dbContext.Users
+                .AsNoTracking()
+                .Where(u => u.ProductsSold.Any(p => p.BuyerId.HasValue))
+                .Select(u => new
+                {
+                    u.FirstName,
+                    u.LastName,
+                    SoldProducts = u.ProductsSold.Select(p => new
+                    {
+                        p.Name,
+                        p.Price,
+                        p.Buyer.FirstName,
+                        p.Buyer.LastName
+                    })
+                })
+                .OrderBy(u => u.LastName)
+                .ThenBy(u => u.FirstName)
+                .ToArray();
+
+            DefaultContractResolver camelCaseContractResolver = new()
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            };
+
+            string jsonResult = JsonConvert
+                .SerializeObject(usersWithSoldProducts, Formatting.Indented, new JsonSerializerSettings()
+                {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    ContractResolver = camelCaseContractResolver
+                });
+
+            return jsonResult;
         }
 
         // -- 07
