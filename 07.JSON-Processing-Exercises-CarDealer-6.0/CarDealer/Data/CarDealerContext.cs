@@ -54,8 +54,6 @@ namespace CarDealer.Data
                 e.HasKey(k => new { k.CarId, k.PartId });
             });
 
-            // A Customer can buy many Cars.
-
             modelBuilder.Entity<Customer>(e =>
             {
                 e.HasKey(c => c.Id);
@@ -64,8 +62,6 @@ namespace CarDealer.Data
                     .WithOne(s => s.Customer)
                     .HasForeignKey(s => s.CustomerId);
             });
-
-            // One Supplier can supply many Parts and each Part can be delivered by only one Supplier
 
             modelBuilder.Entity<Supplier>(e =>
             {

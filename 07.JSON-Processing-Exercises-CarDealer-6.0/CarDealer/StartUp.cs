@@ -15,19 +15,18 @@ namespace CarDealer
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
-            string jsonFileName = "suppliers.json";
+            string jsonFileName = "parts.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
             string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string result = ImportSuppliers(dbContext, jsonFileContent);
+            string result = ImportParts(dbContext, jsonFileContent);
             Console.WriteLine(result);
         }
 
         // -- 09
         public static string ImportSuppliers(CarDealerContext dbContext, string inputJson)
         {
-            IEnumerable<ImportSupplierDto>? importSupplierDtos =
-                JsonConvert.DeserializeObject<ImportSupplierDto[]>(inputJson);
+            IEnumerable<ImportSupplierDto>? importSupplierDtos = JsonConvert.DeserializeObject<ImportSupplierDto[]>(inputJson);
 
             if (importSupplierDtos == null)
             {
@@ -54,6 +53,40 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {suppliersToPersist.Count}.";
+        }
+
+        // -- 10
+        public static string ImportParts(CarDealerContext dbContext, string inputJson)
+        {
+            IEnumerable<ImportPartDto>? importPartDtos = JsonConvert.DeserializeObject<ImportPartDto[]>(inputJson);
+
+            if (importPartDtos == null)
+            {
+                importPartDtos = Array.Empty<ImportPartDto>();
+            }
+
+            ICollection<Part> partsToPersist = new List<Part>();
+
+            foreach (var partDto in importPartDtos)
+            {
+                if (!IsValid(partDto) || !dbContext.Suppliers.Any(s => s.Id == partDto.SupplierId))
+                    continue;
+
+                Part newPart = new Part()
+                {
+                    Name = partDto.Name,
+                    Price = partDto.Price,
+                    Quantity = partDto.Quantity,
+                    SupplierId = partDto.SupplierId,
+                };
+
+                partsToPersist.Add(newPart);
+            }
+
+            dbContext.Parts.AddRange(partsToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {partsToPersist.Count}.";
         }
 
         private static string GetJsonFilePath(string jsonFileName)
