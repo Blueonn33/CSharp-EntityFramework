@@ -15,11 +15,11 @@ namespace CarDealer
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
-            string jsonFileName = "customers.json";
+            string jsonFileName = "sales.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
             string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string result = ImportCustomers(dbContext, jsonFileContent);
+            string result = ImportSales(dbContext, jsonFileContent);
             Console.WriteLine(result);
         }
 
@@ -90,48 +90,46 @@ namespace CarDealer
         }
 
         // -- 11
-        public static string ImportCars(CarDealerContext dbContext, string inputJson)
+        public static string ImportCars(CarDealerContext context, string inputJson)
         {
-            IEnumerable<ImportCarDto>? importCarDtos = JsonConvert.DeserializeObject<ImportCarDto[]>(inputJson);
+            var carDtos = JsonConvert.DeserializeObject<List<ImportCarDto>>(inputJson)
+                          ?? new List<ImportCarDto>();
 
-            if (importCarDtos == null)
+            var validPartIds = context.Parts
+                .Select(p => p.Id)
+                .ToHashSet();
+
+            var cars = new List<Car>();
+
+            foreach (var dto in carDtos)
             {
-                importCarDtos = Array.Empty<ImportCarDto>();
-            }
-
-            ICollection<Car> carsToPersist = new List<Car>();
-
-            foreach (var carDto in importCarDtos)
-            {
-                if (carDto == null)
-                    continue;
-
-                Car newCar = new Car()
+                var car = new Car
                 {
-                    Make = carDto.Make,
-                    Model = carDto.Model,
-                    TraveledDistance = carDto.TraveledDistance,
+                    Make = dto.Make,
+                    Model = dto.Model,
+                    TraveledDistance = dto.TraveledDistance
                 };
 
-                foreach (var partId in carDto.PartsId.Distinct())
+                foreach (var partId in dto.PartsId.Distinct())
                 {
-                    if (dbContext.Parts.Any(p => p.Id == partId))
+                    if (validPartIds.Contains(partId))
                     {
-                        newCar.PartsCars.Add(new PartCar
+                        car.PartsCars.Add(new PartCar
                         {
                             PartId = partId
                         });
                     }
                 }
 
-                carsToPersist.Add(newCar);
+                cars.Add(car);
             }
 
-            dbContext.Cars.AddRange(carsToPersist);
-            dbContext.SaveChanges();
+            context.Cars.AddRange(cars);
+            context.SaveChanges();
 
-            return $"Successfully imported {carsToPersist.Count}.";
+            return $"Successfully imported {cars.Count}.";
         }
+
 
         // -- 12
         public static string ImportCustomers(CarDealerContext dbContext, string inputJson)
@@ -164,6 +162,34 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {customersToPersist.Count}.";
+        }
+
+        // -- 13
+        public static string ImportSales(CarDealerContext dbContext, string inputJson)
+        {
+            var saleDtos = JsonConvert.DeserializeObject<List<ImportSaleDto>>(inputJson);
+
+            var sales = new List<Sale>();
+
+            foreach (var dto in saleDtos)
+            {
+                if (!dbContext.Cars.Any(c => c.Id == dto.CarId))
+                    continue;
+
+                var sale = new Sale
+                {
+                    CarId = dto.CarId,
+                    CustomerId = dto.CustomerId,
+                    Discount = dto.Discount
+                };
+
+                sales.Add(sale);
+            }
+
+            dbContext.Sales.AddRange(sales);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {sales.Count}.";
         }
 
         private static string GetJsonFilePath(string jsonFileName)

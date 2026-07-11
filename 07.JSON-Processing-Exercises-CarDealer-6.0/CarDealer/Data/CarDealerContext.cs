@@ -78,7 +78,7 @@ namespace CarDealer.Data
 
                 e.HasOne(s => s.Car)
                     .WithMany(c => c.Sales)
-                    .HasForeignKey(c => c.CarId);
+                    .HasForeignKey(s => s.CarId);
             });
         }
     }

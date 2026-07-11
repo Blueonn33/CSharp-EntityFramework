@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarDealer.DTOs.Import
 {
@@ -13,12 +13,24 @@ namespace CarDealer.DTOs.Import
         } = null!;
 
         [JsonProperty("price")]
-        public decimal Price { get; set; }
+        [Required]
+        public decimal Price
+        {
+            get; set;
+        }
 
         [JsonProperty("quantity")]
-        public int Quantity { get; set; }
+        [Required]
+        public int Quantity
+        {
+            get; set;
+        }
 
         [JsonProperty("supplierId")]
-        public int SupplierId { get; set; }
+        [Required]
+        public int SupplierId
+        {
+            get; set;
+        }
     }
 }
