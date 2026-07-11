@@ -258,7 +258,8 @@ namespace ProductShop
             string jsonResult = JsonConvert
                 .SerializeObject(usersWithSoldProducts, Formatting.Indented, new JsonSerializerSettings()
                 {
-                    ContractResolver = camelCaseContractResolver
+                    ContractResolver = camelCaseContractResolver,
+                    NullValueHandling = NullValueHandling.Ignore,
                 });
 
             return jsonResult;

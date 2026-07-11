@@ -2,7 +2,6 @@
   "usersCount": 54,
   "users": [
     {
-      "firstName": null,
       "lastName": "Stewart",
       "age": 39,
       "soldProducts": {
@@ -48,7 +47,6 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Peterson",
       "age": 72,
       "soldProducts": {
@@ -88,7 +86,6 @@
     {
       "firstName": "Gary",
       "lastName": "Stevens",
-      "age": null,
       "soldProducts": {
         "count": 6,
         "products": [
@@ -120,7 +117,6 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Harrison",
       "age": 18,
       "soldProducts": {
@@ -188,7 +184,6 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Fox",
       "age": 68,
       "soldProducts": {
@@ -498,7 +493,6 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Moreno",
       "age": 37,
       "soldProducts": {
@@ -604,7 +598,6 @@
     {
       "firstName": "Fred",
       "lastName": "Barnes",
-      "age": null,
       "soldProducts": {
         "count": 4,
         "products": [
@@ -682,7 +675,6 @@
     {
       "firstName": "Marie",
       "lastName": "Williamson",
-      "age": null,
       "soldProducts": {
         "count": 4,
         "products": [
@@ -706,7 +698,6 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Schmidt",
       "age": 70,
       "soldProducts": {
@@ -772,9 +763,7 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Baker",
-      "age": null,
       "soldProducts": {
         "count": 3,
         "products": [
@@ -794,7 +783,6 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Thompson",
       "age": 46,
       "soldProducts": {
@@ -818,7 +806,6 @@
     {
       "firstName": "Ann",
       "lastName": "Stevens",
-      "age": null,
       "soldProducts": {
         "count": 3,
         "products": [
@@ -862,7 +849,6 @@
     {
       "firstName": "Jonathan",
       "lastName": "Rodriguez",
-      "age": null,
       "soldProducts": {
         "count": 3,
         "products": [
@@ -1002,9 +988,7 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Bennett",
-      "age": null,
       "soldProducts": {
         "count": 2,
         "products": [
@@ -1058,7 +1042,6 @@
     {
       "firstName": "Amanda",
       "lastName": "Frazier",
-      "age": null,
       "soldProducts": {
         "count": 2,
         "products": [
@@ -1110,9 +1093,7 @@
       }
     },
     {
-      "firstName": null,
       "lastName": "Cunningham",
-      "age": null,
       "soldProducts": {
         "count": 2,
         "products": [
@@ -1194,7 +1175,6 @@
     {
       "firstName": "Jennifer",
       "lastName": "Riley",
-      "age": null,
       "soldProducts": {
         "count": 1,
         "products": [
@@ -1208,7 +1188,6 @@
     {
       "firstName": "Jean",
       "lastName": "Henry",
-      "age": null,
       "soldProducts": {
         "count": 1,
         "products": [
