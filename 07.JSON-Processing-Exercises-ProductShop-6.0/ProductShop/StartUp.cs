@@ -29,7 +29,7 @@ namespace ProductShop
             //string jsonFilePath = GetJsonFilePath(jsonFileName);
             //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string jsonFileName = "categories-products.json";
+            string jsonFileName = "users-and-products.json";
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
             //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
@@ -219,7 +219,40 @@ namespace ProductShop
         // -- 08
         public static string GetUsersWithProducts(ProductShopContext dbContext)
         {
+            var usersSoldProducts = dbContext.Users
+                .AsNoTracking()
+                .Where(u => u.ProductsSold.Any(p => p.BuyerId.HasValue))
+                .Select(u => new
+                {
+                    u.FirstName,
+                    u.LastName,
+                    u.Age,
+                    SoldProducts = new
+                    {
+                        Count = u.ProductsSold.Count(p => p.BuyerId.HasValue),
+                        Products = u.ProductsSold
+                            .Where(p => p.BuyerId.HasValue)
+                            .Select(p => new
+                            {
+                                p.Name,
+                                p.Price
+                            })
+                            .ToArray()
+                    }
+                })
+                .OrderByDescending(u => u.SoldProducts.Count)
+                .ToArray();
 
+            var usersWithSoldProducts = new
+            {
+                UsersCount = usersSoldProducts.Length,
+                Users = usersSoldProducts
+            };
+
+            string jsonResult = JsonConvert
+                .SerializeObject(usersWithSoldProducts, Formatting.Indented);
+
+            return jsonResult;
         }
 
         private static string GetJsonFilePath(string jsonFileName)
