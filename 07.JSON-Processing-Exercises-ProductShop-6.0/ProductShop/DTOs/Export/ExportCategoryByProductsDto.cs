@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProductShop.DTOs.Export
 {
@@ -7,6 +7,27 @@ namespace ProductShop.DTOs.Export
     {
         [JsonProperty("category")]
         [Required]
-        public string CategoryName { get; set; } = null!;
+        public string CategoryName
+        {
+            get; set;
+        } = null!;
+
+        [JsonProperty("productsCount")]
+        public int ProductsCount
+        {
+            get; set;
+        }
+
+        [JsonProperty("averagePrice")]
+        public string AveragePrice
+        {
+            get; set;
+        } = null!;
+
+        [JsonProperty("totalRevenue")]
+        public string TotalRevenue
+        {
+            get; set;
+        } = null!;
     }
 }
