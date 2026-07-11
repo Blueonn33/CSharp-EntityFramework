@@ -218,37 +218,42 @@ namespace ProductShop
         {
             var usersWithSoldProducts = dbContext.Users
                 .AsNoTracking()
-                .Where(u => u.ProductsSold.Any(p => p.BuyerId.HasValue))
+                .Where(u => u.ProductsSold.Any(p => p.Buyer != null))
+                .OrderBy(u => u.LastName)
+                .ThenBy(u => u.FirstName)
                 .Select(u => new
                 {
                     u.FirstName,
                     u.LastName,
-                    SoldProducts = u.ProductsSold.Select(p => new
-                    {
-                        p.Name,
-                        p.Price,
-                        BuyerFirstName = p.Buyer.FirstName,
-                        BuyerLastName = p.Buyer.LastName
-                    })
+                    SoldProducts = u.ProductsSold
+                        .Select(p => new
+                        {
+                            p.Name,
+                            p.Price,
+                            BuyerFirstName = p.Buyer != null ? p.Buyer.FirstName : null,
+                            BuyerLastName = p.Buyer != null ? p.Buyer.LastName : null
+                        })
                 })
-                .OrderBy(u => u.LastName)
-                .ThenBy(u => u.FirstName)
                 .ToArray();
 
-            DefaultContractResolver camelCaseContractResolver = new()
+            var camelCaseContractResolver = new DefaultContractResolver
             {
                 NamingStrategy = new CamelCaseNamingStrategy()
             };
 
-            string jsonResult = JsonConvert
-                .SerializeObject(usersWithSoldProducts, Formatting.Indented, new JsonSerializerSettings()
+            string jsonResult = JsonConvert.SerializeObject(
+                usersWithSoldProducts,
+                Formatting.Indented,
+                new JsonSerializerSettings
                 {
-                    NullValueHandling = NullValueHandling.Ignore,
+                    //NullValueHandling = NullValueHandling.Ignore,
                     ContractResolver = camelCaseContractResolver
                 });
 
             return jsonResult;
         }
+
+
 
         // -- 07
         public static string GetCategoriesByProductsCount(ProductShopContext dbContext)
