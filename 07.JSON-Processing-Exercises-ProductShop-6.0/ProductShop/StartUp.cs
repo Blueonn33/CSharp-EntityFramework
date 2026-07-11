@@ -162,10 +162,25 @@ namespace ProductShop
                 categoryProductDtos = Array.Empty<ImportCategoryProductDto>();
             }
 
+            ICollection<CategoryProduct> categoryProductsToPersist = new List<CategoryProduct>();
+
             foreach (var categoryProductDto in categoryProductDtos)
             {
+                if (!IsValid(categoryProductDto))
+                    continue;
 
+                CategoryProduct categoryProduct = new CategoryProduct()
+                {
+                    CategoryId = categoryProductDto.CategoryId,
+                    ProductId = categoryProductDto.ProductId
+                };
+                categoryProductsToPersist.Add(categoryProduct);
             }
+
+            dbContext.CategoriesProducts.AddRange(categoryProductsToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {categoryProductsToPersist.Count}";
         }
 
         private static string GetJsonFilePath(string jsonFileName)
