@@ -1,4 +1,5 @@
 ﻿using CarDealer.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace CarDealer
 {
@@ -7,8 +8,16 @@ namespace CarDealer
         public static void Main()
         {
             using CarDealerContext dbContext = new();
+        }
 
+        private static bool IsValid(object obj)
+        {
+            ValidationContext validationContext = new ValidationContext(obj);
+            ICollection<ValidationResult> validationResults = new List<ValidationResult>();
 
+            bool isValid = Validator.TryValidateObject(obj, validationContext, validationResults);
+
+            return isValid;
         }
     }
 }
