@@ -227,8 +227,8 @@ namespace ProductShop
                     {
                         p.Name,
                         p.Price,
-                        p.Buyer.FirstName,
-                        p.Buyer.LastName
+                        BuyerFirstName = p.Buyer.FirstName,
+                        BuyerLastName = p.Buyer.LastName
                     })
                 })
                 .OrderBy(u => u.LastName)
