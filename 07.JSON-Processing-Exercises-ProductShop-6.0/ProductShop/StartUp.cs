@@ -30,7 +30,7 @@ namespace ProductShop
             //string jsonFilePath = GetJsonFilePath(jsonFileName);
             //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string jsonFileName = "users-and-products.json";
+            string jsonFileName = "products-in-range.json";
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
             //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
@@ -211,6 +211,12 @@ namespace ProductShop
                 .SerializeObject(productsInRange, Formatting.Indented);
 
             return jsonResult;
+        }
+
+        // -- 06
+        public static string GetSoldProducts(ProductShopContext dbContext)
+        {
+            return "";
         }
 
         // -- 07
