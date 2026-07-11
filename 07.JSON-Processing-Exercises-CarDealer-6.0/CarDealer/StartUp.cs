@@ -17,6 +17,12 @@ namespace CarDealer
             string jsonFileContent = File.ReadAllText(jsonFilePath);
         }
 
+        // -- 09
+        public static string ImportSuppliers(CarDealerContext context, string inputJson)
+        {
+             IEnumerable<ImportSupplierDto>
+        }
+
         private static string GetJsonFilePath(string jsonFileName)
         {
             string jsonFolderRelPath = "../../../Datasets/";
