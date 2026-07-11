@@ -33,7 +33,7 @@ namespace ProductShop
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
             //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string jsonResult = GetCategoriesByProductsCount(dbContext);
+            string jsonResult = GetUsersWithProducts(dbContext);
 
             File.WriteAllText(jsonFilePath, jsonResult, Encoding.UTF8);
             Console.WriteLine(jsonResult);
@@ -192,9 +192,9 @@ namespace ProductShop
         }
 
         // -- 07
-        public static string GetCategoriesByProductsCount(ProductShopContext dnContext)
+        public static string GetCategoriesByProductsCount(ProductShopContext dbContext)
         {
-            ExportCategoryByProductsDto[] categoriesByProducts = dnContext.Categories
+            ExportCategoryByProductsDto[] categoriesByProducts = dbContext.Categories
                 .AsNoTracking()
                 .Select(c => new ExportCategoryByProductsDto()
                 {
@@ -214,6 +214,12 @@ namespace ProductShop
                 .SerializeObject(categoriesByProducts, Formatting.Indented);
 
             return jsonResult;
+        }
+
+        // -- 08
+        public static string GetUsersWithProducts(ProductShopContext dbContext)
+        {
+
         }
 
         private static string GetJsonFilePath(string jsonFileName)
