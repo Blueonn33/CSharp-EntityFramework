@@ -23,7 +23,7 @@ namespace ProductShop
             //    dbContext.Database.EnsureCreated();
             //}
 
-            string jsonFileName = "categories.json";
+            string jsonFileName = "categories-products.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
             string jsonFileContent = File.ReadAllText(jsonFilePath);
 
@@ -149,6 +149,23 @@ namespace ProductShop
             dbContext.SaveChanges();
 
             return $"Successfully imported {categoriesToPersist.Count}";
+        }
+
+        // -- 04
+        public static string ImportCategoryProducts(ProductShopContext dbContext, string inputJson)
+        {
+            IEnumerable<ImportCategoryProductDto>? categoryProductDtos =
+                JsonConvert.DeserializeObject<ImportCategoryProductDto[]>(inputJson);
+
+            if (categoryProductDtos == null)
+            {
+                categoryProductDtos = Array.Empty<ImportCategoryProductDto>();
+            }
+
+            foreach (var categoryProductDto in categoryProductDtos)
+            {
+
+            }
         }
 
         private static string GetJsonFilePath(string jsonFileName)
