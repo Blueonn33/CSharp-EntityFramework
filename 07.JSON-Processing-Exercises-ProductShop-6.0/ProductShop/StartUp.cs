@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProductShop.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace ProductShop
 {
@@ -23,12 +24,18 @@ namespace ProductShop
             //    dbContext.Database.EnsureCreated();
             //}
 
-            string jsonFileName = "categories-products.json";
-            string jsonFilePath = GetJsonFilePath(jsonFileName);
-            string jsonFileContent = File.ReadAllText(jsonFilePath);
+            //string jsonFileName = "categories-products.json";
+            //string jsonFilePath = GetJsonFilePath(jsonFileName);
+            //string jsonFileContent = File.ReadAllText(jsonFilePath);
 
-            string result = ImportCategories(dbContext, jsonFileContent);
-            Console.WriteLine(result);
+            string jsonFileName = "categories-products.json";
+            string jsonFilePath = GetJsonResultFilePath(jsonFileName);
+            //string jsonFileContent = File.ReadAllText(jsonFilePath);
+
+            string jsonResult = GetCategoriesByProductsCount(dbContext);
+
+            File.WriteAllText(jsonFilePath, jsonResult, Encoding.UTF8);
+            Console.WriteLine(jsonResult);
         }
 
         // -- 01
@@ -183,12 +190,26 @@ namespace ProductShop
             return $"Successfully imported {categoryProductsToPersist.Count}";
         }
 
+        // -- 07
+        public static string GetCategoriesByProductsCount(ProductShopContext dnContext)
+        {
+
+        }
+
         private static string GetJsonFilePath(string jsonFileName)
         {
             string jsonFolderRelPath = "../../../Datasets/";
             string jsonFilePath = Path.Combine(jsonFolderRelPath, jsonFileName);
 
             return Path.GetFullPath(jsonFilePath);
+        }
+
+        private static string GetJsonResultFilePath(string jsonFileName)
+        {
+            string jsonResultFolderRelPath = "../../../Results/";
+            string jsonResultFilePath = Path.Combine(jsonResultFolderRelPath, jsonFileName);
+
+            return Path.GetFullPath(jsonResultFilePath);
         }
 
         private static bool IsValid(object obj)
