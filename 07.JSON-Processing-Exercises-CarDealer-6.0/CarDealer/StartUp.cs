@@ -53,7 +53,7 @@ namespace CarDealer
             dbContext.Suppliers.AddRange(suppliersToPersist);
             dbContext.SaveChanges();
 
-            return $"Successfully imported {suppliersToPersist.Count}";
+            return $"Successfully imported {suppliersToPersist.Count}.";
         }
 
         private static string GetJsonFilePath(string jsonFileName)
