@@ -1,4 +1,7 @@
 ﻿using CarDealer.Data;
+using CarDealer.DTOs.Import;
+using CarDealer.Models;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
 namespace CarDealer
@@ -12,15 +15,45 @@ namespace CarDealer
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
-            string jsonFileName = "cars.json";
+            string jsonFileName = "suppliers.json";
             string jsonFilePath = GetJsonFilePath(jsonFileName);
             string jsonFileContent = File.ReadAllText(jsonFilePath);
+
+            string result = ImportSuppliers(dbContext, jsonFileContent);
+            Console.WriteLine(result);
         }
 
         // -- 09
-        public static string ImportSuppliers(CarDealerContext context, string inputJson)
+        public static string ImportSuppliers(CarDealerContext dbContext, string inputJson)
         {
-             IEnumerable<ImportSupplierDto>
+            IEnumerable<ImportSupplierDto>? importSupplierDtos =
+                JsonConvert.DeserializeObject<ImportSupplierDto[]>(inputJson);
+
+            if (importSupplierDtos == null)
+            {
+                importSupplierDtos = Array.Empty<ImportSupplierDto>();
+            }
+
+            ICollection<Supplier> suppliersToPersist = new List<Supplier>();
+
+            foreach (var supplierDto in importSupplierDtos)
+            {
+                if (!IsValid(supplierDto))
+                    continue;
+
+                Supplier newSupplier = new Supplier()
+                {
+                    Name = supplierDto.Name,
+                    IsImporter = supplierDto.IsImporter
+                };
+
+                suppliersToPersist.Add(newSupplier);
+            }
+
+            dbContext.Suppliers.AddRange(suppliersToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {suppliersToPersist.Count}";
         }
 
         private static string GetJsonFilePath(string jsonFileName)
