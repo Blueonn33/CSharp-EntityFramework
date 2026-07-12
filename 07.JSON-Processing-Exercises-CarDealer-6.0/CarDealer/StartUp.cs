@@ -5,6 +5,7 @@ using CarDealer.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Text;
 
 namespace CarDealer
@@ -315,7 +316,7 @@ namespace CarDealer
         // -- 19
         public static string GetSalesWithAppliedDiscount(CarDealerContext dbContext)
         {
-            var salesWithDiscount = dbContext.Sales
+            var sales = dbContext.Sales
                 .AsNoTracking()
                 .Select(s => new
                 {
@@ -327,18 +328,24 @@ namespace CarDealer
                     },
                     customerName = s.Customer.Name,
                     discount = s.Discount,
-                    price = s.Car.PartsCars
-                        .Sum(pc => pc.Part.Price)
-                        .ToString("F2"),
-                    priceWithDiscount = (s.Car.PartsCars.Sum(pc => pc.Part.Price)
-                                         * (1 - s.Discount / 100m))
-                        .ToString("F2")
+                    price = s.Car.PartsCars.Sum(pc => pc.Part.Price),
+                    priceWithDiscount = s.Car.PartsCars.Sum(pc => pc.Part.Price) * (1 - s.Discount / 100m)
                 })
                 .Take(10)
                 .ToArray();
 
-            string jsonResult = JsonConvert.SerializeObject(salesWithDiscount, Formatting.Indented);
-            return jsonResult;
+            var salesWithFormattedValues = sales
+                .Select(s => new
+                {
+                    s.car,
+                    s.customerName,
+                    discount = s.discount.ToString("F2", CultureInfo.InvariantCulture),
+                    price = s.price.ToString("F2", CultureInfo.InvariantCulture),
+                    priceWithDiscount = s.priceWithDiscount.ToString("F2", CultureInfo.InvariantCulture)
+                })
+                .ToArray();
+
+            return JsonConvert.SerializeObject(salesWithFormattedValues, Formatting.Indented);
         }
 
         private static string GetJsonFilePath(string jsonFileName)
