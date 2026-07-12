@@ -12,7 +12,7 @@ namespace CarDealer.DTOs.Export
         } = null!;
 
         [JsonProperty("BirthDate")]
-        public DateTime BirthDate
+        public string BirthDate
         {
             get;
             set;
