@@ -3,6 +3,7 @@ using CarDealer.DTOs.Import;
 using CarDealer.Models;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace CarDealer
 {
@@ -12,14 +13,14 @@ namespace CarDealer
         {
             using CarDealerContext dbContext = new();
 
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
+            //dbContext.Database.EnsureDeleted();
+            //dbContext.Database.EnsureCreated();
 
-            string jsonFileName = "sales.json";
-            string jsonFilePath = GetJsonFilePath(jsonFileName);
-            string jsonFileContent = File.ReadAllText(jsonFilePath);
+            string jsonFileName = "ordered-customers.json";
+            string jsonFilePath = GetJsonResultFilePath(jsonFileName);
 
-            string result = ImportSales(dbContext, jsonFileContent);
+            string result = GetOrderedCustomers(dbContext);
+            File.WriteAllText(jsonFilePath, result, Encoding.UTF8);
             Console.WriteLine(result);
         }
 
@@ -190,6 +191,12 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {sales.Count}.";
+        }
+
+        // -- 14
+        public static string GetOrderedCustomers(CarDealerContext dbContext)
+        {
+
         }
 
         private static string GetJsonFilePath(string jsonFileName)
