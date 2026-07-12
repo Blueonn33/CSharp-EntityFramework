@@ -26,10 +26,10 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export
-            string jsonFileName = "customers-total-sales.json";
+            string jsonFileName = "sales-discounts.json";
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
 
-            string result = GetTotalSalesByCustomer(dbContext);
+            string result = GetSalesWithAppliedDiscount(dbContext);
             File.WriteAllText(jsonFilePath, result, Encoding.UTF8);
             Console.WriteLine(result);
         }
@@ -309,6 +309,35 @@ namespace CarDealer
                 .ToArray();
 
             string jsonResult = JsonConvert.SerializeObject(totalSalesByCustomer, Formatting.Indented);
+            return jsonResult;
+        }
+
+        // -- 19
+        public static string GetSalesWithAppliedDiscount(CarDealerContext dbContext)
+        {
+            var salesWithDiscount = dbContext.Sales
+                .AsNoTracking()
+                .Select(s => new
+                {
+                    car = new
+                    {
+                        Make = s.Car.Make,
+                        Model = s.Car.Model,
+                        TraveledDistance = s.Car.TraveledDistance
+                    },
+                    customerName = s.Customer.Name,
+                    discount = s.Discount,
+                    price = s.Car.PartsCars
+                        .Sum(pc => pc.Part.Price)
+                        .ToString("F2"),
+                    priceWithDiscount = (s.Car.PartsCars.Sum(pc => pc.Part.Price)
+                                         * (1 - s.Discount / 100m))
+                        .ToString("F2")
+                })
+                .Take(10)
+                .ToArray();
+
+            string jsonResult = JsonConvert.SerializeObject(salesWithDiscount, Formatting.Indented);
             return jsonResult;
         }
 
