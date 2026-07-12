@@ -295,13 +295,17 @@ namespace CarDealer
         {
             ExportTotalSalesByCustomerDto[] totalSalesByCustomer = dbContext.Customers
                 .AsNoTracking()
-                .Where(c => c.Sales.Any(s => s.CustomerId == c.Id))
+                .Where(c => c.Sales.Any())
                 .Select(c => new ExportTotalSalesByCustomerDto
                 {
                     FullName = c.Name,
                     BoughtCars = c.Sales.Count,
+                    SpentMoney = c.Sales
+                        .SelectMany(s => s.Car.PartsCars)
+                        .Sum(pc => pc.Part.Price)
                 })
-                .OrderByDescending(c => c.BoughtCars)
+                .OrderByDescending(c => c.SpentMoney)
+                .ThenByDescending(c => c.BoughtCars)
                 .ToArray();
 
             string jsonResult = JsonConvert.SerializeObject(totalSalesByCustomer, Formatting.Indented);
