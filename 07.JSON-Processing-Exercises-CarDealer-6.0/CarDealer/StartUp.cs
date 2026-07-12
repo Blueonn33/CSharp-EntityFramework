@@ -26,10 +26,10 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export
-            string jsonFileName = "toyota-cars.json";
+            string jsonFileName = "local-suppliers.json";
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
 
-            string result = GetCarsFromMakeToyota(dbContext);
+            string result = GetLocalSuppliers(dbContext);
             File.WriteAllText(jsonFilePath, result, Encoding.UTF8);
             Console.WriteLine(result);
         }
@@ -241,6 +241,24 @@ namespace CarDealer
                 .ToArray();
 
             string jsonResult = JsonConvert.SerializeObject(toyotaCars, Formatting.Indented);
+            return jsonResult;
+        }
+
+        // -- 16
+        public static string GetLocalSuppliers(CarDealerContext dbContext)
+        {
+            ExportLocalSuppliersDto[] localSuppliers = dbContext.Suppliers
+                .AsNoTracking()
+                .Where(s => s.IsImporter == false)
+                .Select(s => new ExportLocalSuppliersDto()
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    PartsCount = s.Parts.Count
+                })
+                .ToArray();
+
+            string jsonResult = JsonConvert.SerializeObject(localSuppliers, Formatting.Indented);
             return jsonResult;
         }
 
