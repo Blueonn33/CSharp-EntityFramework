@@ -208,7 +208,7 @@ namespace CarDealer
             ExportOrderedCustomersDto[] orderedCustomers = dbContext.Customers
                 .AsNoTracking()
                 .OrderBy(c => c.BirthDate)
-                .ThenBy(c => c.IsYoungDriver == false)
+                .ThenBy(c => c.IsYoungDriver)
                 .ToList()
                 .Select(c => new ExportOrderedCustomersDto()
                 {
