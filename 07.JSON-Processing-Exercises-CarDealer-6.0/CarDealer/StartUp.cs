@@ -29,7 +29,7 @@ namespace CarDealer
             string jsonFileName = "toyota-cars.json";
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
 
-            string result = GetOrderedCustomers(dbContext);
+            string result = GetCarsFromMakeToyota(dbContext);
             File.WriteAllText(jsonFilePath, result, Encoding.UTF8);
             Console.WriteLine(result);
         }
@@ -228,6 +228,7 @@ namespace CarDealer
         {
             ExportCarsFromMakeToyotaDto[] toyotaCars = dbContext.Cars
                 .AsNoTracking()
+                .Where(c => c.Make == "Toyota")
                 .Select(c => new ExportCarsFromMakeToyotaDto()
                 {
                     Id = c.Id,
@@ -235,7 +236,12 @@ namespace CarDealer
                     Model = c.Model,
                     TraveledDistance = c.TraveledDistance
                 })
+                .OrderBy(c => c.Model)
+                .ThenByDescending(c => c.TraveledDistance)
                 .ToArray();
+
+            string jsonResult = JsonConvert.SerializeObject(toyotaCars, Formatting.Indented);
+            return jsonResult;
         }
 
         private static string GetJsonFilePath(string jsonFileName)
