@@ -1,9 +1,10 @@
 ﻿using CarDealer.Data;
+using CarDealer.DTOs.Export;
 using CarDealer.DTOs.Import;
 using CarDealer.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace CarDealer
 {
@@ -16,11 +17,17 @@ namespace CarDealer
             //dbContext.Database.EnsureDeleted();
             //dbContext.Database.EnsureCreated();
 
-            string jsonFileName = "ordered-customers.json";
-            string jsonFilePath = GetJsonResultFilePath(jsonFileName);
+            //string jsonFileName = "ordered-customers.json";
+            string jsonFileName = "sales.json";
+            string jsonFilePath = GetJsonFilePath(jsonFileName);
+            string inputJson = File.ReadAllText(jsonFilePath);
+            //string jsonFilePath = GetJsonResultFilePath(jsonFileName);
 
-            string result = GetOrderedCustomers(dbContext);
-            File.WriteAllText(jsonFilePath, result, Encoding.UTF8);
+            //string result = GetOrderedCustomers(dbContext);
+            //File.WriteAllText(jsonFilePath, result, Encoding.UTF8);
+            //Console.WriteLine(result);
+
+            string result = ImportSales(dbContext, inputJson);
             Console.WriteLine(result);
         }
 
@@ -131,7 +138,6 @@ namespace CarDealer
             return $"Successfully imported {cars.Count}.";
         }
 
-
         // -- 12
         public static string ImportCustomers(CarDealerContext dbContext, string inputJson)
         {
@@ -196,7 +202,23 @@ namespace CarDealer
         // -- 14
         public static string GetOrderedCustomers(CarDealerContext dbContext)
         {
+            ExportOrderedCustomersDto[] orderedCustomers = dbContext.Customers
+                .AsNoTracking()
+                .Select(c => new ExportOrderedCustomersDto()
+                {
+                    Name = c.Name,
+                    BirthDate = c.BirthDate,
+                    IsYoungDriver = c.IsYoungDriver
+                })
+                .OrderBy(c => c.BirthDate)
+                .ThenBy(c => c.IsYoungDriver == false)
+                .ToArray();
 
+            string jsonResult = JsonConvert.SerializeObject(orderedCustomers, Formatting.Indented);
+
+            Console.WriteLine(dbContext.Suppliers.Count());
+
+            return jsonResult;
         }
 
         private static string GetJsonFilePath(string jsonFileName)
