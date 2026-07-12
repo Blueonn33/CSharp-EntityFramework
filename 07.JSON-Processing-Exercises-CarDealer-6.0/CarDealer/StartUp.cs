@@ -173,8 +173,8 @@ namespace CarDealer
 
             foreach (var dto in saleDtos)
             {
-                if (!dbContext.Cars.Any(c => c.Id == dto.CarId))
-                    continue;
+                //if (!dbContext.Cars.Any(c => c.Id == dto.CarId))
+                //    continue;
 
                 var sale = new Sale
                 {
