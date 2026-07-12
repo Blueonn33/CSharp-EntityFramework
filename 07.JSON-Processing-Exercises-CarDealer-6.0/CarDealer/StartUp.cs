@@ -26,7 +26,7 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export
-            string jsonFileName = "ordered-customers.json";
+            string jsonFileName = "toyota-cars.json";
             string jsonFilePath = GetJsonResultFilePath(jsonFileName);
 
             string result = GetOrderedCustomers(dbContext);
@@ -221,6 +221,21 @@ namespace CarDealer
             string jsonResult = JsonConvert.SerializeObject(orderedCustomers, Formatting.Indented);
 
             return jsonResult;
+        }
+
+        // -- 15
+        public static string GetCarsFromMakeToyota(CarDealerContext dbContext)
+        {
+            ExportCarsFromMakeToyotaDto[] toyotaCars = dbContext.Cars
+                .AsNoTracking()
+                .Select(c => new ExportCarsFromMakeToyotaDto()
+                {
+                    Id = c.Id,
+                    Make = c.Make,
+                    Model = c.Model,
+                    TraveledDistance = c.TraveledDistance
+                })
+                .ToArray();
         }
 
         private static string GetJsonFilePath(string jsonFileName)
