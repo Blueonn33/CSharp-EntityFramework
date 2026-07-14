@@ -9,3 +9,8 @@ string name = users
     .Value;
 
 Console.WriteLine(name);
+
+var martin = users
+    .First();
+
+martin.SetElementValue("favoriteColor", "purple");
