@@ -3,6 +3,6 @@
     public static class Configuration
     {
         public const string ConnectionString =
-            @"Server=PREDATOR\SQLEXPRESS;Database=ProductShop;Integrated Security=True";
+            @"Server=;Database=ProductShop;Integrated Security=True";
     }
 }
