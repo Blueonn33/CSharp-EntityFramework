@@ -1,6 +1,6 @@
-﻿using AutoMapper.Configuration;
-using CarDealer.Data;
+﻿using CarDealer.Data;
 using CarDealer.DTOs.Import;
+using CarDealer.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Serialization;
 using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
@@ -37,10 +37,36 @@ namespace CarDealer
                 supplierDtos = Array.Empty<ImportSupplierDto>();
             }
 
+            ICollection<Supplier> suppliersToPersist = new List<Supplier>();
+
             foreach (var supplierDto in supplierDtos)
             {
-                ICollection<>
+                if (!IsValid(supplierDto))
+                {
+                    continue;
+                }
+
+                bool isImporterPropValid = bool
+                    .TryParse(supplierDto.IsImporter, out bool isImporterValid);
+
+                if (!isImporterPropValid)
+                {
+                    continue;
+                }
+
+                Supplier newSupplier = new Supplier()
+                {
+                    Name = supplierDto.Name,
+                    IsImporter = isImporterValid
+                };
+
+                suppliersToPersist.Add(newSupplier);
             }
+
+            dbContext.Suppliers.AddRange(suppliersToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {suppliersToPersist.Count}.";
         }
 
         private static string GetXmlFilePath(string fileName)
