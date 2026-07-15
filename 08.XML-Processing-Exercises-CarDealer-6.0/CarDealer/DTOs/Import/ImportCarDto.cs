@@ -1,16 +1,19 @@
-﻿using System.Xml.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Serialization;
 
 namespace CarDealer.DTOs.Import
 {
     [XmlType("Car")]
     public class ImportCarDto
     {
+        [Required]
         [XmlElement("make")]
         public string Make
         {
             get; set;
         } = null!;
 
+        [Required]
         [XmlElement("model")]
         public string Model
         {
@@ -26,7 +29,8 @@ namespace CarDealer.DTOs.Import
         [XmlArray("parts")]
         public IEnumerable<ImportCarPartDto> Parts
         {
-            get; set;
-        }
+            get;
+            set;
+        } = new List<ImportCarPartDto>();
     }
 }
