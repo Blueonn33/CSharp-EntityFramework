@@ -12,8 +12,10 @@ namespace CarDealer
             // Read file
             string xmlFileName = "suppliers.xml";
             string xmlFilePath = GetXmlFilePath(xmlFileName);
-            string xmlFileContext = File.ReadAllText(xmlFilePath);
+            string xmlFileContent = File.ReadAllText(xmlFilePath);
 
+            string result = ImportSuppliers(dbContext, xmlFileContent);
+            Console.WriteLine(result);
         }
 
         public static string ImportSuppliers(CarDealerContext dbContext, string inputXml)
