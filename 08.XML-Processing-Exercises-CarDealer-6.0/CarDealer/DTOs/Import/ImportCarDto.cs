@@ -22,5 +22,11 @@ namespace CarDealer.DTOs.Import
         {
             get; set;
         }
+
+        [XmlArray("parts")]
+        public IEnumerable<ImportCarPartDto> Parts
+        {
+            get; set;
+        }
     }
 }
