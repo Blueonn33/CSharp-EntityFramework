@@ -1,8 +1,8 @@
 ﻿using CarDealer.Data;
 using CarDealer.DTOs.Import;
 using CarDealer.Models;
+using CarDealer.Utilities;
 using System.ComponentModel.DataAnnotations;
-using System.Xml.Serialization;
 using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
 namespace CarDealer
@@ -25,6 +25,8 @@ namespace CarDealer
 
         public static string ImportSuppliers(CarDealerContext dbContext, string inputXml)
         {
+            IEnumerable<ImportSupplierDto>? supplierDtos =
+                XmlSerializerWrapper.Deserialize<ImportSupplierDto[]>(inputXml, "Suppliers");
 
             if (supplierDtos == null)
             {
