@@ -25,12 +25,6 @@ namespace CarDealer
 
         public static string ImportSuppliers(CarDealerContext dbContext, string inputXml)
         {
-            XmlRootAttribute xmlRoot = new XmlRootAttribute("Suppliers");
-
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportSupplierDto[]), xmlRoot);
-            StringReader stringReader = new StringReader(inputXml);
-
-            IEnumerable<ImportSupplierDto>? supplierDtos = (IEnumerable<ImportSupplierDto>?)(xmlSerializer.Deserialize(stringReader));
 
             if (supplierDtos == null)
             {
