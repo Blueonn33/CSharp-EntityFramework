@@ -16,11 +16,11 @@ namespace CarDealer
             dbContext.Database.EnsureCreated();
 
             // Read file
-            string xmlFileName = "parts.xml";
+            string xmlFileName = "cars.xml";
             string xmlFilePath = GetXmlFilePath(xmlFileName);
             string xmlFileContent = File.ReadAllText(xmlFilePath);
 
-            string result = ImportParts(dbContext, xmlFileContent);
+            string result = ImportCars(dbContext, xmlFileContent);
             Console.WriteLine(result);
         }
 
@@ -119,6 +119,11 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {partsToPersist.Count}";
+        }
+
+        public static string ImportCars(CarDealerContext dbContext, string inputXml)
+        {
+          
         }
 
         private static string GetXmlFilePath(string fileName)
