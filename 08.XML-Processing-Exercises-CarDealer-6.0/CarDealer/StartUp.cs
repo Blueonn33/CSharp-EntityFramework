@@ -86,7 +86,7 @@ namespace CarDealer
 
             foreach (var partDto in partDtos)
             {
-                if (IsValid(partDto))
+                if (!IsValid(partDto))
                 {
                     continue;
                 }
