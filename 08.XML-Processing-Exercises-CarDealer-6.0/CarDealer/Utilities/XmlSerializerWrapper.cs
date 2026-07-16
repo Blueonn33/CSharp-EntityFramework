@@ -17,7 +17,7 @@ namespace CarDealer.Utilities
             return result;
         }
 
-        public static string Serialize<T>(T obj, string rootName, IDictionary<string, string>? xmlNamespaces)
+        public static string Serialize<T>(T obj, string rootName, IDictionary<string, string>? xmlNamespaces = null)
         {
             StringBuilder result = new StringBuilder();
 

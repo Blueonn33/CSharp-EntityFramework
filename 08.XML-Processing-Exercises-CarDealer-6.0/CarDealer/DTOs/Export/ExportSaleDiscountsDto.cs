@@ -26,15 +26,15 @@ namespace CarDealer.DTOs.Export
         } = null!;
 
         [XmlElement("price")]
-        public string Price
+        public decimal Price
         {
             get; set;
-        } = null!;
+        }
 
         [XmlElement("price-with-discount")]
-        public string DiscountedPrice
+        public decimal DiscountedPrice
         {
             get; set;
-        } = null!;
+        }
     }
 }
