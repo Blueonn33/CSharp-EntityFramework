@@ -123,7 +123,67 @@ namespace CarDealer
 
         public static string ImportCars(CarDealerContext dbContext, string inputXml)
         {
-          
+            IEnumerable<ImportCarDto>? carDtos = XmlSerializerWrapper
+                .Deserialize<ImportCarDto[]>(inputXml
+                    , "Cars");
+
+            if (carDtos == null)
+            {
+                carDtos = Array.Empty<ImportCarDto>();
+            }
+
+            IEnumerable<int> existingPartIds = dbContext.Parts
+                .AsNoTracking()
+                .Select(p => p.Id)
+                .ToArray();
+
+            ICollection<Car> carsToPersist = new List<Car>();
+
+            foreach (var carDto in carDtos)
+            {
+                if (!IsValid(carDto))
+                {
+                    continue;
+                }
+
+                Car newCar = new Car()
+                {
+                    Make = carDto.Make,
+                    Model = carDto.Model,
+                    TraveledDistance = carDto.TraveledDistance
+                };
+
+                IEnumerable<int> uniquePartIds = carDto.Parts
+                    .Select(p => p.Id)
+                    .Distinct()
+                    .ToArray();
+
+                ICollection<PartCar> carParts = new List<PartCar>();
+
+                foreach (var partId in uniquePartIds)
+                {
+                    if (!existingPartIds.Contains(partId))
+                    {
+                        continue;
+                    }
+
+                    PartCar newPartCar = new PartCar()
+                    {
+                        PartId = partId,
+                        Car = newCar
+                    };
+
+                    carParts.Add(newPartCar);
+                }
+
+                newCar.PartsCars = carParts;
+                carsToPersist.Add(newCar);
+            }
+
+            dbContext.Cars.AddRange(carsToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {carsToPersist.Count}";
         }
 
         private static string GetXmlFilePath(string fileName)

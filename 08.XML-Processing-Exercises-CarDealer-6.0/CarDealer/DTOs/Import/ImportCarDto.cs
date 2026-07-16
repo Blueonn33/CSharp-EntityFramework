@@ -27,10 +27,10 @@ namespace CarDealer.DTOs.Import
         }
 
         [XmlArray("parts")]
-        public IEnumerable<ImportCarPartDto> Parts
+        public ImportCarPartDto[] Parts
         {
             get;
             set;
-        } = new List<ImportCarPartDto>();
+        } = Array.Empty<ImportCarPartDto>();
     }
 }
