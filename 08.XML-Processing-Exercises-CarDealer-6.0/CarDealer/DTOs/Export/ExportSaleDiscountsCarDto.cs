@@ -11,7 +11,7 @@ namespace CarDealer.DTOs.Export
             get; set;
         } = null!;
 
-        [XmlAttribute("make")]
+        [XmlAttribute("model")]
         public string Model
         {
             get; set;

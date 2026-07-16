@@ -1,9 +1,12 @@
 ﻿using CarDealer.Data;
+using CarDealer.DTOs.Export;
 using CarDealer.DTOs.Import;
 using CarDealer.Models;
 using CarDealer.Utilities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Xml.Serialization;
 using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
 namespace CarDealer
@@ -283,7 +286,30 @@ namespace CarDealer
         // --  19
         public static string GetSalesWithAppliedDiscount(CarDealerContext dbContext)
         {
-            return string.Empty;
+            IEnumerable<ExportSaleDiscountsDto> salesWithDiscounts = dbContext.Sales
+                .AsNoTracking()
+                .Select(s => new ExportSaleDiscountsDto()
+                {
+                    Car = new ExportSaleDiscountsCarDto()
+                    {
+                        Make = s.Car.Make,
+                        Model = s.Car.Model,
+                        TraveledDistance = s.Car.TraveledDistance.ToString()
+                    },
+                    Discount = ((int)(s.Discount)).ToString(),
+                    CustomerName = s.Customer.Name,
+                    Price = s.Car.PartsCars.Sum(pc => pc.Part.Quantity * pc.Part.Price)
+                        .ToString("F2"),
+                    DiscountedPrice = ((s.Car.PartsCars
+                            .Sum(pc => pc.Part.Quantity * pc.Part.Price)) * (1 - s.Discount / 100.0m))
+                        .ToString("F2")
+                })
+                .ToArray();
+
+            string result = XmlSerializerWrapper
+                .Serialize(salesWithDiscounts, "sales");
+
+            return result.ToString().TrimEnd();
         }
 
         private static string GetXmlFilePath(string fileName)
