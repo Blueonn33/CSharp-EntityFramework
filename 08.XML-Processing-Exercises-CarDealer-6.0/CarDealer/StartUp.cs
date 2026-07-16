@@ -16,11 +16,11 @@ namespace CarDealer
             dbContext.Database.EnsureCreated();
 
             // Read file
-            string xmlFileName = "customers.xml";
+            string xmlFileName = "sales.xml";
             string xmlFilePath = GetXmlFilePath(xmlFileName);
             string xmlFileContent = File.ReadAllText(xmlFilePath);
 
-            string result = ImportCustomers(dbContext, xmlFileContent);
+            string result = ImportSales(dbContext, xmlFileContent);
             Console.WriteLine(result);
         }
 
@@ -223,6 +223,51 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {customersToPersist.Count}";
+        }
+
+        // -- 13
+        public static string ImportSales(CarDealerContext dbContext, string inputXml)
+        {
+            IEnumerable<ImportSaleDto>? saleDtos = XmlSerializerWrapper.Deserialize<ImportSaleDto[]>(inputXml, "Sales");
+
+            if (saleDtos == null)
+            {
+                saleDtos = Array.Empty<ImportSaleDto>();
+            }
+
+            IEnumerable<int> existingCarIds = dbContext.Cars
+                .AsNoTracking()
+                .Select(c => c.Id)
+                .ToArray();
+
+            ICollection<Sale> salesToPersist = new List<Sale>();
+
+            foreach (var saleDto in saleDtos)
+            {
+                if (!IsValid(saleDto))
+                {
+                    continue;
+                }
+
+                if (!existingCarIds.Contains(saleDto.CarId))
+                {
+                    continue;
+                }
+
+                Sale newSale = new Sale()
+                {
+                    CarId = saleDto.CarId,
+                    CustomerId = saleDto.CustomerId,
+                    Discount = saleDto.Discount,
+                };
+
+                salesToPersist.Add(newSale);
+            }
+
+            dbContext.Sales.AddRange(salesToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {salesToPersist.Count}";
         }
 
         private static string GetXmlFilePath(string fileName)
