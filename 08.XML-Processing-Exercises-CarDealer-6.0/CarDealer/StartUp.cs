@@ -16,14 +16,15 @@ namespace CarDealer
             dbContext.Database.EnsureCreated();
 
             // Read file
-            string xmlFileName = "cars.xml";
+            string xmlFileName = "customers.xml";
             string xmlFilePath = GetXmlFilePath(xmlFileName);
             string xmlFileContent = File.ReadAllText(xmlFilePath);
 
-            string result = ImportCars(dbContext, xmlFileContent);
+            string result = ImportCustomers(dbContext, xmlFileContent);
             Console.WriteLine(result);
         }
 
+        // 09
         public static string ImportSuppliers(CarDealerContext dbContext, string inputXml)
         {
             IEnumerable<ImportSupplierDto>? supplierDtos =
@@ -66,6 +67,7 @@ namespace CarDealer
             return $"Successfully imported {suppliersToPersist.Count}";
         }
 
+        // 10
         public static string ImportParts(CarDealerContext dbContext, string inputXml)
         {
             IEnumerable<ImportPartDto>? partDtos = XmlSerializerWrapper
@@ -121,6 +123,7 @@ namespace CarDealer
             return $"Successfully imported {partsToPersist.Count}";
         }
 
+        // 11
         public static string ImportCars(CarDealerContext dbContext, string inputXml)
         {
             IEnumerable<ImportCarDto>? carDtos = XmlSerializerWrapper
@@ -184,6 +187,42 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {carsToPersist.Count}";
+        }
+
+        // -- 12
+        public static string ImportCustomers(CarDealerContext dbContext, string inputXml)
+        {
+            IEnumerable<ImportCustomerDto>? customerDtos =
+                XmlSerializerWrapper.Deserialize<ImportCustomerDto[]>(inputXml, "Customers");
+
+            if (customerDtos == null)
+            {
+                customerDtos = Array.Empty<ImportCustomerDto>();
+            }
+
+            ICollection<Customer> customersToPersist = new List<Customer>();
+
+            foreach (var customerDto in customerDtos)
+            {
+                if (!IsValid(customerDto))
+                {
+                    continue;
+                }
+
+                Customer newCustomer = new Customer()
+                {
+                    Name = customerDto.Name,
+                    BirthDate = customerDto.BirthDate,
+                    IsYoungDriver = customerDto.IsYoungDriver
+                };
+
+                customersToPersist.Add(newCustomer);
+            }
+
+            dbContext.Customers.AddRange(customersToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {customersToPersist.Count}";
         }
 
         private static string GetXmlFilePath(string fileName)
