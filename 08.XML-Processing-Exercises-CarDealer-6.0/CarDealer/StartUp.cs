@@ -16,12 +16,22 @@ namespace CarDealer
             dbContext.Database.EnsureCreated();
 
             // Read file
-            string xmlFileName = "sales.xml";
-            string xmlFilePath = GetXmlFilePath(xmlFileName);
-            string xmlFileContent = File.ReadAllText(xmlFilePath);
+            //string xmlFileName = "sales.xml";
+            //string xmlFilePath = GetXmlFilePath(xmlFileName);
+            //string xmlFileContent = File.ReadAllText(xmlFilePath);
 
-            string result = ImportSales(dbContext, xmlFileContent);
-            Console.WriteLine(result);
+            //string result = ImportSales(dbContext, xmlFileContent);
+            //Console.WriteLine(result);
+
+            // Export file
+            string xmlFileName = "sales-discounts.xml";
+            string xmlFilePath = GetXmlResultPath(xmlFileName);
+
+            string xmlFileContent = GetSalesWithAppliedDiscount(dbContext);
+
+            File.WriteAllText(xmlFilePath, xmlFileContent);
+
+            Console.WriteLine(xmlFileContent);
         }
 
         // 09
@@ -270,10 +280,24 @@ namespace CarDealer
             return $"Successfully imported {salesToPersist.Count}";
         }
 
+        // --  19
+        public static string GetSalesWithAppliedDiscount(CarDealerContext dbContext)
+        {
+            return string.Empty;
+        }
+
         private static string GetXmlFilePath(string fileName)
         {
             string currentDirectory = Directory.GetCurrentDirectory();
             string xmlDirectory = Path.Combine(currentDirectory, "../../../Datasets", fileName);
+
+            return Path.GetFullPath(xmlDirectory);
+        }
+
+        private static string GetXmlResultPath(string fileName)
+        {
+            string currentDirectory = Directory.GetCurrentDirectory();
+            string xmlDirectory = Path.Combine(currentDirectory, "../../../Results", fileName);
 
             return Path.GetFullPath(xmlDirectory);
         }
