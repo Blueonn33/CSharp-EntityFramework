@@ -346,6 +346,11 @@ namespace CarDealer
             return result;
         }
 
+        // -- 17
+        public static string GetCarsWithTheirListOfParts(CarDealerContext dbContext)
+        {
+
+        }
 
         // --  19
         public static string GetSalesWithAppliedDiscount(CarDealerContext dbContext)
