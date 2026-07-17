@@ -12,16 +12,19 @@ namespace EFInversionOfControl
         IQueryable<T> AllReadOnly<T>()
             where T : class;
 
+        Task<T?> GetById<T>(object id)
+            where T : class;
+
         Task AddAsync<T>(T entity)
             where T : class;
 
         Task AddRangeAsync<T>(IEnumerable<T> entities)
             where T : class;
 
-        Task Delete<T>(T entity)
+        void Delete<T>(T entity)
             where T : class;
 
-        Task BulkDelete<T>(Expression<Func<T, bool>> filter)
+        Task ExecuteBulkDelete<T>(Expression<Func<T, bool>> filter)
             where T : class;
 
         Task<int> SaveChangesAsync();
