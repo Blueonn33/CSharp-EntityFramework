@@ -25,10 +25,10 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export file
-            string xmlFileName = "cars-and-parts.xml";
+            string xmlFileName = "sales-discounts.xml";
             string xmlFilePath = GetXmlResultPath(xmlFileName);
 
-            string xmlFileContent = GetCarsWithTheirListOfParts(dbContext);
+            string xmlFileContent = GetSalesWithAppliedDiscount(dbContext);
 
             File.WriteAllText(xmlFilePath, xmlFileContent);
 
@@ -394,8 +394,8 @@ namespace CarDealer
                     Discount = ((int)(s.Discount)).ToString(),
                     CustomerName = s.Customer.Name,
                     Price = s.Car.PartsCars.Sum(pc => pc.Part.Price),
-                    DiscountedPrice = (s.Car.PartsCars
-                            .Sum(pc => pc.Part.Price)) * (1 - s.Discount / 100.0m)
+                    DiscountedPrice = Math.Round(s.Car.PartsCars
+                            .Sum(pc => (double)pc.Part.Price) * (1 - (double)(s.Discount) / 100.0D), 3)
                 })
                 .ToArray();
 

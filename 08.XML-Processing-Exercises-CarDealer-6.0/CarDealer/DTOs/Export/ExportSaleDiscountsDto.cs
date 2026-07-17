@@ -32,7 +32,7 @@ namespace CarDealer.DTOs.Export
         }
 
         [XmlElement("price-with-discount")]
-        public decimal DiscountedPrice
+        public double DiscountedPrice
         {
             get; set;
         }
