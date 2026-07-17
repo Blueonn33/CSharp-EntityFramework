@@ -5,7 +5,6 @@ namespace CarDealer.DTOs.Export
     [XmlType("car")]
     public class ExportCarsDto
     {
-
         [XmlAttribute("make")]
         public string Make
         {
@@ -23,5 +22,12 @@ namespace CarDealer.DTOs.Export
         {
             get; set;
         }
+
+        [XmlElement("parts")]
+        public ExportCarPartsDto Parts
+        {
+            get;
+            set;
+        } = null!;
     }
 }

@@ -349,7 +349,25 @@ namespace CarDealer
         // -- 17
         public static string GetCarsWithTheirListOfParts(CarDealerContext dbContext)
         {
-
+            ExportCarsDto[] cars = dbContext.Cars
+                .AsNoTracking()
+                .OrderByDescending(p => p.PartsCars
+                    .Select(pc => pc.Part)
+                    .Select(p => p.Price))
+                .OrderByDescending(c => c.TraveledDistance)
+                .ThenBy(c => c.Model)
+                .Select(c => new ExportCarsDto()
+                {
+                    Make = c.Make,
+                    Model = c.Model,
+                    TraveledDistance = c.TraveledDistance,
+                    Parts = c.PartsCars
+                        .Select(p => new ExportPartsDto()
+                        {
+                            Name = p.Name
+                        })
+                })
+                
         }
 
         // --  19
