@@ -351,7 +351,8 @@ namespace CarDealer
         {
             ExportCarsDto[] cars = dbContext.Cars
                 .AsNoTracking()
-                .OrderByDescending(c => c.PartsCars.Sum(pc => pc.Part.Price))
+                .OrderByDescending(c => c.PartsCars
+                    .Sum(p => p.Part.Price))
                 .ThenByDescending(c => c.TraveledDistance)
                 .ThenBy(c => c.Model)
                 .Select(c => new ExportCarsDto()
@@ -360,11 +361,13 @@ namespace CarDealer
                     Model = c.Model,
                     TraveledDistance = c.TraveledDistance,
                     Parts = c.PartsCars
+                        .OrderByDescending(pc => pc.Part.Price)
                         .Select(pc => new ExportPartsDto()
                         {
                             Name = pc.Part.Name,
                             Price = pc.Part.Price
                         })
+                        .ToArray()
                 })
                 .ToArray();
 
