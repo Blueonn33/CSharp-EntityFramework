@@ -369,6 +369,7 @@ namespace CarDealer
                         })
                         .ToArray()
                 })
+                .Take(5)
                 .ToArray();
 
             string result = XmlSerializerWrapper
