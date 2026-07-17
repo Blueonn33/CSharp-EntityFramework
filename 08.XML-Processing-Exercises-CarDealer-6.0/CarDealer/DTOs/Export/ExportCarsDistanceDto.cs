@@ -20,7 +20,8 @@ namespace CarDealer.DTOs.Export
         [XmlElement("traveled-distance")]
         public long TraveledDistance
         {
-            get; set;
+            get;
+            set;
         }
     }
 }

@@ -284,7 +284,24 @@ namespace CarDealer
         // -- 14
         public static string GetCarsWithDistance(CarDealerContext dbContext)
         {
+            ExportCarsDistanceDto[] carsWithDistance = dbContext.Cars
+                .AsNoTracking()
+                .Select(c => new ExportCarsDistanceDto()
+                {
+                    Make = c.Make,
+                    Model = c.Model,
+                    TraveledDistance = c.TraveledDistance
+                })
+                .Where(c => c.TraveledDistance > 2000000)
+                .OrderBy(c => c.Make)
+                .ThenBy(c => c.Model)
+                .Take(10)
+                .ToArray();
 
+            string result = XmlSerializerWrapper
+                .Serialize(carsWithDistance, "cars");
+
+            return result;
         }
 
         // --  19
@@ -311,7 +328,7 @@ namespace CarDealer
             string result = XmlSerializerWrapper
                 .Serialize(salesWithDiscounts, "sales");
 
-            return result.TrimEnd();
+            return result;
         }
 
         private static string GetXmlFilePath(string fileName)
