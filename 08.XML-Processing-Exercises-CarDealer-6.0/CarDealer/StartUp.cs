@@ -25,10 +25,10 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export file
-            string xmlFileName = "cars.xml";
+            string xmlFileName = "bmw-cars.xml";
             string xmlFilePath = GetXmlResultPath(xmlFileName);
 
-            string xmlFileContent = GetCarsWithDistance(dbContext);
+            string xmlFileContent = GetCarsFromMakeBmw(dbContext);
 
             File.WriteAllText(xmlFilePath, xmlFileContent);
 
@@ -300,6 +300,28 @@ namespace CarDealer
 
             string result = XmlSerializerWrapper
                 .Serialize(carsWithDistance, "cars");
+
+            return result;
+        }
+
+        // -- 15
+        public static string GetCarsFromMakeBmw(CarDealerContext dbContext)
+        {
+            ExportBMWDto[] bmw = dbContext.Cars
+                .AsNoTracking()
+                .Where(c => c.Make == "BMW")
+                .OrderBy(c => c.Model)
+                .ThenByDescending(c => c.TraveledDistance)
+                .Select(c => new ExportBMWDto()
+                {
+                    Id = c.Id,
+                    Model = c.Model,
+                    TraveledDistance = c.TraveledDistance
+                })
+                .ToArray();
+
+            string result = XmlSerializerWrapper
+                .Serialize(bmw, "cars");
 
             return result;
         }
