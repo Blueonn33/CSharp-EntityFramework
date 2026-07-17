@@ -25,10 +25,10 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export file
-            string xmlFileName = "sales-discounts.xml";
+            string xmlFileName = "cars.xml";
             string xmlFilePath = GetXmlResultPath(xmlFileName);
 
-            string xmlFileContent = GetSalesWithAppliedDiscount(dbContext);
+            string xmlFileContent = GetCarsWithDistance(dbContext);
 
             File.WriteAllText(xmlFilePath, xmlFileContent);
 
@@ -279,6 +279,12 @@ namespace CarDealer
             dbContext.SaveChanges();
 
             return $"Successfully imported {salesToPersist.Count}";
+        }
+
+        // -- 14
+        public static string GetCarsWithDistance(CarDealerContext dbContext)
+        {
+
         }
 
         // --  19
