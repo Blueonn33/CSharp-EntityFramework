@@ -25,10 +25,10 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export file
-            string xmlFileName = "local-suppliers.xml";
+            string xmlFileName = "cars-and-parts.xml";
             string xmlFilePath = GetXmlResultPath(xmlFileName);
 
-            string xmlFileContent = GetLocalSuppliers(dbContext);
+            string xmlFileContent = GetCarsWithTheirListOfParts(dbContext);
 
             File.WriteAllText(xmlFilePath, xmlFileContent);
 
@@ -351,10 +351,8 @@ namespace CarDealer
         {
             ExportCarsDto[] cars = dbContext.Cars
                 .AsNoTracking()
-                .OrderByDescending(p => p.PartsCars
-                    .Select(pc => pc.Part)
-                    .Select(p => p.Price))
-                .OrderByDescending(c => c.TraveledDistance)
+                .OrderByDescending(c => c.PartsCars.Sum(pc => pc.Part.Price))
+                .ThenByDescending(c => c.TraveledDistance)
                 .ThenBy(c => c.Model)
                 .Select(c => new ExportCarsDto()
                 {
@@ -362,12 +360,18 @@ namespace CarDealer
                     Model = c.Model,
                     TraveledDistance = c.TraveledDistance,
                     Parts = c.PartsCars
-                        .Select(p => new ExportPartsDto()
+                        .Select(pc => new ExportPartsDto()
                         {
-                            Name = p.Name
+                            Name = pc.Part.Name,
+                            Price = pc.Part.Price
                         })
                 })
-                
+                .ToArray();
+
+            string result = XmlSerializerWrapper
+                .Serialize(cars, "cars");
+
+            return result;
         }
 
         // --  19

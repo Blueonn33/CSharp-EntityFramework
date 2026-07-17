@@ -23,8 +23,9 @@ namespace CarDealer.DTOs.Export
             get; set;
         }
 
-        [XmlElement("parts")]
-        public ExportCarPartsDto Parts
+        [XmlArray("parts")]
+        [XmlArrayItem("part")]
+        public ExportPartsDto[] Parts
         {
             get;
             set;
