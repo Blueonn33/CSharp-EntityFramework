@@ -25,10 +25,10 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export file
-            string xmlFileName = "bmw-cars.xml";
+            string xmlFileName = "local-suppliers.xml";
             string xmlFilePath = GetXmlResultPath(xmlFileName);
 
-            string xmlFileContent = GetCarsFromMakeBmw(dbContext);
+            string xmlFileContent = GetLocalSuppliers(dbContext);
 
             File.WriteAllText(xmlFilePath, xmlFileContent);
 
@@ -325,6 +325,27 @@ namespace CarDealer
 
             return result;
         }
+
+        // -- 16
+        public static string GetLocalSuppliers(CarDealerContext dbContext)
+        {
+            ExportLocalSuppliersDto[] localSuppliers = dbContext.Suppliers
+                .AsNoTracking()
+                .Where(s => s.IsImporter == false)
+                .Select(s => new ExportLocalSuppliersDto()
+                {
+                    Id = s.Id,
+                    Name = s.Name,
+                    PartsCount = s.Parts.Count,
+                })
+                .ToArray();
+
+            string result = XmlSerializerWrapper
+                .Serialize(localSuppliers, "suppliers");
+
+            return result;
+        }
+
 
         // --  19
         public static string GetSalesWithAppliedDiscount(CarDealerContext dbContext)
