@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MoviesApp.Data;
 using MoviesApp.Services.Interfaces;
 using MoviesApp.ViewModels.Movies;
 
@@ -35,17 +37,43 @@ namespace MoviesApp.Controllers
             }
         };
 
-
         private readonly IMoviesService _moviesService;
+        private readonly MoviesAppDbContext _dbContext;
 
-        public MoviesController(IMoviesService moviesService)
+        // Constructor Injection -> Instance of MoviesAppDbContext is passed from outside (ASP.NET Core)
+        // To use it, store it locally in field
+
+        public MoviesController(IMoviesService moviesService, MoviesAppDbContext dbContext)
         {
             _moviesService = moviesService;
+            _dbContext = dbContext;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            return View(DummyMovies);
+            // Always limit the maximum count of fetched rows during DB Requests from Controller
+            // Use pagination if many rows exist
+
+            IEnumerable<AllMoviesIndexViewModel> allMovies = _dbContext.Movies
+                .AsNoTracking()
+                .OrderBy(m => m.Title)
+                .ThenByDescending(m => m.ReleaseDate)
+                .Select(m => new AllMoviesIndexViewModel()
+                {
+                    Id = m.Id,
+                    Title = m.Title,
+                    Genre = m.Genre,
+                    Director = m.Director,
+                    ReleaseDate = m.ReleaseDate.ToShortDateString(),
+                    Description = m.Description,
+                    Duration = m.Duration,
+                    ImageUrl = m.ImageUrl ?? DefaultImageUrl
+                })
+                .Take(25)
+                .ToArray();
+
+            return View(allMovies);
         }
 
         [HttpGet]

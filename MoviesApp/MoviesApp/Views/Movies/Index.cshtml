@@ -17,6 +17,14 @@
     </div>
 
     <div class="d-flex flex-column gap-2">
+        @if (!Model.Any())
+        {
+            <div class="alert alert-warning text-center" role="alert">
+                <h4 class="alert-heading">No Movies Found</h4>
+                <p>There are currently no movies available.</p>
+            </div>
+        }
+
         @foreach (var movie in Model)
         {
             <div class="card shadow-lg border-0 rounded-3 d-flex flex-row align-items-center p-2"
