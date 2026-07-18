@@ -1,7 +1,10 @@
-﻿namespace MoviesApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MoviesApp.Models
 {
     public class Watchlist
     {
+        [Key]
         public int Id
         {
             get; set;
