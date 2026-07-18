@@ -220,10 +220,10 @@ namespace MoviesApp.Controllers
                 Genre = movie.Genre,
                 Director = movie.Director,
                 ReleaseDate = movie.ReleaseDate,
-                ImageUrl = movie.ImageUrl,
+                ImageUrl = movie.ImageUrl ?? DefaultImageUrl
             };
 
-            return View(movie);
+            return View(deleteViewModel);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -235,9 +235,8 @@ namespace MoviesApp.Controllers
             if (movie != null)
             {
                 _dbContext.Remove(movie);
+                _dbContext.SaveChanges();
             }
-
-            _dbContext.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
