@@ -112,18 +112,15 @@ namespace MoviesApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
         public IActionResult Details(int id)
         {
-            var movie = DummyMovies.FirstOrDefault(m => m.Id == id);
+            Movie? movie = _dbContext.Movies
+                .Find(id);
 
             if (movie == null)
             {
                 return NotFound();
-            }
-
-            if (!DateTime.TryParse(movie.ReleaseDate, out var parsedDate))
-            {
-                parsedDate = DateTime.MinValue;
             }
 
             var model = new MovieDetailsViewModel
@@ -133,7 +130,7 @@ namespace MoviesApp.Controllers
                 Genre = movie.Genre,
                 Director = movie.Director,
                 Duration = movie.Duration,
-                ReleaseDate = parsedDate,
+                ReleaseDate = movie.ReleaseDate,
                 Description = movie.Description,
                 ImageUrl = movie.ImageUrl
             };
