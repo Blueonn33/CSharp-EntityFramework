@@ -13,7 +13,7 @@
 
         public string Director { get; set; } = null!;
 
-        public DateTime ReleaseDate { get; set; } = null!;
+        public DateTime ReleaseDate { get; set; }
 
         public string? ImageUrl
         {

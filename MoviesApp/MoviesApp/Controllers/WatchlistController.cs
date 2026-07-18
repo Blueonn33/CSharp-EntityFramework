@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesApp.Data;
+using MoviesApp.Models;
 using MoviesApp.Services.Interfaces;
 using MoviesApp.ViewModels.Movies;
 using MoviesApp.ViewModels.Watchlist;
@@ -46,15 +47,28 @@ namespace MoviesApp.Controllers
         [HttpPost]
         public IActionResult Add(int id)
         {
-            var exists = MoviesController.DummyMovies.Any(m => m.Id == id);
-            if (!exists)
+            bool movieExist = _dbContext.Movies
+                .AsNoTracking()
+                .Any(m => m.Id == id);
+
+            if (!movieExist)
             {
                 return NotFound();
             }
 
-            if (!_watchlistMovieIds.Contains(id))
+            bool isAlreadyInWatchlist = _dbContext.Watchlists
+                .AsNoTracking()
+                .Any(w => w.MovieId == id);
+
+            if (!isAlreadyInWatchlist)
             {
-                _watchlistMovieIds.Add(id);
+                Watchlist watchlist = new Watchlist()
+                {
+                    MovieId = id
+                };
+
+                _dbContext.Watchlists.Add(watchlist);
+                _dbContext.SaveChanges();
             }
 
             return RedirectToAction("Index", "Movies");
