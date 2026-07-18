@@ -132,7 +132,9 @@ namespace MoviesApp.Controllers
                 Duration = movie.Duration,
                 ReleaseDate = movie.ReleaseDate,
                 Description = movie.Description,
-                ImageUrl = movie.ImageUrl
+                ImageUrl = string.IsNullOrWhiteSpace(movie.ImageUrl)
+                    ? DefaultImageUrl
+                    : movie.ImageUrl
             };
 
             return View(model);
@@ -195,9 +197,10 @@ namespace MoviesApp.Controllers
                 ? DefaultImageUrl
                 : model.ImageUrl;
 
+            _dbContext.SaveChanges();
+
             return RedirectToAction(nameof(Index));
         }
-
 
         [HttpGet]
         public IActionResult Delete(int id)
