@@ -1,4 +1,4 @@
-﻿@model AllMoviesIndexViewModel
+﻿@model DeleteMovieViewModel
 
 @{
     ViewData["Title"] = "Delete Movie";
@@ -21,7 +21,7 @@
                 <h4 class="fw-bold text-warning mb-2">@Model.Title</h4>
                 <p><strong>Genre:</strong> @Model.Genre</p>
                 <p><strong>Director:</strong> @Model.Director</p>
-                <p><strong>Release Date:</strong> @Model.ReleaseDate</p>
+                <p><strong>Release Date:</strong> @Model.ReleaseDate.ToShortDateString()</p>
             </div>
         </div>
 

@@ -205,12 +205,23 @@ namespace MoviesApp.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            var movie = DummyMovies.FirstOrDefault(m => m.Id == id);
+            var movie = _dbContext.Movies
+                .Find(id);
 
             if (movie == null)
             {
                 return NotFound();
             }
+
+            DeleteMovieViewModel deleteViewModel = new DeleteMovieViewModel()
+            {
+                Id = movie.Id,
+                Title = movie.Title,
+                Genre = movie.Genre,
+                Director = movie.Director,
+                ReleaseDate = movie.ReleaseDate,
+                ImageUrl = movie.ImageUrl,
+            };
 
             return View(movie);
         }
@@ -218,12 +229,15 @@ namespace MoviesApp.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var movie = DummyMovies.FirstOrDefault(m => m.Id == id);
+            var movie = _dbContext.Movies
+                .Find(id);
 
             if (movie != null)
             {
-                DummyMovies.Remove(movie);
+                _dbContext.Remove(movie);
             }
+
+            _dbContext.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
