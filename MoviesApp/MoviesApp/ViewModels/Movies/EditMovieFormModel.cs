@@ -1,21 +1,10 @@
 ﻿namespace MoviesApp.ViewModels.Movies
 {
-    public class EditMovieFormModel
+    public class EditMovieFormModel : AddMovieFormModel
     {
-        public int Id { get; set; }
-
-        public string Title { get; set; } = null!;
-
-        public string Genre { get; set; } = null!;
-
-        public string Director { get; set; } = null!;
-
-        public int Duration { get; set; }
-
-        public DateTime ReleaseDate { get; set; }
-
-        public string Description { get; set; } = null!;
-
-        public string? ImageUrl { get; set; }
+        public int Id
+        {
+            get; set;
+        }
     }
 }

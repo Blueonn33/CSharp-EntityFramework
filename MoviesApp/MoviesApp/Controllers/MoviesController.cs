@@ -141,16 +141,12 @@ namespace MoviesApp.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var movie = DummyMovies.FirstOrDefault(m => m.Id == id);
+            Movie? movie = _dbContext.Movies
+                .Find(id);
 
             if (movie == null)
             {
                 return NotFound();
-            }
-
-            if (!DateTime.TryParse(movie.ReleaseDate, out var parsedDate))
-            {
-                parsedDate = DateTime.Today;
             }
 
             var model = new EditMovieFormModel
@@ -160,7 +156,7 @@ namespace MoviesApp.Controllers
                 Genre = movie.Genre,
                 Director = movie.Director,
                 Duration = movie.Duration,
-                ReleaseDate = parsedDate,
+                ReleaseDate = movie.ReleaseDate,
                 Description = movie.Description,
                 ImageUrl = movie.ImageUrl
             };
@@ -181,7 +177,8 @@ namespace MoviesApp.Controllers
                 return View(model);
             }
 
-            var movie = DummyMovies.FirstOrDefault(m => m.Id == id);
+
+
             if (movie == null)
             {
                 return NotFound();
