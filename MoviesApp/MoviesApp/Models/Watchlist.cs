@@ -1,4 +1,4 @@
-﻿namespace MiniCinemaApp.Data.Models
+﻿namespace MoviesApp.Models
 {
     public class Watchlist
     {

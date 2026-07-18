@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MiniCinemaApp.Controllers;
 using MoviesApp.Services.Interfaces;
 using MoviesApp.ViewModels.Movies;
 

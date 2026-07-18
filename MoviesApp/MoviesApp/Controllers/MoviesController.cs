@@ -2,7 +2,7 @@
 using MoviesApp.Services.Interfaces;
 using MoviesApp.ViewModels.Movies;
 
-namespace MiniCinemaApp.Controllers
+namespace MoviesApp.Controllers
 {
     public class MoviesController : Controller
     {

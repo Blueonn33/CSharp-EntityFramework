@@ -12,7 +12,9 @@ namespace MoviesApp
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerDev")));
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerDev"));
+            });
 
             builder.Services.AddScoped<IMoviesService, MoviesService>();
             builder.Services.AddScoped<IWatchlistService, WatchlistService>();

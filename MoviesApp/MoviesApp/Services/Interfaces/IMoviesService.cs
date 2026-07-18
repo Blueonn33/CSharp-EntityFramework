@@ -1,4 +1,4 @@
-﻿using MiniCinemaApp.Data.Models;
+﻿using MoviesApp.Models;
 
 namespace MoviesApp.Services.Interfaces
 {

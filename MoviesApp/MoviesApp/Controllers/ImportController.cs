@@ -2,7 +2,7 @@
 using MoviesApp.Services.Interfaces;
 using MoviesApp.ViewModels.Import;
 
-namespace MiniCinemaApp.Controllers
+namespace MoviesApp.Controllers
 {
     public class ImportController : Controller
     {

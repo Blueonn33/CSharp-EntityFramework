@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MiniCinemaApp.Data.Models;
+using MoviesApp.Models;
 
 namespace MoviesApp.Data
 {
