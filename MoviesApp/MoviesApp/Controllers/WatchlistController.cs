@@ -71,13 +71,31 @@ namespace MoviesApp.Controllers
                 _dbContext.SaveChanges();
             }
 
-            return RedirectToAction("Index", "Movies");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         public IActionResult Remove(int id)
         {
-            _watchlistMovieIds.Remove(id);
+            bool movieExist = _dbContext.Movies
+                .AsNoTracking()
+                .Any(m => m.Id == id);
+
+            if (!movieExist)
+            {
+                return NotFound();
+            }
+
+            Watchlist? watchlistEntry = _dbContext.Watchlists
+                .AsNoTracking()
+                .SingleOrDefault(w => w.MovieId == id);
+
+            if (watchlistEntry != null)
+            {
+                _dbContext.Watchlists.Remove(watchlistEntry);
+                _dbContext.SaveChanges();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
