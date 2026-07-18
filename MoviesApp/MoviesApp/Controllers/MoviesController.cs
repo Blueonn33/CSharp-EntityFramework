@@ -177,7 +177,8 @@ namespace MoviesApp.Controllers
                 return View(model);
             }
 
-
+            Movie? movie = _dbContext.Movies
+                .Find(id);
 
             if (movie == null)
             {
@@ -188,7 +189,7 @@ namespace MoviesApp.Controllers
             movie.Genre = model.Genre;
             movie.Director = model.Director;
             movie.Duration = model.Duration;
-            movie.ReleaseDate = model.ReleaseDate.ToString("yyyy-MM-dd");
+            movie.ReleaseDate = model.ReleaseDate;
             movie.Description = model.Description;
             movie.ImageUrl = string.IsNullOrWhiteSpace(model.ImageUrl)
                 ? DefaultImageUrl
