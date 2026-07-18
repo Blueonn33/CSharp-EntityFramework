@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using MoviesApp.Data;
 using MoviesApp.Models;
 using MoviesApp.Services.Interfaces;
-using MoviesApp.ViewModels.Movies;
 using MoviesApp.ViewModels.Watchlist;
 
 namespace MoviesApp.Controllers
@@ -14,7 +13,6 @@ namespace MoviesApp.Controllers
         private const string DefaultImageUrl =
             "https://img.freepik.com/free-vector/cinema-film-production-realistic-transparent-composition-with-isolated-image-clapper-with-empty-fields-vector-illustration_1284-66163.jpg?semt=ais_incoming&w=740&q=80";
 
-        private static readonly List<int> _watchlistMovieIds = new();
         private readonly IMoviesService _moviesService;
         private readonly MoviesAppDbContext _dbContext;
 
@@ -98,46 +96,6 @@ namespace MoviesApp.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        [HttpGet]
-        public IActionResult Details(int id)
-        {
-            if (!_watchlistMovieIds.Contains(id))
-            {
-                return NotFound();
-            }
-
-            var movie = MoviesController.DummyMovies
-                .FirstOrDefault(m => m.Id == id);
-
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            var model = new MovieDetailsViewModel
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Genre = movie.Genre,
-                Director = movie.Director,
-                Duration = movie.Duration,
-            };
-
-            if (DateTime.TryParse(movie.ReleaseDate, out var date))
-            {
-                model.ReleaseDate = date;
-            }
-            else
-            {
-                model.ReleaseDate = DateTime.Today;
-            }
-
-            model.Description = movie.Description;
-            model.ImageUrl = movie.ImageUrl;
-
-            return View(model);
         }
     }
 }
