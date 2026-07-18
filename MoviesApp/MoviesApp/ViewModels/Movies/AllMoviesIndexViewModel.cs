@@ -2,7 +2,10 @@
 {
     public class AllMoviesIndexViewModel
     {
-        public int Id { get; set; }
+        public int Id
+        {
+            get; set;
+        }
 
         public string Title { get; set; } = null!;
 
@@ -12,10 +15,21 @@
 
         public string ReleaseDate { get; set; } = null!;
 
-        public int Duration { get; set; }
+        public int Duration
+        {
+            get; set;
+        }
 
         public string Description { get; set; } = null!;
 
-        public string? ImageUrl { get; set; }
+        public string? ImageUrl
+        {
+            get; set;
+        }
+
+        public bool IsAddedInWatchlist
+        {
+            get; set;
+        }
     }
 }

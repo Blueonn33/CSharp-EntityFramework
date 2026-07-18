@@ -44,6 +44,7 @@ namespace MoviesApp.Controllers
             return View(movies);
         }
 
+        // TODO: Implement Add and Remove methods as Soft Delete operations
         [HttpPost]
         public IActionResult Add(int id)
         {

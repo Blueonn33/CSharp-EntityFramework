@@ -12,32 +12,6 @@ namespace MoviesApp.Controllers
         private const string DefaultImageUrl =
             "https://img.freepik.com/free-vector/cinema-film-production-realistic-transparent-composition-with-isolated-image-clapper-with-empty-fields-vector-illustration_1284-66163.jpg?semt=ais_incoming&w=740&q=80";
 
-        public static readonly List<AllMoviesIndexViewModel> DummyMovies = new()
-        {
-            new AllMoviesIndexViewModel
-            {
-                Id = 1,
-                Title = "Sample Movie",
-                Genre = "Action",
-                Director = "John Doe",
-                ReleaseDate = "2024-01-01",
-                Duration = 120,
-                Description = "Dummy action movie used for the exercise.",
-                ImageUrl = DefaultImageUrl
-            },
-            new AllMoviesIndexViewModel
-            {
-                Id = 2,
-                Title = "Second Movie",
-                Genre = "Comedy",
-                Director = "Jane Smith",
-                ReleaseDate = "2023-06-15",
-                Duration = 95,
-                Description = "Dummy comedy movie used for the exercise.",
-                ImageUrl = DefaultImageUrl
-            }
-        };
-
         private readonly IMoviesService _moviesService;
         private readonly MoviesAppDbContext _dbContext;
 
@@ -69,7 +43,9 @@ namespace MoviesApp.Controllers
                     ReleaseDate = m.ReleaseDate.ToShortDateString(),
                     Description = m.Description,
                     Duration = m.Duration,
-                    ImageUrl = m.ImageUrl ?? DefaultImageUrl
+                    ImageUrl = m.ImageUrl ?? DefaultImageUrl,
+                    IsAddedInWatchlist = _dbContext.Watchlists.
+                        Any(w => w.MovieId == m.Id)
                 })
                 .Take(25)
                 .ToArray();
