@@ -3,9 +3,9 @@ using MoviesApp.Models;
 
 namespace MoviesApp.Data
 {
-    public class AppDbContext : DbContext
+    public class MoviesAppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
+        public MoviesAppDbContext(DbContextOptions<MoviesAppDbContext> options)
             : base(options)
         {
         }
