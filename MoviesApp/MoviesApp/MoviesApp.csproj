@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="DTOs\Json\" />
     <Folder Include="DTOs\Xml\" />
-    <Folder Include="ViewModels\Watchlist\" />
   </ItemGroup>
 
   <ItemGroup>
