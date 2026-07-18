@@ -1,8 +1,7 @@
 namespace MoviesApp
 {
-    using Microsoft.EntityFrameworkCore;
-
     using Data;
+    using Microsoft.EntityFrameworkCore;
     using Services;
     using Services.Interfaces;
 
@@ -13,7 +12,7 @@ namespace MoviesApp
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerDev")));
 
             builder.Services.AddScoped<IMoviesService, MoviesService>();
             builder.Services.AddScoped<IWatchlistService, WatchlistService>();
