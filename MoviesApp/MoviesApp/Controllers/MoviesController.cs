@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MoviesApp.Data;
+using MoviesApp.Models;
 using MoviesApp.Services.Interfaces;
 using MoviesApp.ViewModels.Movies;
 
@@ -95,21 +96,18 @@ namespace MoviesApp.Controllers
                 return View(model);
             }
 
-            int newId = DummyMovies.Any() ? DummyMovies.Max(m => m.Id) + 1 : 1;
-
-            DummyMovies.Add(new AllMoviesIndexViewModel
+            Movie newMovie = new Movie()
             {
-                Id = newId,
                 Title = model.Title,
                 Genre = model.Genre,
                 Director = model.Director,
-                ReleaseDate = model.ReleaseDate.ToString("yyyy-MM-dd"),
                 Duration = model.Duration,
                 Description = model.Description,
-                ImageUrl = string.IsNullOrWhiteSpace(model.ImageUrl)
-                    ? DefaultImageUrl
-                    : model.ImageUrl
-            });
+                ImageUrl = model.ImageUrl
+            };
+
+            _dbContext.Movies.Add(newMovie);
+            _dbContext.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
