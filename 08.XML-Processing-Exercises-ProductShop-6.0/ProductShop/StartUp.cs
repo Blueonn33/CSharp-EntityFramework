@@ -1,4 +1,5 @@
 ﻿using ProductShop.Data;
+using ProductShop.DTOs.Export;
 using ProductShop.DTOs.Import;
 using ProductShop.Models;
 using ProductShop.Utilities;
@@ -16,14 +17,25 @@ namespace ProductShop
             dbContext.Database.EnsureCreated();
 
             // Import file
-            string xmlFileName = "categories-products.xml";
-            string xmlFilePath = GetXmlFilePath(xmlFileName);
-            string xmlFileContent = File.ReadAllText(xmlFilePath);
+            //string xmlFileName = "categories-products.xml";
+            //string xmlFilePath = GetXmlFilePath(xmlFileName);
+            //string xmlFileContent = File.ReadAllText(xmlFilePath);
 
-            string result = ImportCategoryProducts(dbContext, xmlFileContent);
-            Console.WriteLine(result);
+            //string result = ImportCategoryProducts(dbContext, xmlFileContent);
+            //Console.WriteLine(result);
+
+            // Export file
+            string xmlFileName = "products-in-range.xml";
+            string xmlFilePath = GetXmlResultPath(xmlFileName);
+
+            string xmlFileContent = GetProductsInRange(dbContext);
+
+            File.WriteAllText(xmlFilePath, xmlFileContent);
+
+            Console.WriteLine(xmlFileContent);
         }
 
+        // -- 01
         public static string ImportUsers(ProductShopContext dbContext, string inputXml)
         {
             IEnumerable<ImportUsersDto>? usersDtos = XmlSerializerWrapper
@@ -59,6 +71,7 @@ namespace ProductShop
             return $"Successfully imported {usersToPersist.Count}";
         }
 
+        // -- 02
         public static string ImportProducts(ProductShopContext dbContext, string inputXml)
         {
             IEnumerable<ImportProductsDto>? productsDtos = XmlSerializerWrapper
@@ -93,6 +106,7 @@ namespace ProductShop
             return $"Successfully imported {productsToPersist.Count}";
         }
 
+        // -- 03
         public static string ImportCategories(ProductShopContext dbContext, string inputXml)
         {
             IEnumerable<ImportCategoriesDto>? categoriesDtos = XmlSerializerWrapper
@@ -119,6 +133,7 @@ namespace ProductShop
             return $"Successfully imported {categoriesToPersist.Count}";
         }
 
+        // -- 04
         public static string ImportCategoryProducts(ProductShopContext dbContext, string inputXml)
         {
             IEnumerable<ImportCategoriesProductsDto>? categoriesProductsDtos = XmlSerializerWrapper
@@ -152,6 +167,33 @@ namespace ProductShop
 
             return $"Successfully imported {categoriesProductsToPersist.Count}";
         }
+
+        // -- 05
+        public static string GetProductsInRange(ProductShopContext dbContext)
+        {
+            ExportProductsInRangeDto[] productsInRange = dbContext.Products
+                .Where(p => p.Price >= 500 && p.Price <= 1000)
+                .OrderBy(p => p.Price)
+                .Select(p => new ExportProductsInRangeDto()
+                {
+                    Name = p.Name,
+                    Price = p.Price,
+                    Buyer = p.Buyer != null ? p.Buyer!.FirstName + " " + p.Buyer.LastName : " "
+                })
+                .Take(10)
+                .ToArray();
+
+            string result = XmlSerializerWrapper
+                .Serialize(productsInRange, "Products");
+
+            return result;
+        }
+
+        // -- 06
+
+        // -- 07
+
+        // -- 08
 
         private static string GetXmlFilePath(string fileName)
         {

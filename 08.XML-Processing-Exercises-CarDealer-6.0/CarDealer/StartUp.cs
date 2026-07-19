@@ -35,7 +35,7 @@ namespace CarDealer
             Console.WriteLine(xmlFileContent);
         }
 
-        // 09
+        // -- 09
         public static string ImportSuppliers(CarDealerContext dbContext, string inputXml)
         {
             IEnumerable<ImportSupplierDto>? supplierDtos =
@@ -78,7 +78,7 @@ namespace CarDealer
             return $"Successfully imported {suppliersToPersist.Count}";
         }
 
-        // 10
+        // -- 10
         public static string ImportParts(CarDealerContext dbContext, string inputXml)
         {
             IEnumerable<ImportPartDto>? partDtos = XmlSerializerWrapper
@@ -134,7 +134,7 @@ namespace CarDealer
             return $"Successfully imported {partsToPersist.Count}";
         }
 
-        // 11
+        // -- 11
         public static string ImportCars(CarDealerContext dbContext, string inputXml)
         {
             IEnumerable<ImportCarDto>? carDtos = XmlSerializerWrapper
