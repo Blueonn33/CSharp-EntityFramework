@@ -16,6 +16,7 @@ namespace ProductShop.DTOs.Import
             get; set;
         }
 
+        [Required]
         [Range(0, int.MaxValue)]
         [XmlElement("sellerId")]
         public int SellerId
@@ -25,7 +26,7 @@ namespace ProductShop.DTOs.Import
 
         [Range(0, int.MaxValue)]
         [XmlElement("buyerId")]
-        public int BuyerId
+        public int? BuyerId
         {
             get; set;
         }

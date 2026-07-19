@@ -12,6 +12,7 @@ namespace ProductShop
         public static void Main()
         {
             using ProductShopContext dbContext = new ProductShopContext();
+            //dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
             // Import file
@@ -52,7 +53,7 @@ namespace ProductShop
                 usersToPersist.Add(newUser);
             }
 
-            dbContext.AddRange(usersToPersist);
+            dbContext.Users.AddRange(usersToPersist);
             dbContext.SaveChanges();
 
             return $"Successfully imported {usersToPersist.Count}";
@@ -63,7 +64,40 @@ namespace ProductShop
             IEnumerable<ImportProductsDto>? productsDtos = XmlSerializerWrapper
                 .Deserialize<ImportProductsDto[]>(inputXml, "Products");
 
-            return "";
+            if (productsDtos == null)
+            {
+                productsDtos = Array.Empty<ImportProductsDto>();
+            }
+
+            ICollection<Product> productsToPersist = new List<Product>();
+
+            foreach (var productDto in productsDtos)
+            {
+                if (!IsValid(productDto))
+                    continue;
+
+                //if (!dbContext.Users.Any(u => u.Id == productDto.SellerId))
+                //    continue;
+
+                //if (productDto.BuyerId.HasValue &&
+                //    !dbContext.Users.Any(u => u.Id == productDto.BuyerId.Value))
+                //    continue;
+
+                Product newProduct = new Product()
+                {
+                    Name = productDto.Name,
+                    Price = productDto.Price,
+                    SellerId = productDto.SellerId,
+                    BuyerId = productDto.BuyerId
+                };
+
+                productsToPersist.Add(newProduct);
+            }
+
+            dbContext.Products.AddRange(productsToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {productsToPersist.Count}";
         }
 
         private static string GetXmlFilePath(string fileName)
