@@ -16,11 +16,11 @@ namespace ProductShop
             dbContext.Database.EnsureCreated();
 
             // Import file
-            string xmlFileName = "products.xml";
+            string xmlFileName = "categories.xml";
             string xmlFilePath = GetXmlFilePath(xmlFileName);
             string xmlFileContent = File.ReadAllText(xmlFilePath);
 
-            string result = ImportProducts(dbContext, xmlFileContent);
+            string result = ImportCategories(dbContext, xmlFileContent);
             Console.WriteLine(result);
         }
 
@@ -76,13 +76,6 @@ namespace ProductShop
                 if (!IsValid(productDto))
                     continue;
 
-                //if (!dbContext.Users.Any(u => u.Id == productDto.SellerId))
-                //    continue;
-
-                //if (productDto.BuyerId.HasValue &&
-                //    !dbContext.Users.Any(u => u.Id == productDto.BuyerId.Value))
-                //    continue;
-
                 Product newProduct = new Product()
                 {
                     Name = productDto.Name,
@@ -98,6 +91,32 @@ namespace ProductShop
             dbContext.SaveChanges();
 
             return $"Successfully imported {productsToPersist.Count}";
+        }
+
+        public static string ImportCategories(ProductShopContext dbContext, string inputXml)
+        {
+            IEnumerable<ImportCategoriesDto>? categoriesDtos = XmlSerializerWrapper
+                .Deserialize<ImportCategoriesDto[]>(inputXml, "Categories") ?? Array.Empty<ImportCategoriesDto>();
+
+            ICollection<Category> categoriesToPersist = new List<Category>();
+
+            foreach (var dto in categoriesDtos)
+            {
+                if (!IsValid(dto))
+                    continue;
+
+                Category category = new Category()
+                {
+                    Name = dto.Name
+                };
+
+                categoriesToPersist.Add(category);
+            }
+
+            dbContext.Categories.AddRange(categoriesToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {categoriesToPersist.Count}";
         }
 
         private static string GetXmlFilePath(string fileName)
