@@ -16,7 +16,7 @@ namespace CarDealer
             using CarDealerContext dbContext = new CarDealerContext();
             dbContext.Database.EnsureCreated();
 
-            // Read file
+            // Import file
             //string xmlFileName = "sales.xml";
             //string xmlFilePath = GetXmlFilePath(xmlFileName);
             //string xmlFileContent = File.ReadAllText(xmlFilePath);
