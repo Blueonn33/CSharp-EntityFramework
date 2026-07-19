@@ -1,11 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ProductShop.Data;
-using ProductShop.Data;
-using ProductShop.DTOs.Import;
+﻿using ProductShop.Data;
 using ProductShop.DTOs.Import;
 using ProductShop.Models;
 using ProductShop.Utilities;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
 using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
@@ -30,6 +26,36 @@ namespace ProductShop
         public static string ImportUsers(ProductShopContext dbContext, string inputXml)
         {
             IEnumerable<ImportUsersDto>? usersDtos = XmlSerializerWrapper
+                .Deserialize<ImportUsersDto[]>(inputXml, "Users");
+
+            if (usersDtos == null)
+            {
+                usersDtos = Array.Empty<ImportUsersDto>();
+            }
+
+            ICollection<User> usersToPersist = new List<User>();
+
+            foreach (var userDto in usersDtos)
+            {
+                if (!IsValid(userDto))
+                {
+                    continue;
+                }
+
+                User newUser = new User()
+                {
+                    FirstName = userDto.FirstName,
+                    LastName = userDto.LastName,
+                    Age = userDto.Age
+                };
+
+                usersToPersist.Add(newUser);
+            }
+
+            dbContext.AddRange(usersToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {usersToPersist.Count}";
         }
 
         private static string GetXmlFilePath(string fileName)
