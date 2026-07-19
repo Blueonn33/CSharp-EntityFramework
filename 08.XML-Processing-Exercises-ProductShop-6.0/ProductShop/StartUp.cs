@@ -15,11 +15,11 @@ namespace ProductShop
             dbContext.Database.EnsureCreated();
 
             // Import file
-            string xmlFileName = "users.xml";
+            string xmlFileName = "products.xml";
             string xmlFilePath = GetXmlFilePath(xmlFileName);
             string xmlFileContent = File.ReadAllText(xmlFilePath);
 
-            string result = ImportUsers(dbContext, xmlFileContent);
+            string result = ImportProducts(dbContext, xmlFileContent);
             Console.WriteLine(result);
         }
 
@@ -56,6 +56,14 @@ namespace ProductShop
             dbContext.SaveChanges();
 
             return $"Successfully imported {usersToPersist.Count}";
+        }
+
+        public static string ImportProducts(ProductShopContext dbContext, string inputXml)
+        {
+            IEnumerable<ImportProductsDto>? productsDtos = XmlSerializerWrapper
+                .Deserialize<ImportProductsDto[]>(inputXml, "Products");
+
+            return "";
         }
 
         private static string GetXmlFilePath(string fileName)
