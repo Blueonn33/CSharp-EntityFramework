@@ -25,10 +25,10 @@ namespace CarDealer
             //Console.WriteLine(result);
 
             // Export file
-            string xmlFileName = "sales-discounts.xml";
+            string xmlFileName = "customers-total-sales.xml";
             string xmlFilePath = GetXmlResultPath(xmlFileName);
 
-            string xmlFileContent = GetSalesWithAppliedDiscount(dbContext);
+            string xmlFileContent = GetTotalSalesByCustomer(dbContext);
 
             File.WriteAllText(xmlFilePath, xmlFileContent);
 
@@ -376,6 +376,44 @@ namespace CarDealer
                 .Serialize(cars, "cars");
 
             return result;
+        }
+
+        // -- 18
+        public static string GetTotalSalesByCustomer(CarDealerContext dbContext)
+        {
+            var customers = dbContext.Customers
+                .AsNoTracking()
+                .Where(c => c.Sales.Any())
+                .Select(c => new
+                {
+                    c.Name,
+                    c.IsYoungDriver,
+                    Sales = c.Sales.Select(s => new
+                    {
+                        s.Discount,
+                        Parts = s.Car.PartsCars.Select(pc => pc.Part.Price).ToList()
+                    }).ToList()
+                })
+                .ToList()
+                .Select(c => new ExportTotalSalesByCustomerDto
+                {
+                    FullName = c.Name,
+                    BoughtCars = c.Sales.Count,
+                    SpentMoney = Convert.ToDouble(Math.Round(c.Sales
+                        .Sum(s =>
+                        {
+                            var partsTotal = s.Parts.Sum();
+                            var discountMultiplier = c.IsYoungDriver
+                                ? (1 - (double)s.Discount / 100d)
+                                : 1;
+
+                            return ((double)partsTotal * discountMultiplier);
+                        }), 2).ToString("f2"))
+                })
+                .OrderByDescending(c => c.SpentMoney)
+                .ToArray();
+
+            return XmlSerializerWrapper.Serialize(customers, "customers");
         }
 
         // --  19

@@ -22,6 +22,7 @@
         {
             get; set;
         }
+
         public virtual Customer Customer { get; set; } = null!;
     }
 }
