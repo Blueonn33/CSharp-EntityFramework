@@ -16,11 +16,11 @@ namespace ProductShop
             dbContext.Database.EnsureCreated();
 
             // Import file
-            string xmlFileName = "categories.xml";
+            string xmlFileName = "categories-products.xml";
             string xmlFilePath = GetXmlFilePath(xmlFileName);
             string xmlFileContent = File.ReadAllText(xmlFilePath);
 
-            string result = ImportCategories(dbContext, xmlFileContent);
+            string result = ImportCategoryProducts(dbContext, xmlFileContent);
             Console.WriteLine(result);
         }
 
@@ -117,6 +117,40 @@ namespace ProductShop
             dbContext.SaveChanges();
 
             return $"Successfully imported {categoriesToPersist.Count}";
+        }
+
+        public static string ImportCategoryProducts(ProductShopContext dbContext, string inputXml)
+        {
+            IEnumerable<ImportCategoriesProductsDto>? categoriesProductsDtos = XmlSerializerWrapper
+                                                                                   .Deserialize<
+                                                                                       ImportCategoriesProductsDto[]>(
+                                                                                       inputXml, "CategoryProducts") ??
+                                                                               Array.Empty<
+                                                                                   ImportCategoriesProductsDto>();
+
+            ICollection<CategoryProduct> categoriesProductsToPersist = new List<CategoryProduct>();
+
+            foreach (var dto in categoriesProductsDtos)
+            {
+                if (!IsValid(dto))
+                    continue;
+
+                if (!dbContext.Categories.Any(c => c.Id == dto.CategoryId) || !dbContext.Products.Any(p => p.Id == dto.ProductId))
+                    continue;
+
+                CategoryProduct categoryProduct = new CategoryProduct()
+                {
+                    CategoryId = dto.CategoryId,
+                    ProductId = dto.ProductId
+                };
+
+                categoriesProductsToPersist.Add(categoryProduct);
+            }
+
+            dbContext.CategoryProducts.AddRange(categoriesProductsToPersist);
+            dbContext.SaveChanges();
+
+            return $"Successfully imported {categoriesProductsToPersist.Count}";
         }
 
         private static string GetXmlFilePath(string fileName)
