@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Xml.Serialization;
+using ProductShop.DTOs.Export;
 
-namespace ProductShop.DTOs.Export
+[XmlRoot("Users")]
+public class ExportUsersWrapperDto
 {
-    internal class ExportUsersWrapperDto
+    [XmlElement("count")]
+    public int Count
     {
+        get; set;
+    }
+
+    [XmlArray("users")]
+    [XmlArrayItem("User")]
+    public ExportUserProductsDto[] Users
+    {
+        get; set;
     }
 }

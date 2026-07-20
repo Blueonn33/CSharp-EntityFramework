@@ -1,22 +1,18 @@
-﻿using System.Xml.Serialization;
+﻿using ProductShop.DTOs.Export;
+using System.Xml.Serialization;
 
-namespace ProductShop.DTOs.Export
+public class ExportSoldProductsDto
 {
-    [XmlType("SoldProducts")]
-    public class ExportSoldProductsDto
+    [XmlElement("count")]
+    public int Count
     {
-        [XmlElement("count")]
-        public int Count
-        {
-            get; set;
-        }
+        get; set;
+    }
 
-        [XmlArray("products")]
-        [XmlElement("Product")]
-        public ExportProductDto[] Products
-        {
-            get;
-            set;
-        } = null!;
+    [XmlArray("products")]
+    [XmlArrayItem("Product")]
+    public ExportProductDto[] Products
+    {
+        get; set;
     }
 }

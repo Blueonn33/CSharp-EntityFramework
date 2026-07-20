@@ -1,26 +1,29 @@
-﻿using System.Xml.Serialization;
+﻿using ProductShop.DTOs.Export;
+using System.Xml.Serialization;
 
-namespace ProductShop.DTOs.Export
+public class ExportUserProductsDto
 {
-    [XmlType("User")]
-    public class ExportUserProductsDto
+    [XmlElement("firstName")]
+    public string FirstName
     {
-        [XmlElement("firstName")]
-        public string FirstName { get; set; } = null!;
+        get; set;
+    }
 
-        [XmlElement("lastName")]
-        public string LastName { get; set; } = null!;
+    [XmlElement("lastName")]
+    public string LastName
+    {
+        get; set;
+    }
 
-        [XmlElement("age")]
-        public int Age
-        {
-            get; set;
-        }
+    [XmlElement("age")]
+    public int? Age
+    {
+        get; set;
+    }
 
-        [XmlElement("SoldProducts")]
-        public ExportSoldProductsDto SoldProducts
-        {
-            get; set;
-        }
+    [XmlElement("SoldProducts")]
+    public ExportSoldProductsDto SoldProducts
+    {
+        get; set;
     }
 }

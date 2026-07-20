@@ -1,17 +1,16 @@
 ﻿using System.Xml.Serialization;
 
-namespace ProductShop.DTOs.Export
+public class ExportProductDto
 {
-    [XmlType("Product")]
-    public class ExportProductDto
+    [XmlElement("name")]
+    public string Name
     {
-        [XmlElement("name")]
-        public string Name { get; set; } = null!;
+        get; set;
+    }
 
-        [XmlElement("price")]
-        public decimal Price
-        {
-            get; set;
-        }
+    [XmlElement("price")]
+    public decimal Price
+    {
+        get; set;
     }
 }

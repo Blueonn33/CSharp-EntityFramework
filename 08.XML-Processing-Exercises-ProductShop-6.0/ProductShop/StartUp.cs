@@ -246,31 +246,39 @@ namespace ProductShop
         // -- 08
         public static string GetUsersWithProducts(ProductShopContext dbContext)
         {
-            var usersProducts = dbContext.Users
-                .Where(u => u.ProductsSold.Count > 0)
-                .Select(u => new
+            var users = dbContext.Users
+                .Where(u => u.ProductsSold.Any(p => p.BuyerId != null))
+                .OrderByDescending(u => u.ProductsSold.Count(p => p.BuyerId != null))
+                .Take(10)
+                .Select(u => new ExportUserProductsDto()
                 {
-                    firstName = u.FirstName,
-                    lastName = u.LastName,
-                    age = u.Age,
-                    SoldProducts = new
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Age = u.Age,
+                    SoldProducts = new ExportSoldProductsDto
                     {
-                        count = u.ProductsSold.Count,
-                        products = new
-                        {
-                            name = u.ProductsBought
-                                .Select(p => p.Name),
-                            price = u.ProductsSold
-                            .Select(p => p.Price)
-                        }
+                        Count = u.ProductsSold.Count(p => p.BuyerId != null),
+                        Products = u.ProductsSold
+                            .Where(p => p.BuyerId != null)
+                            .OrderByDescending(p => p.Price)
+                            .Select(p => new ExportProductDto
+                            {
+                                Name = p.Name,
+                                Price = p.Price
+                            })
+                            .ToArray()
                     }
                 })
-                .OrderByDescending(u => u.SoldProducts)
-                .Take(10)
                 .ToArray();
 
+            var wrapper = new ExportUsersWrapperDto()
+            {
+                Count = dbContext.Users.Count(u => u.ProductsSold.Any(p => p.BuyerId != null)),
+                Users = users
+            };
+
             string result = XmlSerializerWrapper
-                .Serialize(usersProducts, "Users");
+                .Serialize(wrapper, "Users");
 
             return result;
         }
