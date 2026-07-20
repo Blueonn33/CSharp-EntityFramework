@@ -1,6 +1,6 @@
 [
   {
-    "Id": "ae50a5ab-9642-466f-b528-3cc61071bb4c",
+    "Id": 1,
     "Title": "Harry Potter and the Goblet of Fire",
     "Genre": "Fantasy",
     "ReleaseDate": "2005-11-01",
@@ -10,7 +10,7 @@
     "ImageUrl": "https://m.media-amazon.com/images/M/MV5BMTI1NDMyMjExOF5BMl5BanBnXkFtZTcwOTc4MjQzMQ@@._V1_.jpg"
   },
   {
-    "Id": "777634e2-3bb6-4748-8e91-7a10b70c78ac",
+    "Id": 2,
     "Title": "Lord of the Rings",
     "Genre": "Fantasy",
     "ReleaseDate": "2001-05-01",
@@ -20,7 +20,7 @@
     "ImageUrl": "https://m.media-amazon.com/images/M/MV5BNzIxMDQ2YTctNDY4MC00ZTRhLTk4ODQtMTVlOWY4NTdiYmMwXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
   },
   {
-    "Id": "68fb84b9-ef2a-402f-b4fc-595006f5c275",
+    "Id": 3,
     "Title": "Inception",
     "Genre": "Sci-Fi",
     "ReleaseDate": "2010-07-16",
@@ -30,7 +30,7 @@
     "ImageUrl": "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg"
   },
   {
-    "Id": "02b52bb0-1c2b-49a4-ba66-6d33f81d38d1",
+    "Id": 4,
     "Title": "The Dark Knight",
     "Genre": "Action",
     "ReleaseDate": "2008-07-18",
@@ -40,7 +40,7 @@
     "ImageUrl": "https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_FMjpg_UX1000_.jpg"
   },
   {
-    "Id": "16376cc6-b3e0-4bf7-a0e4-9cbd1490522c",
+    "Id": 5,
     "Title": "Interstellar",
     "Genre": "Sci-Fi",
     "ReleaseDate": "2014-11-07",
@@ -50,7 +50,7 @@
     "ImageUrl": "https://m.media-amazon.com/images/M/MV5BYzdjMDAxZGItMjI2My00ODA1LTlkNzItOWFjMDU5ZDJlYWY3XkEyXkFqcGc@._V1_.jpg"
   },
   {
-    "Id": "811a1a9e-61a8-4f6f-acb0-55a252c2b713",
+    "Id": 6,
     "Title": "Avatar",
     "Genre": "Sci-Fi",
     "ReleaseDate": "2009-12-18",
