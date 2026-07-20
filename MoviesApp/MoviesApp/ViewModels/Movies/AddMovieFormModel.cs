@@ -10,33 +10,34 @@ namespace MoviesApp.ViewModels.Movies
         public string Title { get; set; } = null!;
 
         [Required]
-        [MinLength(3)]
-        [MaxLength(50)]
+        [MinLength(MovieGenreMinLength)]
+        [MaxLength(MovieTitleMaxLength)]
         public string Genre { get; set; } = null!;
 
         [Required]
-        [MinLength(5)]
-        [MaxLength(100)]
+        [MinLength(MovieDirectorMinLength)]
+        [MaxLength(MovieDirectorMaxLength)]
         public string Director { get; set; } = null!;
 
-        [Range(1, 500)]
+        [Range(MovieDurationMinValue, MovieDurationMaxValue)]
         public int Duration
         {
             get; set;
         }
 
         [Required]
+        [RegularExpression(MovieReleaseDateRegexPattern)]
         public DateTime ReleaseDate
         {
             get; set;
         }
 
         [Required]
-        [MinLength(10)]
-        [MaxLength(2000)]
+        [MinLength(MovieDescriptionMinLength)]
+        [MaxLength(MovieDescriptionMaxLength)]
         public string Description { get; set; } = null!;
 
-        [MaxLength(2048)]
+        [MaxLength(MovieImageUrlMaxLength)]
         public string? ImageUrl
         {
             get; set;
