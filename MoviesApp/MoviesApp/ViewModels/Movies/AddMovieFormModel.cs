@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static MoviesApp.Common.EntityValidation;
 
 namespace MoviesApp.ViewModels.Movies
 {
     public class AddMovieFormModel
     {
         [Required]
-        [MaxLength(100)]
+        [MaxLength(MovieTitleMaxLength)]
         public string Title { get; set; } = null!;
 
         [Required]
