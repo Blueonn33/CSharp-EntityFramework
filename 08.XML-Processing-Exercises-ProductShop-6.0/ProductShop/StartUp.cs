@@ -25,10 +25,10 @@ namespace ProductShop
             //Console.WriteLine(result);
 
             // Export file
-            string xmlFileName = "categories-by-products.xml";
+            string xmlFileName = "users-and-products.xml";
             string xmlFilePath = GetXmlResultPath(xmlFileName);
 
-            string xmlFileContent = GetCategoriesByProductsCount(dbContext);
+            string xmlFileContent = GetUsersWithProducts(dbContext);
 
             File.WriteAllText(xmlFilePath, xmlFileContent);
 
@@ -244,6 +244,36 @@ namespace ProductShop
         }
 
         // -- 08
+        public static string GetUsersWithProducts(ProductShopContext dbContext)
+        {
+            var usersProducts = dbContext.Users
+                .Where(u => u.ProductsSold.Count > 0)
+                .Select(u => new
+                {
+                    firstName = u.FirstName,
+                    lastName = u.LastName,
+                    age = u.Age,
+                    SoldProducts = new
+                    {
+                        count = u.ProductsSold.Count,
+                        products = new
+                        {
+                            name = u.ProductsBought
+                                .Select(p => p.Name),
+                            price = u.ProductsSold
+                            .Select(p => p.Price)
+                        }
+                    }
+                })
+                .OrderByDescending(u => u.SoldProducts)
+                .Take(10)
+                .ToArray();
+
+            string result = XmlSerializerWrapper
+                .Serialize(usersProducts, "Users");
+
+            return result;
+        }
 
         private static string GetXmlFilePath(string fileName)
         {
