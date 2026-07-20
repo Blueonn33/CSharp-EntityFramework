@@ -25,10 +25,10 @@ namespace ProductShop
             //Console.WriteLine(result);
 
             // Export file
-            string xmlFileName = "products-in-range.xml";
+            string xmlFileName = "users-sold-products.xml";
             string xmlFilePath = GetXmlResultPath(xmlFileName);
 
-            string xmlFileContent = GetProductsInRange(dbContext);
+            string xmlFileContent = GetSoldProducts(dbContext);
 
             File.WriteAllText(xmlFilePath, xmlFileContent);
 
@@ -190,6 +190,32 @@ namespace ProductShop
         }
 
         // -- 06
+        public static string GetSoldProducts(ProductShopContext dbContext)
+        {
+            ExportUserDto[] usersProducts = dbContext.Users
+                .Where(u => u.ProductsSold.Count > 0)
+                .Select(u => new ExportUserDto()
+                {
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    SoldProducts = u.ProductsSold
+                        .Select(p => new ExportProductDto()
+                        {
+                            Name = p.Name,
+                            Price = p.Price
+                        })
+                        .ToArray()
+                })
+                .OrderBy(u => u.LastName)
+                .ThenBy(u => u.FirstName)
+                .Take(5)
+                .ToArray();
+
+            string result = XmlSerializerWrapper
+                .Serialize(usersProducts, "Users");
+
+            return result;
+        }
 
         // -- 07
 
