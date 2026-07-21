@@ -1,11 +1,11 @@
-﻿using MoviesApp.Models;
-using MoviesApp.ViewModels.Movies;
+﻿using MoviesApp.DTOs.Movie;
+using MoviesApp.Models;
 
 namespace MoviesApp.Services.Interfaces
 {
     public interface IMoviesService
     {
-        Task<IEnumerable<AllMoviesIndexViewModel>> GetAllAsync();
+        Task<IEnumerable<GetAllMoviesDto>> GetAllAsync(int pageNumber = 1, int pageSize = 25);
 
         Task<Movie?> GetByIdAsync(int id);
 

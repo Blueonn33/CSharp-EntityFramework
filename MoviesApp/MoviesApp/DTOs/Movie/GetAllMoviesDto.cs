@@ -13,7 +13,10 @@
 
         public string Director { get; set; } = null!;
 
-        public string ReleaseDate { get; set; } = null!;
+        public DateOnly ReleaseDate
+        {
+            get; set;
+        }
 
         public int Duration
         {

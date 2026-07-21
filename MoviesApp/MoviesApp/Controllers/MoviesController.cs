@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MoviesApp.Data;
+using MoviesApp.DTOs.Movie;
 using MoviesApp.Models;
 using MoviesApp.Services.Interfaces;
 using MoviesApp.ViewModels.Movies;
+using static MoviesApp.Common.ApplicationConstants;
 
 namespace MoviesApp.Controllers
 {
     public class MoviesController : Controller
     {
-        private const string DefaultImageUrl =
-            "https://img.freepik.com/free-vector/cinema-film-production-realistic-transparent-composition-with-isolated-image-clapper-with-empty-fields-vector-illustration_1284-66163.jpg?semt=ais_incoming&w=740&q=80";
-
         private readonly IMoviesService _moviesService;
         private readonly MoviesAppDbContext _dbContext;
 
@@ -25,15 +23,15 @@ namespace MoviesApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // Always limit the maximum count of fetched rows during DB Requests from Controller
             // Use pagination if many rows exist
 
-            IEnumerable<AllMoviesIndexViewModel> allMovies = _dbContext.Movies
-                .AsNoTracking()
-                .OrderBy(m => m.Title)
-                .ThenByDescending(m => m.ReleaseDate)
+            IEnumerable<GetAllMoviesDto> allMovies = await _moviesService
+                .GetAllAsync();
+
+            IEnumerable<AllMoviesIndexViewModel> allMoviesViewModels = allMovies
                 .Select(m => new AllMoviesIndexViewModel()
                 {
                     Id = m.Id,
@@ -41,14 +39,10 @@ namespace MoviesApp.Controllers
                     Genre = m.Genre,
                     Director = m.Director,
                     ReleaseDate = m.ReleaseDate.ToShortDateString(),
-                    Description = m.Description,
                     Duration = m.Duration,
                     ImageUrl = m.ImageUrl ?? DefaultImageUrl,
-                    IsAddedInWatchlist = _dbContext.Watchlists.
-                        Any(w => w.MovieId == m.Id)
-                })
-                .Take(25)
-                .ToArray();
+                    Description = m.Description
+                });
 
             return View(allMovies);
         }
