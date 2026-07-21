@@ -88,7 +88,20 @@ namespace MoviesApp.Services
                 moviesToImport.Add(movie);
             }
 
-            IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
+            await PersistMoviesAsync(moviesToImport);
+
+            return moviesToImport.Count;
+        }
+
+        public async Task<int> ImportFromXmlAsync(string filePath)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task PersistMoviesAsync(IEnumerable<Movie> moviesToImport)
+        {
+            IDbContextTransaction transaction = await _dbContext.Database
+                .BeginTransactionAsync();
 
             try
             {
@@ -106,13 +119,6 @@ namespace MoviesApp.Services
                 _logger.LogError(e.Message);
                 await transaction.RollbackAsync();
             }
-
-            return moviesToImport.Count;
-        }
-
-        public async Task<int> ImportFromXmlAsync(string filePath)
-        {
-            throw new NotImplementedException();
         }
     }
 }
