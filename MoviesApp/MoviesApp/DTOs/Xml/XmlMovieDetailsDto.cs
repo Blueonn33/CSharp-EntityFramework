@@ -21,7 +21,7 @@ namespace MoviesApp.DTOs.Xml
         [XmlElement("Director")]
         public string Director { get; set; } = null!;
 
-
+        [XmlAnyElement("Release")]
         public XmlElement ReleaseElement { get; set; } = null!;
 
         [Required]

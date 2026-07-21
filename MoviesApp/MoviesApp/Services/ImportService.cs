@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using MoviesApp.Data;
 using MoviesApp.DTOs.Json;
+using MoviesApp.DTOs.Xml;
 using MoviesApp.Models;
 using MoviesApp.Services.Interfaces;
+using MoviesApp.Utilities;
 using MoviesApp.Utilities.Interfaces;
 using Newtonsoft.Json;
 using System.Globalization;
@@ -38,6 +40,7 @@ namespace MoviesApp.Services
 
             if (movieDtos == null)
             {
+                _logger.LogInformation("No movies were found in the JSON file! Import from JSON will be skipped!");
                 return 0;
             }
 
@@ -99,6 +102,18 @@ namespace MoviesApp.Services
 
             string xmlFileContent = await _fileHelper
                 .ReadFileAsync(datasetsPath, fileName);
+
+            IEnumerable<ImportXmlGenreGroupDto>? genreGroupDtos = XmlSerializerWrapper
+                .Deserialize<ImportXmlGenreGroupDto[]>(xmlFileContent, "MoviesLibrary");
+
+            if (genreGroupDtos == null)
+            {
+                _logger.LogInformation("No movies were found in the XML file! Import from XML will be skipped!");
+
+                return 0;
+            }
+
+            return 0;
         }
 
         private async Task SeedMoviesAsync(IEnumerable<Movie> moviesToImport)

@@ -43,11 +43,9 @@ namespace MoviesApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult ImportXml()
+        public async Task<IActionResult> ImportXml()
         {
-            // TODO (students): implement real import logic in ImportService
-            // int importedCount = _importService.ImportMoviesFromXml();
-            int importedCount = 0; // placeholder for now
+            int importedCount = await _importService.ImportFromXmlAsync("MoviesXMLFile.json");
 
             TempData["XmlImportedCount"] = importedCount;
 

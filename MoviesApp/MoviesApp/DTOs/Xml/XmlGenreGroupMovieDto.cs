@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Xml;
 using System.Xml.Serialization;
 
 using static MoviesApp.Common.EntityValidation;
@@ -30,5 +31,18 @@ namespace MoviesApp.DTOs.Xml
         [Required]
         [XmlElement("Details")]
         public XmlMovieDetailsDto Details { get; set; } = null!;
+
+        [Required]
+        [MinLength(MovieDescriptionMinLength)]
+        [MaxLength(MovieDescriptionMaxLength)]
+        [XmlAnyElement("Description")]
+        public string Description { get; set; } = null!;
+
+        [XmlAnyElement("Media")]
+        public XmlElement MediaElement { get; set; } = null!;
+
+        [MaxLength(MovieImageUrlMaxLength)]
+        public string? ImageUrl
+            => MediaElement.GetElementsByTagName("ImageUrl").Item(0)?.Value;
     }
 }
