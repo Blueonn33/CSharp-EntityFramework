@@ -88,17 +88,20 @@ namespace MoviesApp.Services
                 moviesToImport.Add(movie);
             }
 
-            await PersistMoviesAsync(moviesToImport);
+            await SeedMoviesAsync(moviesToImport);
 
             return moviesToImport.Count;
         }
 
-        public async Task<int> ImportFromXmlAsync(string filePath)
+        public async Task<int> ImportFromXmlAsync(string fileName)
         {
-            throw new NotImplementedException();
+            string? datasetsPath = _appConfiguration.GetValue<string>("Seeding:DatasetPath");
+
+            string xmlFileContent = await _fileHelper
+                .ReadFileAsync(datasetsPath, fileName);
         }
 
-        private async Task PersistMoviesAsync(IEnumerable<Movie> moviesToImport)
+        private async Task SeedMoviesAsync(IEnumerable<Movie> moviesToImport)
         {
             IDbContextTransaction transaction = await _dbContext.Database
                 .BeginTransactionAsync();

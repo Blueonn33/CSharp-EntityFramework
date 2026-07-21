@@ -10,6 +10,6 @@
         /// <summary>
         /// Imports movies from an XML file and returns the number of successfully imported movies.
         /// </summary>
-        Task<int> ImportFromXmlAsync(string filePath);
+        Task<int> ImportFromXmlAsync(string fileName);
     }
 }
