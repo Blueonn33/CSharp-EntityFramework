@@ -19,6 +19,8 @@ namespace MoviesApp.Utilities
             }
 
             string jsonFileContent = await File.ReadAllTextAsync(fullPath);
+
+            return jsonFileContent;
         }
     }
 }

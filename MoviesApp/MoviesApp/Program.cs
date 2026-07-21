@@ -1,3 +1,6 @@
+using MoviesApp.Utilities;
+using MoviesApp.Utilities.Interfaces;
+
 namespace MoviesApp
 {
     using Data;
@@ -19,6 +22,7 @@ namespace MoviesApp
             builder.Services.AddScoped<IMoviesService, MoviesService>();
             builder.Services.AddScoped<IWatchlistService, WatchlistService>();
             builder.Services.AddScoped<IImportService, ImportService>();
+            builder.Services.AddScoped<IFileHelper, FileHelper>();
 
             builder.Services.AddControllersWithViews();
 
