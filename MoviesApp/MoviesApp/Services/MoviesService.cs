@@ -1,5 +1,6 @@
 ﻿using MoviesApp.Models;
 using MoviesApp.Services.Interfaces;
+using MoviesApp.ViewModels.Movies;
 
 namespace MoviesApp.Services
 {
@@ -20,7 +21,7 @@ namespace MoviesApp.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Movie>> GetAllAsync()
+        public async Task<IEnumerable<AllMoviesIndexViewModel>> GetAllAsync()
         {
             throw new NotImplementedException();
         }

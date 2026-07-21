@@ -1,10 +1,11 @@
 ﻿using MoviesApp.Models;
+using MoviesApp.ViewModels.Movies;
 
 namespace MoviesApp.Services.Interfaces
 {
     public interface IMoviesService
     {
-        Task<IEnumerable<Movie>> GetAllAsync();
+        Task<IEnumerable<AllMoviesIndexViewModel>> GetAllAsync();
 
         Task<Movie?> GetByIdAsync(int id);
 

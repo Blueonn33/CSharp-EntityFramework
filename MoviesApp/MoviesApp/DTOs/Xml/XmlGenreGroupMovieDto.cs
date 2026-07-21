@@ -35,7 +35,7 @@ namespace MoviesApp.DTOs.Xml
         [Required]
         [MinLength(MovieDescriptionMinLength)]
         [MaxLength(MovieDescriptionMaxLength)]
-        [XmlAnyElement("Description")]
+        [XmlElement("Description")]
         public string Description { get; set; } = null!;
 
         [XmlAnyElement("Media")]
@@ -43,6 +43,6 @@ namespace MoviesApp.DTOs.Xml
 
         [MaxLength(MovieImageUrlMaxLength)]
         public string? ImageUrl
-            => MediaElement.GetElementsByTagName("ImageUrl").Item(0)?.Value;
+            => MediaElement.InnerText;
     }
 }

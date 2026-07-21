@@ -103,17 +103,81 @@ namespace MoviesApp.Services
             string xmlFileContent = await _fileHelper
                 .ReadFileAsync(datasetsPath, fileName);
 
-            IEnumerable<ImportXmlGenreGroupDto>? genreGroupDtos = XmlSerializerWrapper
-                .Deserialize<ImportXmlGenreGroupDto[]>(xmlFileContent, "MoviesLibrary");
+            IEnumerable<XmlGenreGroupMovieDto>? moviesDtos = XmlSerializerWrapper
+                .Deserialize<ImportXmlGenreGroupDto[]>(xmlFileContent, "MoviesLibrary")
+                .Select(g => g.Movie)
+                .ToArray();
 
-            if (genreGroupDtos == null)
+            if (moviesDtos == null)
             {
                 _logger.LogInformation("No movies were found in the XML file! Import from XML will be skipped!");
 
                 return 0;
             }
 
-            return 0;
+            bool moviesAlreadyExist = _dbContext.Movies.Any();
+
+            if (moviesAlreadyExist)
+            {
+                _logger.LogInformation("Movies already exist in the database! Import from XML will be skipped!");
+                return 0;
+            }
+
+            ICollection<Movie> moviesToPersist = new List<Movie>();
+
+            foreach (var movieDto in moviesDtos)
+            {
+                if (!IsValid(movieDto, out List<string> validationErrors))
+                {
+                    _logger.LogInformation("Movie was not imported during import movies from XML! Please, see error message below");
+
+                    foreach (var error in validationErrors)
+                    {
+                        _logger.LogError(error);
+                    }
+
+                    continue;
+                }
+
+                if (!IsValid(movieDto.Details, out List<string> validationErrorsDetails))
+                {
+                    _logger.LogInformation("Movie was not imported during import movies from XML! Please, see error message below");
+
+                    foreach (var error in validationErrorsDetails)
+                    {
+                        _logger.LogError(error);
+                    }
+
+                    continue;
+                }
+
+                bool isReleaseDateValidFormat = DateTime
+                    .TryParseExact(movieDto.Details.ReleaseDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime releaseDate);
+
+                if (!isReleaseDateValidFormat)
+                {
+                    _logger.LogError($"Movie DTO {movieDto.Id} Release Date is in incorrect format");
+                    continue;
+                }
+
+                Movie movie = new Movie()
+                {
+                    Id = movieDto.Id,
+                    Title = movieDto.Title,
+                    Genre = movieDto.Details.Genre,
+                    ReleaseDate = releaseDate,
+                    Director = movieDto.Details.Director,
+                    Duration = movieDto.Duration,
+                    Description = movieDto.Description,
+                    ImageUrl = movieDto.ImageUrl
+                };
+
+                moviesToPersist.Add(movie);
+            }
+
+            await SeedMoviesAsync(moviesToPersist);
+
+            return moviesToPersist.Count;
         }
 
         private async Task SeedMoviesAsync(IEnumerable<Movie> moviesToImport)
