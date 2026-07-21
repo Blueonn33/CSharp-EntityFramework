@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <MoviesLibrary>
 	<GenreGroup name="Romance">
-		<Movie id="ab2c3213-48a7-41ea-9393-45c60ef813e6" duration="195">
+		<Movie id="1" duration="195">
 			<Title>Titanic</Title>
 			<Details>
 				<Genre>Romance</Genre>
@@ -21,7 +21,7 @@ A love story unfolds on the doomed voyage of the Titanic.
 	</GenreGroup>
 
 	<GenreGroup name="Sci-Fi">
-		<Movie id="844d9abd-104d-41ab-b14a-ce059779ad91" duration="136">
+		<Movie id="2" duration="136">
 			<Title>The Matrix</Title>
 			<Details>
 				<Genre>Sci-Fi</Genre>
@@ -41,7 +41,7 @@ A computer hacker learns about the true nature of his reality and his role in th
 	</GenreGroup>
 
 	<GenreGroup name="Drama">
-		<Movie id="54082f99-023b-4d68-89ac-44c00a0958d0" duration="142">
+		<Movie id="3" duration="142">
 			<Title>Forrest Gump</Title>
 			<Details>
 				<Genre>Drama</Genre>
@@ -61,7 +61,7 @@ The story of a man with a kind heart and an incredible life journey.
 	</GenreGroup>
 
 	<GenreGroup name="Action">
-		<Movie id="bf9ff8b3-3209-4b18-9f4b-5172c45b73f9" duration="155">
+		<Movie id="4" duration="155">
 			<Title>Gladiator</Title>
 			<Details>
 				<Genre>Action</Genre>
@@ -81,7 +81,7 @@ A betrayed Roman general seeks revenge against the corrupt emperor who murdered 
 	</GenreGroup>
 
 	<GenreGroup name="Drama">
-		<Movie id="e00208b1-cb12-4bd4-8ac1-36ab62f7b4c9" duration="142">
+		<Movie id="5" duration="142">
 			<Title>The Shawshank Redemption</Title>
 			<Details>
 				<Genre>Drama</Genre>
@@ -101,7 +101,7 @@ Two imprisoned men bond over a number of years, finding solace and eventual rede
 	</GenreGroup>
 
 	<GenreGroup name="Crime">
-		<Movie id="4491b6f5-2a11-4c4c-8c6b-c371f47d2152" duration="154">
+		<Movie id="6" duration="154">
 			<Title>Pulp Fiction</Title>
 			<Details>
 				<Genre>Crime</Genre>
