@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MoviesApp.Data;
 using MoviesApp.DTOs.Movie;
+using MoviesApp.Mappers;
 using MoviesApp.Models;
 using MoviesApp.Services.Interfaces;
 using MoviesApp.ViewModels.Movies;
@@ -12,14 +13,16 @@ namespace MoviesApp.Controllers
     {
         private readonly IMoviesService _moviesService;
         private readonly MoviesAppDbContext _dbContext;
+        private readonly MovieMapper _movieMapper;
 
         // Constructor Injection -> Instance of MoviesAppDbContext is passed from outside (ASP.NET Core)
         // To use it, store it locally in field
 
-        public MoviesController(IMoviesService moviesService, MoviesAppDbContext dbContext)
+        public MoviesController(IMoviesService moviesService, MoviesAppDbContext dbContext, MovieMapper movieMapper)
         {
             _moviesService = moviesService;
             _dbContext = dbContext;
+            _movieMapper = movieMapper;
         }
 
         [HttpGet]
@@ -31,20 +34,25 @@ namespace MoviesApp.Controllers
             IEnumerable<GetAllMoviesDto> allMovies = await _moviesService
                 .GetAllAsync();
 
-            IEnumerable<AllMoviesIndexViewModel> allMoviesViewModels = allMovies
-                .Select(m => new AllMoviesIndexViewModel()
-                {
-                    Id = m.Id,
-                    Title = m.Title,
-                    Genre = m.Genre,
-                    Director = m.Director,
-                    ReleaseDate = m.ReleaseDate.ToShortDateString(),
-                    Duration = m.Duration,
-                    ImageUrl = m.ImageUrl ?? DefaultImageUrl,
-                    Description = m.Description
-                });
+            //IEnumerable<AllMoviesIndexViewModel> allMoviesViewModels = allMovies
+            //    .Select(m => new AllMoviesIndexViewModel()
+            //    {
+            //        Id = m.Id,
+            //        Title = m.Title,
+            //        Genre = m.Genre,
+            //        Director = m.Director,
+            //        ReleaseDate = m.ReleaseDate.ToShortDateString(),
+            //        Duration = m.Duration,
+            //        ImageUrl = m.ImageUrl ?? DefaultImageUrl,
+            //        Description = m.Description,
+            //        IsAddedInWatchlist = m.IsAddedInWatchlist
+            //    })
+            //    .ToArray();
 
-            return View(allMovies);
+            IEnumerable<AllMoviesIndexViewModel> allMoviesViewModels = this._movieMapper
+                .MapToAllMoviesIndexViewModels(allMovies);
+
+            return View(allMoviesViewModels);
         }
 
         [HttpGet]
