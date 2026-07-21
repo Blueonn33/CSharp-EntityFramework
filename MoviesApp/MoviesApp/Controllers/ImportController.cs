@@ -32,11 +32,10 @@ namespace MoviesApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult ImportJson()
+        public async Task<IActionResult> ImportJson()
         {
-            // TODO (students): implement real import logic in ImportService
-            // int importedCount = _importService.ImportMoviesFromJson();
-            int importedCount = 0; // placeholder for now
+            int importedCount = await _importService
+                .ImportFromJsonAsync("moviesJSONFile.json");
 
             TempData["JsonImportedCount"] = importedCount;
 

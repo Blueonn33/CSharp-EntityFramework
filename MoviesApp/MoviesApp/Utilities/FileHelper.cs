@@ -6,12 +6,13 @@ namespace MoviesApp.Utilities
     {
         public async Task<string> ReadFileAsync(string baseDir, string fileName)
         {
-            if (string.IsNullOrWhiteSpace(baseDir) || !Directory.Exists(baseDir))
+            if (string.IsNullOrWhiteSpace(baseDir))
             {
                 throw new InvalidOperationException("Base directory path is not configured");
             }
 
-            string fullPath = Path.Combine(baseDir, fileName);
+            string currentDir = Directory.GetCurrentDirectory();
+            string fullPath = Path.GetFullPath(Path.Combine(currentDir, baseDir, fileName));
 
             if (!File.Exists(fullPath))
             {

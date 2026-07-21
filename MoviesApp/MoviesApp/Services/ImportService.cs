@@ -1,10 +1,11 @@
-﻿using MoviesApp.DTOs.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using MoviesApp.Data;
+using MoviesApp.DTOs.Json;
 using MoviesApp.Models;
 using MoviesApp.Services.Interfaces;
 using MoviesApp.Utilities.Interfaces;
 using Newtonsoft.Json;
 using System.Globalization;
-using MoviesApp.Data;
 using static MoviesApp.Utilities.ObjectValidator;
 
 namespace MoviesApp.Services
@@ -36,6 +37,14 @@ namespace MoviesApp.Services
 
             if (movieDtos == null)
             {
+                return 0;
+            }
+
+            bool moviesAlreadyExist = _dbContext.Movies.Any();
+
+            if (moviesAlreadyExist)
+            {
+                _logger.LogInformation("Movies already exist in the database! Import from JSON will be skipped!");
                 return 0;
             }
 
@@ -78,8 +87,12 @@ namespace MoviesApp.Services
                 moviesToImport.Add(movie);
             }
 
+            _dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Movies ON");
+
             _dbContext.Movies.AddRange(moviesToImport);
             await _dbContext.SaveChangesAsync();
+
+            _dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Movies OFF");
 
             return moviesToImport.Count;
         }
