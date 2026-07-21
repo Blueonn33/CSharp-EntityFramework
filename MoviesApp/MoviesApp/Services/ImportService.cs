@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using MoviesApp.Data;
 using MoviesApp.DTOs.Json;
 using MoviesApp.Models;
@@ -87,12 +88,24 @@ namespace MoviesApp.Services
                 moviesToImport.Add(movie);
             }
 
-            _dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Movies ON");
+            IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
 
-            _dbContext.Movies.AddRange(moviesToImport);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                await _dbContext.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Movies ON");
 
-            _dbContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Movies OFF");
+                _dbContext.Movies.AddRange(moviesToImport);
+                await _dbContext.SaveChangesAsync();
+
+                await _dbContext.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Movies OFF");
+
+                await transaction.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                await transaction.RollbackAsync();
+            }
 
             return moviesToImport.Count;
         }
