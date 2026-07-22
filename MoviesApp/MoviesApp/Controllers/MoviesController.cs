@@ -67,14 +67,17 @@ namespace MoviesApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(AddMovieFormModel model)
+        public async Task<IActionResult> Create(AddMovieFormModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            _moviesService.AddAsync()
+            AddNewMovieDto newMovieDto = _movieMapper
+                .MapToAddNewMovieDto(model);
+
+            await _moviesService.AddAsync(newMovieDto);
 
             return RedirectToAction(nameof(Index));
         }
