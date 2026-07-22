@@ -9,7 +9,7 @@ namespace MoviesApp.Services.Interfaces
 
         Task<Movie?> GetByIdAsync(int id);
 
-        Task AddAsync(Movie movie);
+        Task AddAsync(AddNewMovieDto movie);
 
         Task UpdateAsync(Movie movie);
 

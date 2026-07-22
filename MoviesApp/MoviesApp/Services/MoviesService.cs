@@ -15,9 +15,21 @@ namespace MoviesApp.Services
             _dbContext = dbContext;
         }
 
-        public async Task AddAsync(Movie movie)
+        public async Task AddAsync(AddNewMovieDto movie)
         {
-            throw new NotImplementedException();
+            Movie newMovie = new Movie()
+            {
+                Title = movie.Title,
+                Genre = movie.Genre,
+                Director = movie.Director,
+                Duration = movie.Duration,
+                ReleaseDate = movie.ReleaseDate.ToDateTime(new TimeOnly(0, 0, 0)),
+                Description = movie.Description,
+                ImageUrl = movie.ImageUrl
+            };
+
+            await _dbContext.Movies.AddAsync(newMovie);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)

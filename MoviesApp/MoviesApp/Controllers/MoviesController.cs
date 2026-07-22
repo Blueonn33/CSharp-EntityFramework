@@ -74,18 +74,7 @@ namespace MoviesApp.Controllers
                 return View(model);
             }
 
-            Movie newMovie = new Movie()
-            {
-                Title = model.Title,
-                Genre = model.Genre,
-                Director = model.Director,
-                Duration = model.Duration,
-                Description = model.Description,
-                ImageUrl = model.ImageUrl
-            };
-
-            _dbContext.Movies.Add(newMovie);
-            _dbContext.SaveChanges();
+            _moviesService.AddAsync()
 
             return RedirectToAction(nameof(Index));
         }
