@@ -1,4 +1,5 @@
-﻿namespace MoviesApp.ViewModels.Movies
+﻿using static MoviesApp.Common.ApplicationConstants;
+namespace MoviesApp.ViewModels.Movies
 {
     public class AllMoviesIndexViewModel
     {
@@ -24,8 +25,9 @@
 
         public string? ImageUrl
         {
-            get; set;
-        }
+            get;
+            set;
+        } = DefaultImageUrl;
 
         public bool IsAddedInWatchlist
         {
