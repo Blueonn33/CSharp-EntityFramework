@@ -7,7 +7,7 @@ namespace NetPay
     {
         static void Main(string[] args)
         {
-            NetPayContext context = new NetPayContext();
+            using NetPayContext context = new NetPayContext();
 
             ResetDatabase(context, shouldDropDatabase: true);
 
@@ -16,7 +16,7 @@ namespace NetPay
             ImportEntities(context, projectDir + @"Datasets/", projectDir + @"ImportResults/");
             ExportEntities(context, projectDir + @"ExportResults/");
 
-            using(var transaction = context.Database.BeginTransaction())
+            using (var transaction = context.Database.BeginTransaction())
             {
                 transaction.Rollback();
             }

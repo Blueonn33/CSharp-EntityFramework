@@ -4,24 +4,22 @@ namespace NetPay.Data
 {
     public class NetPayContext : DbContext
     {
-        private const string connectionString = @"";
-
         public NetPayContext()
         {
-            
+
         }
 
         public NetPayContext(DbContextOptions options)
             : base(options)
         {
-            
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if(!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.UseSqlServer(Configuration.ConnectionString);
             }
         }
 
@@ -30,7 +28,7 @@ namespace NetPay.Data
             //Fluent API here
 
             //Uncomment the following lines to seed the database with data
-            
+
             //modelBuilder.Entity<Supplier>().HasData(
             //    new Supplier { Id = 1, SupplierName = "E-Service" },
             //    new Supplier { Id = 2, SupplierName = "Light" },
