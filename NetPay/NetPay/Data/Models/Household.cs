@@ -16,9 +16,20 @@ namespace NetPay.Data.Models
         [MaxLength(HouseholdContactPersonMaxLength)]
         public string ContactPerson { get; set; } = null!;
 
+        [MinLength(HouseholdEmailMinLength)]
+        [MaxLength(HouseholdEmailMaxLength)]
         public string? Email
         {
             get; set;
         }
+
+        [Required]
+        [MaxLength(HouseholdPhoneNumberLength)]
+        [RegularExpression(HouseholdPhoneNumberRegexPattern)]
+        public string PhoneNumber
+        {
+            get;
+            set;
+        } = null!;
     }
 }
