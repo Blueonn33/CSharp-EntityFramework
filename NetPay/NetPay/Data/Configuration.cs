@@ -3,6 +3,6 @@
     public class Configuration
     {
         public static string ConnectionString
-            => @"Server=";
+            => @"Server=PREDATOR\SQLEXPRESS;Database=NetPay;Trusted_Connection=True;Encrypt=False";
     }
 }
