@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace P01_HospitalDatabase.Data.Models
 {
     public class Patient
     {
         [Key]
-        public int PatientId { get; set; }
+        public int PatientId
+        {
+            get; set;
+        }
 
         [MaxLength(50)]
         public string FirstName { get; set; } = null!;
@@ -23,6 +21,15 @@ namespace P01_HospitalDatabase.Data.Models
 
         [MaxLength(250)] public string Email { get; set; } = null!;
 
-        public bool HasInsurance { get; set; }
+        public bool HasInsurance
+        {
+            get; set;
+        }
+
+        public virtual ICollection<PatientMedicament> Prescriptions
+        {
+            get;
+            set;
+        } = null!;
     }
 }
