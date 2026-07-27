@@ -44,9 +44,19 @@ namespace NetPay.DataProcessor
             return xmlResult;
         }
 
-        public static string ExportAllServicesWithSuppliers(NetPayContext context)
+        public static string ExportAllServicesWithSuppliers(NetPayContext dbContext)
         {
-            return string.Empty;
+            var servicesWithSuppliers = dbContext.Services
+                .AsNoTracking()
+                .Select(s => new
+                {
+                    s.ServiceName,
+                    Suppliers = s.SuppliersServices
+                        .Select(ss => new
+                        {
+                            ss.Supplier.SupplierName
+                        })
+                })
         }
     }
 }
