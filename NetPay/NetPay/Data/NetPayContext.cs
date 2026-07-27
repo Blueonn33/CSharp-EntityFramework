@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NetPay.Data.Models;
 
 namespace NetPay.Data
 {
@@ -26,6 +27,10 @@ namespace NetPay.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Fluent API here
+            modelBuilder.Entity<SupplierService>(entity =>
+            {
+                entity.HasKey(ss => new { ss.SupplierId, ss.ServiceId });
+            });
 
             //Uncomment the following lines to seed the database with data
 
