@@ -13,6 +13,8 @@
         // Expense
         public const int ExpenseNameMinLength = 5;
         public const int ExpenseNameMaxLength = 50;
+        public const string ExpenseAmountRangeMinValue = "0.01";
+        public const string ExpenseAmountRangeMaxValue = "100000";
 
         // Service
         public const int ServiceNameMinLength = 5;
