@@ -13,5 +13,9 @@
         // Expense
         public const int ExpenseNameMinLength = 5;
         public const int ExpenseNameMaxLength = 50;
+
+        // Service
+        public const int ServiceNameMinLength = 5;
+        public const int ServiceNameMaxLength = 30;
     }
 }
