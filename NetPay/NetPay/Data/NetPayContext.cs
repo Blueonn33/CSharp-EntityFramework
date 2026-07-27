@@ -16,27 +16,32 @@ namespace NetPay.Data
 
         }
 
-        public virtual DbSet<Expense> Expenses { get; set; } = null!;
+        public virtual DbSet<Expense> Expenses
+        {
+            get; set;
+        } = null!;
 
         public virtual DbSet<Household> Households
         {
             get; set;
-        }
+        } = null!;
 
         public virtual DbSet<Service> Services
         {
-            get; set;
-        }
+            get;
+            set;
+        } = null!;
 
         public virtual DbSet<Supplier> Suppliers
         {
             get; set;
-        }
+        } = null!;
 
         public virtual DbSet<SupplierService> SuppliersServices
         {
-            get; set;
-        }
+            get;
+            set;
+        } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
