@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NetPay.Data.Models.Enums;
 using static NetPay.Common.ValidationConstants;
 
 namespace NetPay.Data.Models
@@ -20,6 +21,10 @@ namespace NetPay.Data.Models
 
         public DateTime DueDate { get; set; }
 
+        public PaymentStatus PaymentStatus { get; set; }
 
+        public int HouseholdId { get; set; }
+
+        public int ServiceId { get; set; }
     }
 }
