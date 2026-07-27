@@ -17,5 +17,9 @@
         // Service
         public const int ServiceNameMinLength = 5;
         public const int ServiceNameMaxLength = 30;
+
+        // Supplier
+        public const int SupplierNameMinLength = 3;
+        public const int SupplierNameMaxLength = 60;
     }
 }
