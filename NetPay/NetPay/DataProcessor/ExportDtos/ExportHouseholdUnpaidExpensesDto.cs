@@ -17,6 +17,7 @@ namespace NetPay.DataProcessor.ExportDtos
         [XmlElement("PhoneNumber")]
         public string PhoneNumber { get; set; } = null!;
 
-
+        [XmlArray("Expenses")]
+        public ExportUnpaidExpensesDto[] UnpaidExpenses { get; set; } = Array.Empty<ExportUnpaidExpensesDto>();
     }
 }

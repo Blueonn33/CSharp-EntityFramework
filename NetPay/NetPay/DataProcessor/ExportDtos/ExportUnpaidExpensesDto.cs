@@ -8,9 +8,17 @@ namespace NetPay.DataProcessor.ExportDtos
         [XmlElement("ExpenseName")]
         public string ExpenseName { get; set; } = null!;
 
-        public decimal Amount
+        [XmlElement("Amount")]
+        public string Amount
         {
-            get; set;
-        }
+            get;
+            set;
+        } = null!;
+
+        [XmlElement("PaymentDate")]
+        public string DueDate { get; set; } = null!;
+
+        [XmlElement("ServiceName")]
+        public string ServiceName { get; set; } = null!;
     }
 }
