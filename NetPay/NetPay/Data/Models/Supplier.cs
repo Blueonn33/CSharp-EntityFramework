@@ -6,11 +6,16 @@ namespace NetPay.Data.Models
     public class Supplier
     {
         [Key]
-        public int Id { get; set; }
+        public int Id
+        {
+            get; set;
+        }
 
         [Required]
         [MinLength(SupplierNameMinLength)]
         [MaxLength(SupplierNameMaxLength)]
         public string SupplierName { get; set; } = null!;
+
+        public virtual ICollection<SupplierService> SuppliersServices { get; set; } = new HashSet<SupplierService>();
     }
 }

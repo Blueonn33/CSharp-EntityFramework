@@ -15,5 +15,7 @@ namespace NetPay.Data.Models
         [MinLength(ServiceNameMinLength)]
         [MaxLength(ServiceNameMaxLength)]
         public string ServiceName { get; set; } = null!;
+
+        public virtual ICollection<SupplierService> SuppliersServices { get; set; } = new HashSet<SupplierService>();
     }
 }
