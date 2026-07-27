@@ -146,6 +146,8 @@ namespace NetPay.DataProcessor
 
             dbContext.Expenses.AddRange(expensesToPersist);
             dbContext.SaveChanges();
+
+            return sb.ToString().TrimEnd();
         }
 
         public static bool IsValid(object dto)
