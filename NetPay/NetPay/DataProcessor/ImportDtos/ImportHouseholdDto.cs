@@ -13,12 +13,15 @@ namespace NetPay.DataProcessor.ImportDtos
         public string ContactPerson { get; set; } = null!;
 
         [XmlElement("Email")]
+        [StringLength(HouseholdEmailMaxLength, MinimumLength = HouseholdEmailMinLength)]
         public string? Email
         {
             get; set;
         }
 
         [Required]
+        [StringLength(HouseholdPhoneNumberLength, MinimumLength = HouseholdPhoneNumberLength)]
+        [RegularExpression(HouseholdPhoneNumberRegexPattern)]
         [XmlAttribute("phone")]
         public string PhoneNumber { get; set; } = null!;
     }
