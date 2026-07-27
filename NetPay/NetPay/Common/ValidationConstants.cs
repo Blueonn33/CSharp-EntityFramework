@@ -9,5 +9,9 @@
         public const int HouseholdEmailMaxLength = 80;
         public const int HouseholdPhoneNumberLength = 15;
         public const string HouseholdPhoneNumberRegexPattern = @"^\+\d{3}/\d{3}-\d{6}$";
+
+        // Expense
+        public const int ExpenseNameMinLength = 5;
+        public const int ExpenseNameMaxLength = 50;
     }
 }
