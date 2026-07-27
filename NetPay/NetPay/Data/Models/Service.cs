@@ -17,5 +17,7 @@ namespace NetPay.Data.Models
         public string ServiceName { get; set; } = null!;
 
         public virtual ICollection<SupplierService> SuppliersServices { get; set; } = new HashSet<SupplierService>();
+
+        public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
     }
 }

@@ -31,5 +31,7 @@ namespace NetPay.Data.Models
             get;
             set;
         } = null!;
+
+        public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
     }
 }

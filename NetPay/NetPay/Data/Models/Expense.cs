@@ -1,5 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using NetPay.Data.Models.Enums;
+﻿using NetPay.Data.Models.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static NetPay.Common.ValidationConstants;
 
 namespace NetPay.Data.Models
@@ -17,14 +18,35 @@ namespace NetPay.Data.Models
         [MaxLength(ExpenseNameMaxLength)]
         public string ExpenseName { get; set; } = null!;
 
-        public decimal Amount { get; set; }
+        public decimal Amount
+        {
+            get; set;
+        }
 
-        public DateTime DueDate { get; set; }
+        public DateTime DueDate
+        {
+            get; set;
+        }
 
-        public PaymentStatus PaymentStatus { get; set; }
+        public PaymentStatus PaymentStatus
+        {
+            get; set;
+        }
 
-        public int HouseholdId { get; set; }
+        [ForeignKey(nameof(Household))]
+        public int HouseholdId
+        {
+            get; set;
+        }
 
-        public int ServiceId { get; set; }
+        public virtual Household Household { get; set; } = null!;
+
+        [ForeignKey(nameof(Service))]
+        public int ServiceId
+        {
+            get; set;
+        }
+
+        public virtual Service Service { get; set; } = null!;
     }
 }
