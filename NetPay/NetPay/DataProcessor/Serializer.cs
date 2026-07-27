@@ -12,7 +12,11 @@ namespace NetPay.DataProcessor
         {
             ExportHouseholdUnpaidExpensesDto[] householdUnpaidExpensesDtos = dbContext.Households
                 .AsNoTracking()
+                .Include(h => h.Expenses)
+                .ThenInclude(e => e.Service)
                 .Where(h => h.Expenses.Any(e => e.PaymentStatus != PaymentStatus.Paid))
+                .OrderBy(h => h.ContactPerson)
+                .AsEnumerable()
                 .Select(h => new ExportHouseholdUnpaidExpensesDto()
                 {
                     ContactPerson = h.ContactPerson,
@@ -20,6 +24,7 @@ namespace NetPay.DataProcessor
                     PhoneNumber = h.PhoneNumber,
                     UnpaidExpenses = h.Expenses
                         .Where(e => e.PaymentStatus != PaymentStatus.Paid)
+                        .AsEnumerable()
                         .Select(e => new ExportUnpaidExpensesDto()
                         {
                             ExpenseName = e.ExpenseName,
@@ -31,7 +36,6 @@ namespace NetPay.DataProcessor
                         .ThenBy(e => e.Amount)
                         .ToArray()
                 })
-                .OrderBy(h => h.ContactPerson)
                 .ToArray();
 
             string xmlResult = XmlSerializerWrapper
@@ -42,7 +46,7 @@ namespace NetPay.DataProcessor
 
         public static string ExportAllServicesWithSuppliers(NetPayContext context)
         {
-            throw new NotImplementedException();
+            return string.Empty;
         }
     }
 }

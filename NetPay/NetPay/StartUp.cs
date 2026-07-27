@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NetPay.Data;
+using System.Globalization;
 
 namespace NetPay
 {
@@ -7,6 +8,9 @@ namespace NetPay
     {
         static void Main(string[] args)
         {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+
             using NetPayContext context = new NetPayContext();
 
             ResetDatabase(context, shouldDropDatabase: true);
@@ -14,7 +18,7 @@ namespace NetPay
             var projectDir = GetProjectDirectory();
 
             ImportEntities(context, projectDir + @"Datasets/", projectDir + @"ImportResults/");
-            //ExportEntities(context, projectDir + @"ExportResults/");
+            ExportEntities(context, projectDir + @"ExportResults/");
 
             using (var transaction = context.Database.BeginTransaction())
             {
