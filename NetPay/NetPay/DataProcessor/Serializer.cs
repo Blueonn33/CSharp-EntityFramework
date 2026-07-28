@@ -3,6 +3,7 @@ using NetPay.Data;
 using NetPay.Data.Models.Enums;
 using NetPay.DataProcessor.ExportDtos;
 using NetPay.Utilities;
+using Newtonsoft.Json;
 
 namespace NetPay.DataProcessor
 {
@@ -48,6 +49,7 @@ namespace NetPay.DataProcessor
         {
             var servicesWithSuppliers = dbContext.Services
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Select(s => new
                 {
                     s.ServiceName,
@@ -56,7 +58,17 @@ namespace NetPay.DataProcessor
                         {
                             ss.Supplier.SupplierName
                         })
+                        .AsEnumerable()
+                        .OrderBy(sup => sup.SupplierName)
+                        .ToArray()
                 })
+                .OrderBy(s => s.ServiceName)
+                .ToArray();
+
+            string jsonResult = JsonConvert
+                .SerializeObject(servicesWithSuppliers, Formatting.Indented);
+
+            return jsonResult;
         }
     }
 }
