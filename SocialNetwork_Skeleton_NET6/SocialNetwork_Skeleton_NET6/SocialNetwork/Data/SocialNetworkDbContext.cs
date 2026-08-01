@@ -5,7 +5,7 @@ namespace SocialNetwork.Data
 {
     public class SocialNetworkDbContext : DbContext
     {
-        private const string ConnectionString = @"Server=PREDATOR\SQLEXPRESS;Database=SocialNetwork;Trusted_Connection=True;";
+        private const string ConnectionString = @"";
 
         public SocialNetworkDbContext()
         {
