@@ -16,7 +16,7 @@ namespace SocialNetwork.DataProcessor.ImportDTOs
         public string Status
         {
             get; set;
-        } = null!;
+        }
 
         [XmlElement("ConversationId")]
         public int ConversationId
