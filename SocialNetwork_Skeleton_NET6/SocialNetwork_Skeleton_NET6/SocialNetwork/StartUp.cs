@@ -9,7 +9,7 @@ namespace SocialNetwork
         {
             SocialNetworkDbContext dbContext = new SocialNetworkDbContext();
 
-            ResetDatabase(dbContext, shouldDropDatabase: true);
+            //ResetDatabase(dbContext, shouldDropDatabase: true);
 
             var projectDir = GetProjectDirectory();
 
