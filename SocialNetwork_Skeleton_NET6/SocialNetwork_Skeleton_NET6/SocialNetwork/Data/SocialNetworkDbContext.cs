@@ -45,6 +45,11 @@ namespace SocialNetwork.Data
                 entity.HasKey(uc => new { uc.UserId, uc.ConversationId });
             });
 
+            modelBuilder.Entity<Friendship>(entity =>
+            {
+                entity.HasNoKey();
+            });
+
             modelBuilder.Entity<User>().HasData(
                 new User { Id = 1, Username = "john_doe", Email = "john@example.com", Password = "Pass123" },
                 new User { Id = 2, Username = "jane_doe", Email = "jane@example.com", Password = "Secure456" },
