@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="DataProcessor\ExportDTOs\" />
-    <Folder Include="DataProcessor\ImportDTOs\" />
   </ItemGroup>
 
 </Project>
