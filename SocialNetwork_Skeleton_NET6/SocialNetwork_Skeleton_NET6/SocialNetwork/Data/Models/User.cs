@@ -30,5 +30,7 @@ namespace SocialNetwork.Data.Models
         {
             get; set;
         } = new HashSet<UserConversation>();
+
+        public virtual ICollection<Message> Messages { get; set; } = new HashSet<Message>();
     }
 }
