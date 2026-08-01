@@ -47,8 +47,20 @@ namespace SocialNetwork.Data
 
             modelBuilder.Entity<Friendship>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(f => new { f.UserOneId, f.UserTwoId });
             });
+
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.UserOne)
+                .WithMany()
+                .HasForeignKey(f => f.UserOneId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.UserTwo)
+                .WithMany()
+                .HasForeignKey(f => f.UserTwoId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>().HasData(
                 new User { Id = 1, Username = "john_doe", Email = "john@example.com", Password = "Pass123" },
