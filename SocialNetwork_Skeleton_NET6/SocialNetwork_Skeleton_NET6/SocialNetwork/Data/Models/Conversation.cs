@@ -20,5 +20,11 @@ namespace SocialNetwork.Data.Models
         {
             get; set;
         }
+
+        public virtual ICollection<UserConversation> UsersConversations
+        {
+            get;
+            set;
+        } = new HashSet<UserConversation>();
     }
 }

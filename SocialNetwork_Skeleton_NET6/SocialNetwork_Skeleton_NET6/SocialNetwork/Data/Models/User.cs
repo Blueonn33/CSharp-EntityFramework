@@ -24,6 +24,11 @@ namespace SocialNetwork.Data.Models
         [MinLength(6)]
         public string Password { get; set; } = null!;
 
+        public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
 
+        public virtual ICollection<UserConversation> UsersConversations
+        {
+            get; set;
+        } = new HashSet<UserConversation>();
     }
 }
