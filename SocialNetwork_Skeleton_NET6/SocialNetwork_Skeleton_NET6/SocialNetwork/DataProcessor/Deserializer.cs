@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SocialNetwork.Data;
 using SocialNetwork.Data.Models;
 using SocialNetwork.Data.Models.Enums;
@@ -46,6 +47,29 @@ namespace SocialNetwork.DataProcessor
                     DateTimeStyles.None,
                     out DateTime sentAt);
 
+                //bool isDuplicate = existingMessages
+                //    .Any(m =>
+                //        m.SentAt == sentAt &&
+                //        m.Content == messageDto.Content &&
+                //        m.Status == parsedStatus &&
+                //        m.ConversationId == messageDto.ConversationId &&
+                //        m.SenderId == messageDto.SenderId);
+
+                //isDuplicate |= messagesToPersist
+                //    .Any(m =>
+                //        m.SentAt == sentAt &&
+                //        m.Content == messageDto.Content &&
+                //        m.Status == parsedStatus &&
+                //        m.ConversationId == messageDto.ConversationId &&
+                //        m.SenderId == messageDto.SenderId);
+
+                //if (isDuplicate)
+                //{
+                //    sb.AppendLine(DuplicatedDataMessage);
+                //    continue;
+                //}
+
+
                 if (!IsValid(messageDto) || !isValidStatus || !isValidDate)
                 {
                     sb.AppendLine(ErrorMessage);
@@ -60,22 +84,6 @@ namespace SocialNetwork.DataProcessor
                     sb.AppendLine(ErrorMessage);
                     continue;
                 }
-
-                //bool isDuplicate = existingMessages
-                //    .Any(m => m.ConversationId == messageDto.ConversationId &&
-                //              m.SenderId == messageDto.SenderId &&
-                //              m.SentAt == sentAt);
-
-                //isDuplicate |= messagesToPersist
-                //    .Any(m => m.ConversationId == messageDto.ConversationId &&
-                //              m.SenderId == messageDto.SenderId &&
-                //              m.SentAt == sentAt);
-
-                //if (isDuplicate)
-                //{
-                //    sb.AppendLine(DuplicatedDataMessage);
-                //    continue;
-                //}
 
                 Message message = new Message()
                 {
@@ -103,8 +111,67 @@ namespace SocialNetwork.DataProcessor
 
         public static string ImportPosts(SocialNetworkDbContext dbContext, string jsonString)
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder();
+
+            IEnumerable<ImportPostDto>? postDtos = JsonConvert
+                .DeserializeObject<ImportPostDto[]>(jsonString);
+
+            if (postDtos == null)
+            {
+                return sb.ToString();
+            }
+
+            IEnumerable<int> validCreatorIds = dbContext.Users
+                .AsNoTracking()
+                .Select(u => u.Id)
+                .ToArray();
+
+            ICollection<Post> postsToPersist = new List<Post>();
+
+            foreach (var postDto in postDtos)
+            {
+                if (postDto == null ||
+                    string.IsNullOrWhiteSpace(postDto.Content) ||
+                    string.IsNullOrWhiteSpace(postDto.CreatedAt) ||
+                    !DateTime.TryParseExact(postDto.CreatedAt, "yyyy-MM-ddTHH:mm:ss",
+                        CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime postDate) ||
+                    !validCreatorIds.Contains(postDto.CreatorId))
+                {
+                    sb.AppendLine(ErrorMessage);
+                    continue;
+                }
+
+                if (postDto.Content.Length > 300)
+                {
+                    sb.AppendLine(ErrorMessage);
+                    continue;
+                }
+
+                var creator = dbContext.Users.FirstOrDefault(u => u.Id == postDto.CreatorId);
+
+                if (creator == null)
+                {
+                    continue;
+                }
+
+                Post post = new Post()
+                {
+                    Content = postDto.Content,
+                    CreatedAt = postDate,
+                    CreatorId = postDto.CreatorId,
+                    Creator = creator
+                };
+
+                postsToPersist.Add(post);
+                sb.AppendLine(string.Format(SuccessfullyImportedPostEntity, creator.Username, post.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ss")));
+            }
+
+            dbContext.Posts.AddRange(postsToPersist);
+            dbContext.SaveChanges();
+
+            return sb.ToString().TrimEnd();
         }
+
 
         public static bool IsValid(object dto)
         {

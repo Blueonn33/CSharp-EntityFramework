@@ -29,10 +29,10 @@ namespace SocialNetwork
 
             PrintAndExportEntityToFile(messages, exportDir + "ActualResult_ImportMessages.txt");
 
-            //var posts = DataProcessor.Deserializer
-            //    .ImportPosts(dbContext, File.ReadAllText(baseDir + "posts.json"));
+            var posts = DataProcessor.Deserializer
+                .ImportPosts(dbContext, File.ReadAllText(baseDir + "posts.json"));
 
-            //PrintAndExportEntityToFile(posts, exportDir + "ActualResult_ImportPosts.txt");
+            PrintAndExportEntityToFile(posts, exportDir + "ActualResult_ImportPosts.txt");
         }
 
         private static void ExportEntities(SocialNetworkDbContext dbContext, string exportDir)
