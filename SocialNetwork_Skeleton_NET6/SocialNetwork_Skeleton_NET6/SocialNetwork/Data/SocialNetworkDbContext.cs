@@ -22,7 +22,7 @@ namespace SocialNetwork.Data
 
         public virtual DbSet<Conversation> Conversations { get; set; } = null!;
 
-        public virtual DbSet<UserConversation> UserConversations { get; set; } = null!;
+        public virtual DbSet<UserConversation> UsersConversations { get; set; } = null!;
 
         public virtual DbSet<Post> Posts { get; set; } = null!;
 
